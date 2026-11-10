@@ -2,6 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { metricsDeepSections } from "./reliability-metrics-source-depth";
 import { extraMetricsBlocks } from "./reliability-sli-metrics-worked";
+import { metricsScrapeEvidenceBlocks } from "./reliability-metrics-scrape-evidence";
 
 const prometheus: LearningResource = { title: "Prometheus Documentation", url: "https://prometheus.io/docs/introduction/overview/" };
 const promql: LearningResource = { title: "Prometheus Querying Basics", url: "https://prometheus.io/docs/prometheus/latest/querying/basics/" };
@@ -31,13 +32,26 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         ...extraMetricsBlocks(spec.id),
+        ...metricsScrapeEvidenceBlocks(spec.id),
         ...(metricsDeepSections[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Question before chart", body: "A metric is valuable when its meaning, labels and aggregation support a concrete reliability decision. A dashboard full of available numbers is not evidence that Steward is observable." },
         { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
     return { id: `metrics-prometheus-grafana-${spec.id}`, title: spec.title, activities: [
         { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
-        { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: spec.practice, deliverables: ["Metric/query/dashboard evidence", "Meaning and label definition", "Operational interpretation"], completionCriteria: ["The signal has defined semantics.", "Labels avoid uncontrolled cardinality.", "The learner can explain what decision the result supports and what it does not prove."] } },
+        { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: [...spec.practice, ...(spec.id === "prometheus-architecture" ? [
+            "Execute the exact preceding scrape_lab.py Python 3 source, not a separate copied test fixture. Record actual HTTP 201, 503, 201 user requests and the successful localhost /metrics exposition with initialized 2xx and 5xx counters.",
+            "Reproduce metrics HTTP 503 while user API and /health stay available, then stale HTTP 200 metrics and source recovery; record the independent observed request count and distinguish modeled up=0, modeled up=1 and UNKNOWN.",
+            "Run changed-case checks by disabling the scrape outage, removing the stale response and dropping a failed request counter increment. Each unsafe change must be detected by an assertion before any production dashboard is trusted.",
+            "State which remaining claims need a real Prometheus target, TSDB/rate and Grafana environment, and do not claim this local client models PromQL.",
+        ] : spec.id === "promql" ? [
+            "Use the same real scrape_lab.py output from Prometheus Architecture; explain zero-traffic 0/0, failed scrape with continued business requests, and stale-but-200 exporter as separate cases.",
+            "In an approved real Prometheus instance, compare /api/v1/targets expected target inventory, up{job=\"steward-api\"}, absent_over_time(up{job=\"steward-api\"}[10m]) and the route-level rate denominator.",
+            "Do not replace missing/empty vectors with zero without checking both collection coverage and valid request population; label real PromQL evaluation UNVERIFIED if not executed.",
+        ] : spec.id === "grafana" ? [
+            "Review the same source program's failed scrape and stale 200 outcomes. List the exact graph/panel states that would incorrectly imply zero errors or healthy telemetry.",
+            "In an approved Grafana dashboard with real Prometheus data, disconnect a disposable target, capture the actual No data/Error/alert state and restore it. If the backend is absent, explicitly record NOT_TESTED.",
+        ] : [])], deliverables: ["Metric/query/dashboard evidence", "Meaning and label definition", "Operational interpretation", ...(["prometheus-architecture","promql","grafana"].includes(spec.id)?["Source-executed scrape failure, no-data or actual live query-evidence boundary"] : [])], completionCriteria: ["The signal has defined semantics.", "Labels avoid uncontrolled cardinality.", "The learner can explain what decision the result supports and what it does not prove.", ...(["prometheus-architecture","promql","grafana"].includes(spec.id)?["Zero observations, missed scrapes and stale successful responses are not silently presented as a healthy 0% error rate."] : [])] } },
         { id: `metrics-prometheus-grafana-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
 }
