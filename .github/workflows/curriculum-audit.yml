@@ -433,6 +433,18 @@ jobs:
         run: |
           docker pull prom/alertmanager:v0.28.1
           python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Prove real Prometheus evaluation forwarded via Alertmanager to firing and resolved webhooks
+        run: |
+          docker pull prom/prometheus:v3.13.3
+          python3 scripts/check-reliability-prometheus-to-alertmanager.py
+      - name: Reject a wrong live Prometheus rule before expected source activation
+        run: |
+          if TSA_FORWARD_RULE_VARIANT=wrong-condition python3 scripts/check-reliability-prometheus-to-alertmanager.py > "$RUNNER_TEMP/tsa-prometheus-forward-wrong.log" 2>&1; then
+            echo "FAIL: inverted Prometheus alert condition wrongly passed"
+            exit 1
+          fi
+          grep -F 'Premature alert before synthetic impact condition' "$RUNNER_TEMP/tsa-prometheus-forward-wrong.log" || { cat "$RUNNER_TEMP/tsa-prometheus-forward-wrong.log"; exit 1; }
+          echo "PASS: real Prometheus to Alertmanager pipeline rejected inverted alert rule"
       - name: Require four incorrect Alertmanager configurations to fail actual delivery expectations
         run: |
           root="$RUNNER_TEMP/tsa-alertmanager-mutants"
