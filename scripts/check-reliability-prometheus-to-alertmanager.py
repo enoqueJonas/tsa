@@ -166,6 +166,16 @@ def main():
             else:
                 raise AssertionError("Prometheus did not scrape actual localhost /metrics")
             print("REAL_PROMETHEUS_SCRAPE_PASS: up=1 for synthetic local metrics source",flush=True)
+            # A broken ==0 alert fires before the intended incident.
+            # Wait past the disposable 2s Alertmanager group_wait, then fail.
+            time.sleep(5)
+            with Source.lock:
+                baseline_receipts = list(Source.receipts)
+            assert not any("TSAForwardingProbe" in x["alert_names"]
+                           for x in baseline_receipts), (
+                "Premature alert before synthetic impact condition: "
+                + json.dumps(baseline_receipts))
+            print("PROMETHEUS_FORWARDING_BASELINE_PASS: inactive gauge sent no alert",flush=True)
             with Source.lock:
                 Source.active=True
             received=wait_for("Prometheus-generated firing alert",lambda xs:any(
