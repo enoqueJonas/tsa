@@ -151,6 +151,8 @@ jobs:
         run: node scripts/check-reliability-sli-metrics-worked.mjs
       - name: Execute original Prometheus scrape, missing-data and stale-200 negative cases
         run: node scripts/check-reliability-metrics-scrape-evidence.mjs
+      - name: Check exact original recording-rule YAML and alerting lesson boundaries
+        run: node scripts/check-reliability-prometheus-rule-engine.mjs
       - name: Execute source-published traceparent handoff and missing-propagation evidence
         run: node scripts/check-reliability-tracing-propagation.mjs
       - name: Guard original logging teaching depth and failure transfer across eight topics
@@ -381,6 +383,36 @@ jobs:
           node scripts/check-builder-postgresql-live-lab.mjs
           node scripts/check-builder-django-live-lab.mjs
           node scripts/check-delivery-schema-expansion.mjs
+
+  prometheus-rule-engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify displayed recording rules and official test fixtures are byte-identical
+        run: node scripts/check-reliability-prometheus-rule-engine.mjs
+      - name: Run official Prometheus promtool syntax check and real rule evaluation
+        run: |
+          image="prom/prometheus:v3.13.3"
+          rules="$PWD/labs/reliability-prometheus-rules"
+          docker run --rm --network none -v "$rules:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" check rules steward.rules.yml
+          docker run --rm --network none -v "$rules:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" test rules steward.test.yml
+      - name: Prove real Prometheus engine rejects three wrong learner source rules
+        run: |
+          image="prom/prometheus:v3.13.3"
+          root="$RUNNER_TEMP/tsa-promtool-mutants"
+          node scripts/check-reliability-prometheus-rule-engine.mjs --emit-mutants "$root"
+          for scenario in wrong-scrape-outcome wrong-user-error-numerator missing-target-conflation; do
+            if docker run --rm --network none -v "$root/$scenario:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" test rules steward.test.yml > "$RUNNER_TEMP/promtool-$scenario.log" 2>&1; then
+              echo "FAIL: unsafe rule '$scenario' unexpectedly passed official promtool"
+              exit 1
+            fi
+            echo "PASS: official promtool rejected mutated rule '$scenario'"
+            tail -n 15 "$RUNNER_TEMP/promtool-$scenario.log"
+          done
 
   learner-browser:
     runs-on: ubuntu-24.04
