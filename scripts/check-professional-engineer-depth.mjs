@@ -723,3 +723,81 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Wrong mutant failure "+why+": "+wrong.stderr);
 }
 console.log("PASS original Constraints inventory, source-exact Python, two additional readings and eight rejected false-green mutants");
+
+
+// Original Module 2 Working with Ambiguity: distinguish evidence types,
+// sensitivity and consent-aware experiment design before the historic practice.
+// Hypothetical probabilities/payoffs are a model demonstration, not field data.
+const ambiguityFile=fs.readFileSync(root+"professional-engineer-discovery-ambiguity.ts","utf8");
+const ambiguityPrefix="export const ambiguityDecisionPython = ";
+const ambiguityLine=ambiguityFile.split("\n").find(x=>x.startsWith(ambiguityPrefix));
+assert.ok(ambiguityLine?.endsWith(";"),"Missing learner-visible ambiguity decision Python");
+const ambiguityPython=JSON.parse(ambiguityLine.slice(ambiguityPrefix.length,-1));
+function ambiguityBlocks(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=ambiguityFile.indexOf(anchor);
+ assert.ok(at>=0,"No subject-specific ambiguity blocks "+name);
+ const start=at+anchor.length;
+ const end=nextName?ambiguityFile.indexOf("export const "+nextName+":",start):ambiguityFile.length;
+ assert.ok(end>start,"Malformed ambiguity blocks "+name);
+ return JSON.parse(ambiguityFile.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const ambiguityInventory=ambiguityBlocks("ambiguityInventoryBlocks","ambiguitySensitivityBlocks");
+const ambiguitySensitivity=ambiguityBlocks("ambiguitySensitivityBlocks","ambiguityExperimentBlocks");
+const ambiguityExperiment=ambiguityBlocks("ambiguityExperimentBlocks",null);
+for(const [name,blocks,minimum] of [
+ ["evidence-classification",ambiguityInventory,4600],
+ ["information-value",ambiguitySensitivity,4300],
+ ["experiment-and-reversal",ambiguityExperiment,5200]
+]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Ambiguity "+name+" lacks separate mechanisms");
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Ambiguity "+name+" thin original reading");
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=minimum,
+  "Insufficient ambiguity worked examples and counterexamples: "+name);
+ assert.equal(blocks.filter(x=>x.type==="resources").length,1,"No source resource in ambiguity "+name);
+}
+assert.equal(ambiguityInventory.filter(x=>x.type==="code").length,0);
+assert.equal(ambiguitySensitivity.filter(x=>x.type==="code").length,1);
+assert.equal(ambiguityExperiment.filter(x=>x.type==="code").length,0);
+assert.equal(ambiguitySensitivity.find(x=>x.type==="code").code,ambiguityPython,
+ "Executed ambiguity proof must be exactly the learner-visible Python");
+const ambiguityOriginal=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const token of [
+ 'id === "capstone-problem-discovery-working-with-ambiguity"',
+ "...ambiguityInventoryBlocks","...ambiguityReadings","-sensitivity-reading","-experiment-design-reading",
+ "Run the exact learner-visible Python sensitivity and perfect-information-ceiling example",
+ "reject eight incorrect implementations",
+ 'reading("capstone-problem-discovery-working-with-ambiguity"'
+]) assert.ok(ambiguityOriginal.includes(token),"Missing original ambiguity reading/practice integration: "+token);
+const practicalSourceAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(ambiguityOriginal.indexOf("...ambiguityReadings")<ambiguityOriginal.indexOf(practicalSourceAnchor),
+ "Independent mechanisms must appear before original ambiguity practice");
+const ambiguityGood=python(ambiguityPython);
+assert.equal(ambiguityGood.status,0,ambiguityGood.stdout+"\n"+ambiguityGood.stderr);
+for(const marker of [
+ "BASE synthetic_p=0.60 fix_intake=38 supplier_automation=36",
+ "SENSITIVITY p=0.70 leader=automate_supplier; DECISION_UNSTABLE",
+ "PERFECT_INFORMATION_CEILING=48, not expected study benefit",
+ "UNKNOWN_PROBABILITY_NOT_CALIBRATED",
+ "UNAUTHORIZED_OR_UNSAFE_STUDY_BLOCKED",
+ "AMBIGUITY_REVERSIBLE_DECISION_PROOF_PASS"
+]) assert.ok(ambiguityGood.stdout.includes(marker),"Missing learner ambiguity proof "+marker);
+for(const [before,after,why] of [
+ ["return p * supplier + (1 - p) * documents",
+  "return (1 - p) * supplier + p * documents","wrong state probability"],
+ ['"automate_supplier": (100, -60)','"automate_supplier": (100, 60)',"automation downside hidden"],
+ ['return max(PAYOFFS, key=lambda name: expected(name, p))',
+  'return "automate_supplier"',"false fixed best action"],
+ ["return len({best(p) for p in probabilities}) == 1","return True","false stable recommendation"],
+ ["supplier_best = max(pair[0] for pair in PAYOFFS.values())",
+  "supplier_best = min(pair[0] for pair in PAYOFFS.values())","invalid perfect information ceiling"],
+ ["if not authorized:","if False:","unauthorized research accepted"],
+ ["if not safe:","if False:","unsafe experiment accepted"],
+ ["if study_cost >= upper_bound:","if False:","research above information ceiling accepted"]
+]){
+ assert.ok(ambiguityPython.includes(before),"Missing source-derived mutation "+why);
+ const wrong=python(ambiguityPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"Incorrect ambiguity behavior passed: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Ambiguity mutant failed for unrelated reason "+why+": "+wrong.stderr);
+}
+console.log("PASS original Working with Ambiguity, exact Python sensitivity/EVPI, two focused readings, eight rejected false-certainty mutants");
