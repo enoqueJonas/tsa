@@ -397,6 +397,82 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_requirements_practice
   print("PASS original Requirements -> acceptance -> traceability -> original practice; 390px, copyable source, actual Next and reload",flush=True)
+  # Constraints: preserve original 001 and practice while navigating two
+  # genuinely independent authored readings. Synthetic prerequisites test
+  # progress transitions only; they do not validate actual learner mastery.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+    "capstone-problem-discovery-requirements-001",
+    "capstone-problem-discovery-requirements-acceptance-reading",
+    "capstone-problem-discovery-requirements-traceability-reading",
+    "capstone-problem-discovery-requirements-practice",
+  ])
+  constraint_steps=(
+    ("capstone-problem-discovery-constraints-001",
+     ("Constraint, need, assumption and decision are different objects",
+      "Where constraints come from, and who can verify them",
+      "Worked constraints register for a fictional handoff")),
+    ("capstone-problem-discovery-constraints-feasibility-reading",
+     ("Verify evidence, authority and applicability before enforcing a constraint",
+      "Execute the exact classification and candidate-elimination code",
+      "CONSTRAINT_SOURCE_AND_FEASIBILITY_PASS")),
+    ("capstone-problem-discovery-constraints-conflict-revision-reading",
+     ("A set of individually valid constraints can be jointly impossible",
+      "Make budgets, timelines and staffing testable assumptions",
+      "Revise decisions when a constraint changes or expires")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":constraint_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(constraint_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Constraint order or prerequisite is wrong: {actual} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=3500,f"Original Constraints teaching remains thin: {activity} {len(rendered)}"
+   for phrase in requirements:
+    assert phrase in rendered,f"Missing subject-specific Constraints teaching {activity}: {phrase}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Constraints exact Python not copyable"
+    assert main.locator("figure pre").count()>0,"Constraints code was not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Constraints teaching has 390px overflow "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-constraints-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected=(constraint_steps[index+1][0] if index+1<len(constraint_steps)
+             else "capstone-problem-discovery-constraints-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected,timeout=15000)
+  original_constraints_practice="capstone-problem-discovery-constraints-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_constraints_practice
+  practice_text=page.locator("main").last.inner_text()
+  for phrase in ("eight-row constraints register",
+                 "break eight distinct evidence or feasibility gates",
+                 "revok","halve available operations capacity"):
+   assert phrase in practice_text,"Original Constraints practical missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_constraints_practice
+  print("PASS original Constraints -> feasibility -> conflict/revision -> original practical; 390px, copyable code, Next and reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
