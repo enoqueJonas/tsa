@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { actionableAlertEngineBlocks } from "./reliability-actionable-alerts-depth";
 
 const sreAlerting: LearningResource = { title: "Google SRE Workbook - Alerting on SLOs", url: "https://sre.google/workbook/alerting-on-slos/" };
 const promAlerting: LearningResource = { title: "Prometheus Alerting Rules", url: "https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/" };
@@ -24,12 +25,19 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...(spec.id === "actionable-alerts" ? actionableAlertEngineBlocks : []),
         { type: "callout", tone: "steward", title: "Page on symptoms that require action", body: "The purpose of an alert is not to report every abnormal metric. It is to create timely human action when user-visible reliability is at risk and automation alone is insufficient." },
         { type: "resources", title: "Continue learning", resources: resourcesByAlertingTopic[spec.id] ?? [sreAlerting, promAlerting] },
     ];
     return { id: `alerting-and-on-call-${spec.id}`, title: spec.title, activities: [
         { id: `alerting-and-on-call-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
-        { id: `alerting-and-on-call-${spec.id}-002`, title: `Design: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to Steward operations.`, scenario: "Use the SLOs, error-budget model, Prometheus metrics and diagnostic logs already created. Design alerts around meaningful service symptoms, ownership and response actions rather than around every available metric.", instructions: spec.practice, deliverables: ["Alert/on-call design artifact", "Trigger or routing evidence", "Operational action/risk note"], completionCriteria: ["The alert corresponds to a real action or escalation.", "Severity is tied to impact and urgency.", "The learner can explain why the condition should alert, page or remain dashboard-only."] } },
+        { id: `alerting-and-on-call-${spec.id}-002`, title: `Design: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to Steward operations.`, scenario: "Use the SLOs, error-budget model, Prometheus metrics and diagnostic logs already created. Design alerts around meaningful service symptoms, ownership and response actions rather than around every available metric.", instructions: [...spec.practice, ...(spec.id === "actionable-alerts" ? [
+            "Refer to the preceding focused Prometheus recording-rules lesson and execute its exact committed two YAML sources with official promtool check rules and promtool test rules; record which synthetic alert evaluation transitions pass.",
+            "For the 5xx user-symptom rule, explain why the completed-request counter population, minimum traffic, five-minute window and two-minute for period are independent requirements rather than interchangeable alert decorations.",
+            "Falsify up==0 and absent_over_time by running wrong-rule mutants against unchanged unit tests; report which failed rule expectation demonstrates the loss of the target failure distinction.",
+            "For each of user errors, configured scrape failure and entirely missing target, write owner, impact, severity, action and next evidence. No production page is warranted by this classroom threshold; verify any real Alertmanager receipt only in an approved test route.",
+            "Record RULE_ENGINE_VERIFIED only after the official CLI passes; record LIVE_ALERT_DELIVERY_UNVERIFIED unless a real Prometheus alert and restricted Alertmanager notification were received and acknowledged.",
+        ] : [])], deliverables: ["Alert/on-call design artifact", "Trigger or routing evidence", "Operational action/risk note", ...(spec.id === "actionable-alerts" ? ["Official promtool rule evaluation, mutated source failures and separate live delivery status"] : [])], completionCriteria: ["The alert corresponds to a real action or escalation.", "Severity is tied to impact and urgency.", "The learner can explain why the condition should alert, page or remain dashboard-only.", ...(spec.id === "actionable-alerts" ? ["Alert expression, waiting period, missing telemetry, and real notification delivery are evidenced as distinct stages."] : [])] } },
         { id: `alerting-and-on-call-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
 }

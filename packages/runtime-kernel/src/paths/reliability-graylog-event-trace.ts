@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LessonBlock, LearningResource } from "../activities/content";
+import { graylogSearchBoundaryBlocks } from "./reliability-graylog-indexed-search-contract";
 
 // Published exact learning code: only a loopback UDP socket. Real Graylog is
 // a separate explicit lab gate and must not be claimed from this test.
@@ -33,15 +34,19 @@ export const graylogEventTraceLesson: Lesson = {
   title:"From One Structured Event to a Graylog Search",
   activities:[
     { id:"logging-graylog-event-lifecycle-001", title:"GELF Schema, Transport, Processing and Search", estimatedMinutes:55, content:{type:"reading",body:"Learn what Graylog must do to make an application event searchable, not merely received.",blocks:reading} },
+    { id:"logging-graylog-event-lifecycle-indexed-search-reading", title:"Indexed Search Is a Separate Evidence Boundary", estimatedMinutes:55, content:{type:"reading",body:"Distinguish accepted GELF transport from indexed and searchable evidence, then run a fail-closed local contract before any live Graylog test.",blocks:graylogSearchBoundaryBlocks} },
     { id:"logging-graylog-event-lifecycle-002", title:"Trace and Diagnose a Real Graylog Event", estimatedMinutes:90, content:{type:"practical",objective:"Prove one synthetic sanitized Steward event from emission to a Graylog search with negative evidence.",scenario:"The Graylog stack has been selected, but a successful log-sender call does not yet prove durable and searchable incident evidence.",instructions:[
       "Execute the exact local standard-library GELF demonstration and record its two expected results; label them local-only.",
+      "Copy the complete Graylog Search Scripting API contract program into graylog_search.py and run python3 graylog_search.py. Record that DEMO_CONTRACT_PASS comes from a fake local HTTP handler and is NOT evidence of actual indexing.",
+      "Run TSA_DEMO_SCENARIO=ack_only python3 graylog_search.py, then wrong_id, missing_field, search_denied and input_down. Each must exit nonzero with its specific unproven boundary. Never treat the GELF 202 acceptance as a search hit.",
       "In a learner-owned, approved Graylog environment, inspect the actual version and deployment topology. Start the matching GELF HTTP/TCP/UDP input with suitable network restrictions/TLS; do not expose ingest ports publicly by default.",
       "Send one unique sanitized event from the Steward application or controlled test source with an unambiguous _request_id and timestamp; capture transport response or sender evidence.",
       "Find the exact event in Graylog Search using the request ID and bounded time window; note actual searchable field names, stream and index set, and preserve only non-sensitive screenshots/query syntax.",
+      "If an approved, isolated Graylog 7.2 instance is available, configure its restricted GELF HTTP input and Search Scripting API credentials, then explicitly opt in with TSA_GRAYLOG_VERIFY_LIVE=1 and run python3 graylog_search.py --live. Record whether the exact unique ID, event and outcome are returned; verify version-specific field names before interpreting a miss.",
       "Disable the disposable input or send a deliberately malformed non-secret test event; diagnose failure through shipper/input/processing/journal/index/search evidence. Never break a shared production collector.",
       "Restore the input, repeat the same end-to-end query and compare with a metric and trace that answer different incident questions.",
       "Record which evidence proves emitted, transported, ingested, indexed, searchable and retained; mark unperformed steps UNVERIFIED."
-    ],deliverables:["Local GELF producer proof","Approved Graylog topology/input contract","Exact request-ID search query and hit","Safe malformed/lost-path diagnosis","Recovered end-to-end log search","Logs-vs-metrics-vs-traces transfer note"],completionCriteria:["An actual searchable Graylog event is proven rather than inferred from a transport response.","At least one negative stage is identified by evidence and repaired safely.","Sensitive credentials and personal data are absent from logs.","An independent reviewer can replay the query and distinguish which observation proves which boundary."]} },
+    ],deliverables:["Local GELF producer proof","Fake 202-versus-search contract positive and five negative cases","Real Graylog search status or explicit NOT_TESTED","Approved Graylog topology/input contract","Exact request-ID search query and hit","Safe malformed/lost-path diagnosis","Recovered end-to-end log search","Logs-vs-metrics-vs-traces transfer note"],completionCriteria:["An actual searchable Graylog event is proven rather than inferred from a transport response.","At least one negative stage is identified by evidence and repaired safely.","Sensitive credentials and personal data are absent from logs.","An independent reviewer can replay the query and distinguish which observation proves which boundary."]} },
     { id:"logging-graylog-event-lifecycle-003", title:"Diagnose a Missing Log Without Guessing", estimatedMinutes:15, content:{type:"reflection",prompt:"Given a verified application event emission, a successful send and a missing Graylog search result, explain the hypotheses at input, processing, journal, index, stream, field extraction and time-window boundaries. Which proof would establish each? Explain why an HTTP 202 or UDP send does not guarantee the event is retrievable.",minimumCharacters:250} }
   ]
 };

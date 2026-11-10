@@ -37,6 +37,7 @@ def inspect_school(page):
     module_count = page.get_by_role("button", name=MODULE).count()
     assert module_count > 0, f"No modules shown for {SCHOOL}"
     evidence = []
+    evidence_gates = []
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     for module_index in range(module_count):
@@ -274,11 +275,31 @@ def inspect_school(page):
             if SCHOOL == "reliability-engineer":
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
+                    "observability-correlation-context-001": "Trace identity is not request identity, and neither proves completion",
+                    "observability-instrumentation-001": "Put measurement at a real outcome boundary, not at an arbitrary helper",
+                    "logging-correlation-ids-001": "Run the prior Observability HTTP-to-outbox proof, then query emitted events",
+                    "logging-privacy-security-001": "Execute an allowlist against a real synthetic Authorization header",
                     "logging-centralized-logging-001": "Follow a log from code to Graylog search",
+                    "logging-graylog-event-lifecycle-001": "Run the smallest observable event before operating Graylog",
+                    "logging-graylog-event-lifecycle-indexed-search-reading": "Prove searchable evidence separately from HTTP 202",
                     "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
+                    "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
+                    "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
+                    "service-level-engineering-windowing-promtool-burn-rate-reading": "Derive burn rate from a stated SLO, not a copied threshold",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
+                    "metrics-prometheus-grafana-recording-rules-promtool-reading": "A recording rule is a stored time series, not proof of user health",
+                    "alerting-and-on-call-actionable-alerts-001": "An alert is a decision pipeline, not a Boolean dashboard color",
+                    "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading": "Exercise a genuine metrics endpoint before choosing Prometheus",
+                    "metrics-prometheus-grafana-promql-001": "A green or empty query is a hypothesis until you compare its source data",
+                    "metrics-prometheus-grafana-grafana-001": "Use an explicit no-data state instead of decorating telemetry gaps green",
                     "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
+                    "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
+                    "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
+                    "reliability-alertmanager-implementation-same-notification-retry-reading": "A new successful alert is not a retry of a failed one",
+                    "reliability-alertmanager-implementation-ambiguous-side-effect-reading": "A failed webhook acknowledgment does not mean the receiver did nothing",
+                    "reliability-alertmanager-implementation-prometheus-forwarding-reading": "Close the missing transport link with a real Prometheus rule",
+                    "reliability-alertmanager-implementation-outage-recovery-reading": "A firing Prometheus rule does not imply a delivered page",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
                     "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
                     "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
@@ -296,12 +317,384 @@ def inspect_school(page):
                     )
                     if activity_id not in {
                         "logging-centralized-logging-001",
+                        # These lessons explicitly reuse executable source published
+                        # in the preceding original Observability correlation lesson.
+                        "observability-instrumentation-001",
+                        # PromQL reuses source from Architecture; Grafana is
+                        # concept/incident reasoning without duplicate Python.
+                        "metrics-prometheus-grafana-grafana-001",
+                        # Actionable Alerts explains the preceding real promtool lab,
+                        # and does not duplicate both YAML files or an executable.
+                        "alerting-and-on-call-actionable-alerts-001",
+                        "logging-correlation-ids-001",
+                        "logging-privacy-security-001",
                         "reliability-observability-stack-integration-000",
                         "steward-reliability-program-milestone-000",
+                        # These two follow-on readings explicitly reuse the
+                        # independently tested program published in SLIs.
+                        # Do not require duplicate source code in each page.
+                        "service-level-engineering-error-budgets-001",
+                        "service-level-engineering-windowing-001",
                     }:
                         assert code.count() >= 1, (
                             f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
                         )
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "service-level-engineering-slis-001",
+                "service-level-engineering-error-budgets-001",
+                "service-level-engineering-windowing-001",
+                "service-level-engineering-windowing-promtool-burn-rate-reading",
+                "service-level-engineering-windowing-002",
+                "service-level-engineering-slis-002",
+            }:
+                if activity_id == "service-level-engineering-slis-001":
+                    assert content.get_by_text(
+                        "Reconstruct lifecycle success from committed operations, not HTTP acknowledgments",
+                        exact=True,
+                    ).count() == 1, "Original SLIs lifecycle source was not rendered"
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original SLIs committed SQLite proof is not copyable"
+                    )
+                    assert "LEFT JOIN effects AS e" in text, (
+                        "Original SLIs page lost source-published missing-effect denominator"
+                    )
+                if activity_id == "service-level-engineering-slis-002":
+                    assert "Change b's consumer completion" in text and "t=95" in text, (
+                        "Original paired SLI practical no longer requires negative transfer"
+                    )
+                if activity_id == "service-level-engineering-error-budgets-001":
+                    assert "0.4 event-equivalents" in text and "5.00" in text, (
+                        "Budget follow-on reading lost explicit source-derived units"
+                    )
+                if activity_id == "service-level-engineering-windowing-001":
+                    assert "as_of=120" in text and "Change as_of to 75" in text, (
+                        "Windowing follow-on lost source-derived maturity counterexample"
+                    )
+                if activity_id == "service-level-engineering-windowing-promtool-burn-rate-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Official multiwindow rule, seven-case fixture and command must be copyable"
+                    )
+                    assert "StewardRegistrationFastBudgetBurn" in text and "0.0144" in text, (
+                        "Source-published 14.4x rule or derived threshold lost"
+                    )
+                    assert "stale_long_window_after_healthy_recovery_does_not_fire" in text and (
+                        "tiny_population_cannot_authorize_incident_page" in text
+                    ), "Windowing lab lost recovered/low-volume changed cases"
+                    assert "variable traffic" in text and "synthetic" in text, (
+                        "Burn math overclaims constant event count or production evidence"
+                    )
+                if activity_id == "service-level-engineering-windowing-002":
+                    assert "official promtool check rules" in text and (
+                        "Falsify AND-to-OR" in text
+                    ), "Original windowing practical lost official rules and negative mutation"
+                    assert "reasonably stationary traffic" in text, (
+                        "Windowing practical assumes volume-independent budget percentages"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Original Service Level activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "logging-graylog-event-lifecycle-001",
+                "logging-graylog-event-lifecycle-indexed-search-reading",
+                "logging-graylog-event-lifecycle-002",
+            }:
+                if activity_id == "logging-graylog-event-lifecycle-001":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original GELF UDP source is no longer copyable"
+                    )
+                    assert "local datagram contract" in text and "NOT a running Graylog input" in text, (
+                        "Original GELF lesson lost its distinct local-only boundary"
+                    )
+                elif activity_id == "logging-graylog-event-lifecycle-indexed-search-reading":
+                    assert content.get_by_text(
+                        "Reproduce failures without weakening the search oracle",
+                        exact=True,
+                    ).count() == 1, (
+                        "Focused Graylog indexed-search reading missing original mechanism"
+                    )
+                    assert content.get_by_text(
+                        "Decode a columnar search result before trusting it",
+                        exact=True,
+                    ).count() == 1, "Schema/datarows mechanics not taught"
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Source-published Search API Python is not copyable"
+                    )
+                    assert "DEMO_CONTRACT_PASS" in text and "NOT Graylog indexing" in text, (
+                        "Fake index contract is being confused with real Graylog"
+                    )
+                else:
+                    assert "TSA_DEMO_SCENARIO=ack_only" in text and "wrong_id" in text, (
+                        "Original Graylog practical lacks indexed-search negative cases"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Original Graylog activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "observability-correlation-context-001",
+                "observability-correlation-context-002",
+                "observability-instrumentation-001",
+                "logging-correlation-ids-001",
+                "logging-privacy-security-001",
+                "logging-correlation-ids-002",
+                "logging-privacy-security-002",
+            }:
+                if activity_id == "observability-correlation-context-001":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original correlation lesson lost actual Python/SQLite source"
+                    )
+                    assert "ThreadingHTTPServer" in text and "CREATE TABLE outbox" in text, (
+                        "Source-published HTTP/outbox mechanism not visible"
+                    )
+                    assert "NOT actual Steward" in text and "missing_worker_trace" in text, (
+                        "Local-only and negative-context claims lost"
+                    )
+                elif activity_id == "observability-correlation-context-002":
+                    assert "Intentionally replace the good worker trace ID" in text, (
+                        "Paired practice no longer requires a real negative mutation"
+                    )
+                elif activity_id == "observability-instrumentation-001":
+                    assert "independent SQLite query" in text, (
+                        "Instrumentation source does not distinguish logs from effects"
+                    )
+                elif activity_id == "logging-correlation-ids-001":
+                    assert "both workers have completed effects" in text.lower(), (
+                        "Production logging source confuses missing trace and business failure"
+                    )
+                elif activity_id == "logging-privacy-security-001":
+                    assert "DO_NOT_LOG_CLASSROOM_TOKEN" in text, (
+                        "Logging privacy source lost bounded synthetic sentinel"
+                    )
+                elif activity_id == "logging-correlation-ids-002":
+                    assert "remove the worker request_id" in text, (
+                        "Original logging practice missing executable ID-loss transfer"
+                    )
+                elif activity_id == "logging-privacy-security-002":
+                    assert "Intentionally inject the incoming Authorization header" in text, (
+                        "Original privacy practical missing source-emission failure"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Correlation/Logging activity overflows at 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "metrics-prometheus-grafana-prometheus-architecture-001",
+                "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading",
+                "metrics-prometheus-grafana-prometheus-architecture-002",
+                "metrics-prometheus-grafana-promql-001",
+                "metrics-prometheus-grafana-promql-002",
+                "metrics-prometheus-grafana-grafana-001",
+                "metrics-prometheus-grafana-grafana-002",
+            }:
+                if activity_id == "metrics-prometheus-grafana-prometheus-architecture-001":
+                    assert "Prometheus collects time-series data primarily by scraping" in text, (
+                        "Original Prometheus fundamentals reading was lost in lesson split"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Focused Prometheus failure-reading source is not copyable"
+                    )
+                    assert "ThreadingHTTPServer" in text and "http_requests_total" in text, (
+                        "Original Prometheus reading does not expose actual local metrics"
+                    )
+                    assert "stale_exporter:" in text and "LOCAL_SCRAPE_ONLY" in text, (
+                        "Original Prometheus source lost missing-telemetry provenance"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-prometheus-architecture-002":
+                    assert "Reproduce metrics HTTP 503" in text and "stale HTTP 200" in text, (
+                        "Original Prometheus practical lacks failed scrape and stale data"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-promql-001":
+                    assert "absent_over_time" in text and "missing series" in text, (
+                        "Original PromQL lesson lost no-target/no-data mechanics"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-promql-002":
+                    assert "If not executed" not in text or "UNVERIFIED" in text, (
+                        "Original PromQL practice must not imply unperformed live queries"
+                    )
+                    assert "do not replace missing" in text.lower(), (
+                        "Original PromQL practical masks missing measurements as zero"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-grafana-001":
+                    assert "No data, Error or alerting NoData" in text, (
+                        "Original Grafana reading lacks explicit failure state"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-grafana-002":
+                    assert "If the backend is absent" in text and "NOT_TESTED" in text, (
+                        "Original Grafana practical wrongly presumes real infrastructure"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Metrics source/practical overflows mobile viewport: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "metrics-prometheus-grafana-recording-rules-001",
+                "metrics-prometheus-grafana-recording-rules-promtool-reading",
+                "metrics-prometheus-grafana-recording-rules-002",
+                "alerting-and-on-call-actionable-alerts-001",
+                "alerting-and-on-call-actionable-alerts-002",
+            }:
+                if activity_id == "metrics-prometheus-grafana-recording-rules-001":
+                    assert "Recording rules precompute frequently used" in text, (
+                        "Original recording-rules fundamentals were displaced"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-recording-rules-promtool-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Focused real rule/test/commands sources are not copyable"
+                    )
+                    assert "promtool test rules steward.test.yml" in text, (
+                        "Original-path rule engine demonstration lacks executable command"
+                    )
+                    assert "initialized_zero_counters_no_traffic" in text and (
+                        "configured_target_scrape_fails" in text
+                    ), "Promtool test fixture coverage not displayed"
+                    assert content.get_by_text(
+                        "Falsify the rule, not the expected result", exact=True
+                    ).count() == 1, "Mutated-source learning is missing"
+                elif activity_id == "metrics-prometheus-grafana-recording-rules-002":
+                    assert "wrong-rule" in text.lower() and "promtool test rules" in text, (
+                        "Original recording-rules practical lacks actual mutated rule gate"
+                    )
+                elif activity_id == "alerting-and-on-call-actionable-alerts-001":
+                    assert "LIVE_ALERT_DELIVERY_UNVERIFIED" in text, (
+                        "Teaching claims notification from a synthetic PromQL test"
+                    )
+                    assert "pending" in text and "absent_over_time" in text, (
+                        "Alert states and absent target are not distinguished"
+                    )
+                elif activity_id == "alerting-and-on-call-actionable-alerts-002":
+                    assert "RULE_ENGINE_VERIFIED" in text and (
+                        "LIVE_ALERT_DELIVERY_UNVERIFIED" in text
+                    ), "Original practical does not require explicit live delivery evidence"
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Recording/alerting source overflow at 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "reliability-alertmanager-implementation-001",
+                "reliability-alertmanager-implementation-route-mechanics-reading",
+                "reliability-alertmanager-implementation-live-delivery-reading",
+                "reliability-alertmanager-implementation-same-notification-retry-reading",
+                "reliability-alertmanager-implementation-ambiguous-side-effect-reading",
+                "reliability-alertmanager-implementation-002",
+                "reliability-alertmanager-implementation-003",
+            }:
+                if activity_id == "reliability-alertmanager-implementation-001":
+                    assert "Receiver failure was unexpectedly accepted" in text, (
+                        "Original manual loopback test was displaced"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-route-mechanics-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Real route/group/inhibition template is not copyable"
+                    )
+                    assert "__RECEIVER_PORT__" in text and "group_interval: 5s" in text, (
+                        "Original route-focused reading lost exact test input"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-live-delivery-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 2, (
+                        "Real Alertmanager runtime Python and command not copyable"
+                    )
+                    assert "REAL_ALERTMANAGER_RESOLVED_PASS" in text and (
+                        "REAL_ALERTMANAGER_API_BOUNDARY_ONLY" in text
+                    ), "Learner source misstates real Alertmanager output and limitations"
+                elif activity_id == "reliability-alertmanager-implementation-same-notification-retry-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Same notification 503/400/permanent failure source commands are not copyable"
+                    )
+                    assert "TSA_AM_RETRY_MODE=transient-503" in text and (
+                        "TSA_AM_RETRY_MODE=nonretryable-400" in text
+                    ), "Focused retry lesson does not execute positive and non-retryable case"
+                    assert "TSA_AM_RETRY_MODE=permanent-503" in text and (
+                        "SAME_ALERT_RETRY_NOT_PROVEN" in text
+                    ), "Focused retry lesson does not falsify failed permanent delivery"
+                    assert "fingerprint" in text and "groupKey" in text and (
+                        "startsAt" in text
+                    ), "Original retry proof lacks stable delivery identity"
+                elif activity_id == "reliability-alertmanager-implementation-ambiguous-side-effect-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Source-published SQLite and two real ambiguous retry commands are not copyable"
+                    )
+                    assert "CREATE UNIQUE INDEX" in text and (
+                        "INSERT OR IGNORE" in text
+                    ), "Original path lost actual database idempotency mechanism"
+                    assert "TSA_AM_RETRY_MODE=ambiguous-503" in text and (
+                        "TSA_AM_RETRY_MODE=ambiguous-no-idempotency" in text
+                    ), "Positive and duplicate-effect changed-case are not in focused reading"
+                    assert "DUPLICATE_NOTIFICATION_EFFECT_DETECTED" in text, (
+                        "Reading does not require independent persisted-effect oracle"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-002":
+                    assert "two distinct alerts no longer reach" not in text or (
+                        "group_by" in text
+                    ), "Practical lost wrong-grouping transfer"
+                    assert "separate real Prometheus-to-Alertmanager source" in text and (
+                        "neither proves real Steward rules" in text
+                    ), "Original practical must distinguish tested local forwarding from unverified production alerting"
+                elif activity_id == "reliability-alertmanager-implementation-003":
+                    assert "actual HTTP 503 attempts" in text and (
+                        "fresh group" in text
+                    ), "Original failure/recovery practical conflates rejected and delivered"
+                    assert "TSA_AM_RETRY_MODE=transient-503" in text and (
+                        "SAME_ALERT_RETRY_NOT_PROVEN" in text
+                    ), "Original recovery practical does not distinguish real same-notification retry from fresh delivery"
+                    assert "TSA_AM_RETRY_MODE=ambiguous-503" in text and (
+                        "TSA_AM_RETRY_MODE=ambiguous-no-idempotency" in text
+                    ), "Original recovery practical does not require a durable idempotent effect and broken mutant"
+
+                    assert "TSA_FORWARD_SCENARIO=alertmanager-outage" in text and (
+                        "prometheus_notifications_errors_total" in text
+                    ), "Original recovery practical does not require genuine lost Alertmanager transport"
+                    assert "TSA_FORWARD_SCENARIO=outage-without-disconnect" in text, (
+                        "Original recovery practical lacks false-outage negative transfer"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Alertmanager real-source activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+                "reliability-alertmanager-implementation-outage-recovery-reading",
+                "reliability-alertmanager-implementation-002",
+            }:
+                if activity_id == "reliability-alertmanager-implementation-outage-recovery-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 2, (
+                        "Focused Alertmanager outage/recovery commands not copyable"
+                    )
+                    assert "prometheus_notifications_errors_total" in text and (
+                        "outage-without-disconnect" in text
+                    ), "Focused outage reading lost source errors and false-outage mutation"
+                    assert "firing" in text and "resolved" in text, (
+                        "Delayed recovery source does not distinguish alert state transitions"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-prometheus-forwarding-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Prometheus forwarded exact Python is not copyable"
+                    )
+                    assert "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_FIRING_PASS" in text, (
+                        "Real source forwarding event assertion absent"
+                    )
+                    assert "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS" in text, (
+                        "Resolved notification contract is not published"
+                    )
+                    assert "TSA_FORWARD_RULE_VARIANT" in text and "wrong-condition" in text, (
+                        "Negative-control source missing"
+                    )
+                else:
+                    assert "Prometheus-forwarding source" in text, (
+                        "Original Alertmanager practical lost real forwarding transfer"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Prometheus Alertmanager source overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
                     f"Code block not rendered: {activity_id}"
@@ -329,6 +722,43 @@ def inspect_school(page):
                     f"Missing activity heading: {activity_id}"
                 )
             nxt = page.get_by_role("button", name=NEXT)
+            # The Cloud final milestone is deliberately NOT a click-through path.
+            # Test the authentic first operational gate without fabricating an
+            # accepted evidence record or misreporting the later gates as visited.
+            if SCHOOL == "cloud-engineer" and activity_id == (
+                "steward-internet-environment-gate-1-hosting-architecture-001"
+            ):
+                assert module_index == module_count - 1, "Cloud exit gate moved outside final module"
+                assert count == 10, "Original Cloud milestone activity inventory changed"
+                assert nxt.count() == 1 and not nxt.is_enabled(), (
+                    "Cloud exit gate accepted an empty evidence record"
+                )
+                assert (
+                    "Save a substantial accepted evidence record before proceeding." in text
+                    and "self-attested navigation gate" in text
+                ), "Cloud exit evidence warning is not visible"
+                evidence.append({
+                    "module": module_index + 1,
+                    "activity_id": activity_id,
+                    "activity_type": activity_type,
+                    "visible_characters": len(text),
+                    "code_blocks": code.count(),
+                    "progression": "BLOCKED_UNVERIFIED_EVIDENCE",
+                })
+                evidence_gates.append({
+                    "module": module_index + 1,
+                    "blocked_activity": activity_id,
+                    "browser_inspected": len(visited),
+                    "not_traversed": count - len(visited),
+                    "reason": "independent operational evidence required; no synthetic acceptance",
+                })
+                print(
+                    "EXPECTED Cloud final milestone evidence gate: first two original "
+                    "activities inspected; eight downstream operational activities "
+                    "NOT_BROWSER_VERIFIED; no synthetic acceptance",
+                    flush=True,
+                )
+                break
             assert nxt.count() == 1 and nxt.is_enabled(), (
                 f"Progression unavailable: {activity_id}"
             )
@@ -353,7 +783,20 @@ def inspect_school(page):
             nxt.click()
             if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
-        print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
+        if SCHOOL == "cloud-engineer" and module_index == module_count - 1:
+            assert len(visited) == 2 and len(evidence_gates) == 1, (
+                "Cloud exit evidence gate not checked at the original first practice"
+            )
+            print(
+                f"PASS {SCHOOL} module {module_index+1}/{module_count}: "
+                f"{len(visited)}/{count} inspected, {count-len(visited)} "
+                "authentically gated; NOT a complete milestone traversal", flush=True,
+            )
+        else:
+            assert len(visited) == count, (
+                f"Unexpected early stop in {SCHOOL} module {module_index+1}"
+            )
+            print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
     # A readable page is not automatically a sufficiently developed explanation.
     # Report the shortest conceptual readings for qualitative review; these are
@@ -366,6 +809,7 @@ def inspect_school(page):
         "school": SCHOOL,
         "modules": module_count,
         "activities": evidence,
+        "authentically_blocked_evidence_gates": evidence_gates,
         "shortest_readings_for_manual_review": short_readings,
     }
     print(f"REVIEW {SCHOOL} shortest rendered readings (not CI failures):", flush=True)
@@ -373,7 +817,15 @@ def inspect_school(page):
         print(f"  {item['visible_characters']:5} chars {item['activity_id']}", flush=True)
     path = ARTIFACTS / f"{SCHOOL}.json"
     path.write_text(json.dumps(output, indent=2), encoding="utf-8")
-    print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
+    if evidence_gates:
+        print(
+            f"PASS {SCHOOL}: inspected {len(evidence)} real rendered activities; "
+            f"{sum(g['not_traversed'] for g in evidence_gates)} later milestone "
+            "activities remain NOT_BROWSER_VERIFIED behind authentic evidence gate",
+            flush=True,
+        )
+    else:
+        print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
 
 
 def check_mobile_first_module(page):

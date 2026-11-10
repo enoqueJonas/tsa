@@ -1,0 +1,183 @@
+import assert from "node:assert/strict";
+import {readFileSync,mkdirSync,writeFileSync} from "node:fs";
+import {join} from "node:path";
+
+const configPath="labs/reliability-alertmanager/alertmanager.yml.template";
+const scriptPath="scripts/check-reliability-alertmanager-runtime.py";
+const tsPath="packages/runtime-kernel/src/paths/reliability-alertmanager-real-runtime.ts";
+const lessonPath="packages/runtime-kernel/src/paths/reliability-alertmanager-implementation-deep.ts";
+const config=readFileSync(configPath,"utf8");
+const python=readFileSync(scriptPath,"utf8");
+const ts=readFileSync(tsPath,"utf8");
+const lesson=readFileSync(lessonPath,"utf8");
+const forwardingPath="scripts/check-reliability-prometheus-to-alertmanager.py";
+const forwardingText=readFileSync(forwardingPath,"utf8");
+const forwardingSource=readFileSync("packages/runtime-kernel/src/paths/reliability-prometheus-to-alertmanager-proof.ts","utf8");
+
+
+function published(name){
+ const p="export const "+name+" = ";
+ const line=ts.split("\n").find(l=>l.startsWith(p));
+ assert.ok(line && line.endsWith(";"),"Missing exactly authored source "+name);
+ return JSON.parse(line.slice(p.length,-1));
+}
+assert.equal(published("alertmanagerLocalConfigTemplate"),config,
+ "Learner-displayed routing configuration differs from actual Alertmanager input");
+assert.equal(published("alertmanagerLocalRuntimePython"),python,
+ "Learner-displayed Python runner differs from executed actual Alertmanager program");
+const prefix="export const prometheusToAlertmanagerPython = ";
+const publishedLine=forwardingSource.split("\n").find(line=>line.startsWith(prefix));
+assert.ok(publishedLine && publishedLine.endsWith(";"),"Real Prometheus forwarded source missing from learner reading");
+assert.equal(JSON.parse(publishedLine.slice(prefix.length,-1)),forwardingText,
+  "Actual Prometheus-to-Alertmanager runtime differs from copyable learner source");
+for(const required of ["PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_FIRING_PASS",
+ "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS",
+ "PROMETHEUS_FORWARDING_BASELINE_PASS",
+ 'TSA_FORWARD_RULE_VARIANT', "REAL_PROMETHEUS_SCRAPE_PASS"]){
+ assert.ok(forwardingText.includes(required),"Real forwarding coverage missing: "+required);
+}
+for(const marker of [
+ "SCENARIO = os.getenv",
+ "PROMETHEUS_RULE_STILL_FIRING_WHILE_ALERTMANAGER_UNREACHABLE_PASS",
+ "REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS",
+ "REAL_PROMETHEUS_ALERTMANAGER_RECOVERY_PASS",
+ "outage-without-disconnect",
+ "prometheus_notifications_errors_total",
+ "docker","stop","-restarted"
+]) assert.ok(forwardingText.includes(marker),"Exact source missing real outage or recovery mechanism: "+marker);
+assert.ok(lesson.includes("blocks: alertmanagerOutageRecoveryBlocks"),"Focused original-path outage lesson missing");
+assert.ok(lesson.includes("TSA_FORWARD_SCENARIO=alertmanager-outage")
+       && lesson.includes("TSA_FORWARD_SCENARIO=outage-without-disconnect"),
+       "Original recovery practice must require real outage and false-outage negative");
+assert.ok(lesson.includes("blocks: prometheusToAlertmanagerBlocks"),
+ "New source is not wired to original Alertmanager learning path");
+
+for(const required of [
+ 'group_by: [\'service\', \'environment\', \'team\']',
+ 'group_wait: 2s','group_interval: 5s','repeat_interval: 30s',
+ 'team="reliability"','team="security"','alertname="DatabaseDown"',
+ 'alertname="ApiDependencyFailed"','__RECEIVER_PORT__',
+ '127.0.0.1','send_resolved: true'
+])assert.ok(config.includes(required),"Missing source Alertmanager safety contract: "+required);
+assert.ok(!config.includes("pagerduty_configs") &&
+          !config.includes("smtp_smarthost") &&
+          !config.includes("http://0.0.0.0") &&
+          !config.includes("https://"),"Disposable lab accidentally routes externally");
+for(const phrase of [
+ "REAL_ALERTMANAGER_GROUP_PASS",
+ "REAL_ALERTMANAGER_DEDUP_PASS",
+ "REAL_ALERTMANAGER_ROUTE_PASS",
+ "REAL_ALERTMANAGER_FALLBACK_PASS",
+ "REAL_ALERTMANAGER_INHIBIT_PASS",
+ "REAL_ALERTMANAGER_503_PASS",
+ "REAL_ALERTMANAGER_RECOVERY_PASS",
+ "REAL_ALERTMANAGER_RESOLVED_PASS",
+ "REAL_ALERTMANAGER_API_BOUNDARY_ONLY"
+]) assert.ok(python.includes(phrase),"Actual runtime case absent: "+phrase);
+const retryLesson=readFileSync(
+ "packages/runtime-kernel/src/paths/reliability-alertmanager-same-notification-retry.ts","utf8");
+for(const required of [
+ "TSA_AM_RETRY_MODE","transient-503","nonretryable-400","permanent-503",
+ "REAL_ALERTMANAGER_SAME_ALERT_REJECTED_PASS",
+ "REAL_ALERTMANAGER_SAME_ALERT_503_RETRY_PASS",
+ "REAL_ALERTMANAGER_400_UNRECOVERABLE_PASS",
+ "SAME_ALERT_RETRY_NOT_PROVEN",
+ '"fingerprint"', '"startsAt"', '"groupKey"', "api_submissions == 1"
+]){
+ assert.ok(python.includes(required),"Published Alertmanager runtime lacks same-identity retry mechanism: "+required);
+}
+for(const expected of [
+ "blocks: alertmanagerSameNotificationRetryBlocks",
+ "TSA_AM_RETRY_MODE=transient-503",
+ "TSA_AM_RETRY_MODE=nonretryable-400",
+ "TSA_AM_RETRY_MODE=permanent-503",
+ "SAME_ALERT_RETRY_NOT_PROVEN"
+]){
+ assert.ok(lesson.includes(expected),"Original recovery practical/reading lacks same-event retry transfer: "+expected);
+}
+for(const required of ["same-retry-actual-503","same-retry-4xx-case","same-retry-permanent-failure",
+ "fresh", "fingerprint"]){
+ if(required==="fresh") continue;
+ assert.ok(retryLesson.includes(required),"Focused retry lesson is not testable: "+required);
+}
+
+const ambiguousLesson = readFileSync(
+ "packages/runtime-kernel/src/paths/reliability-alertmanager-ambiguous-effect.ts","utf8");
+for(const required of [
+ "ambiguous-503","ambiguous-no-idempotency",
+ "import sqlite3", "CREATE UNIQUE INDEX unique_notification_effect",
+ "INSERT OR IGNORE INTO delivery_effects",
+ "REAL_AMBIGUOUS_503_COMMIT_PASS",
+ "REAL_AMBIGUOUS_RETRY_IDEMPOTENT_EFFECT_PASS",
+ "DUPLICATE_NOTIFICATION_EFFECT_DETECTED",
+ "committed_effects()"
+]){
+ assert.ok(python.includes(required),
+  "Exact published Alertmanager Python missing ambiguous delivery effect guard: "+required);
+}
+for(const required of [
+ "blocks: alertmanagerAmbiguousEffectBlocks",
+ "TSA_AM_RETRY_MODE=ambiguous-503",
+ "TSA_AM_RETRY_MODE=ambiguous-no-idempotency",
+ "DUPLICATE_NOTIFICATION_EFFECT_DETECTED"
+]){
+ assert.ok(lesson.includes(required),
+  "Existing Alertmanager activity path does not demand ambiguous effect proof: "+required);
+}
+for(const required of [
+ "A failed webhook acknowledgment does not mean the receiver did nothing",
+ "CREATE UNIQUE INDEX", "INSERT OR IGNORE",
+ "TSA_AM_RETRY_MODE=ambiguous-503",
+ "TSA_AM_RETRY_MODE=ambiguous-no-idempotency",
+ "external action"
+]){
+ assert.ok(ambiguousLesson.includes(required),
+  "Focused ambiguous failure lesson is missing a durable mechanism: "+required);
+}
+const ids=[
+ "reliability-alertmanager-implementation-001",
+ "reliability-alertmanager-implementation-route-mechanics-reading",
+ "reliability-alertmanager-implementation-live-delivery-reading",
+ "reliability-alertmanager-implementation-same-notification-retry-reading",
+ "reliability-alertmanager-implementation-ambiguous-side-effect-reading",
+ "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+ "reliability-alertmanager-implementation-outage-recovery-reading",
+ "reliability-alertmanager-implementation-002",
+ "reliability-alertmanager-implementation-003",
+ "reliability-alertmanager-implementation-004"
+];
+let previous=-1;
+for(const id of ids){
+ const i=lesson.indexOf('id: "'+id+'"');
+ assert.ok(i>previous,"Original Alertmanager activity IDs changed or focused readings out of order: "+id);
+ previous=i;
+}
+assert.ok(lesson.includes("blocks: alertmanagerRouteFocusedBlocks") &&
+          lesson.includes("blocks: alertmanagerRuntimeFocusedBlocks"),
+ "Real Alertmanager source is not attached to the learner's original path");
+assert.ok(lesson.includes("actual HTTP 503 attempts") &&
+          (lesson.includes("real Prometheus-to-Alertmanager transport") ||
+           lesson.includes("separate real Prometheus-to-Alertmanager source")),
+ "Original practices fail to distinguish real notification from missing transport");
+const mutants=[
+ ["broken-grouping", "group_by: ['service', 'environment', 'team']",
+   "group_by: ['service', 'environment', 'team', 'alertname']"],
+ ["wrong-security-route", 'team="security"', 'team="nobody"'],
+ ["missing-parent-inhibition", 'alertname="DatabaseDown"', 'alertname="NotDatabaseDown"'],
+ ["wrong-reliability-route", 'team="reliability"', 'team="elsewhere"']
+];
+for(const [label,before,after] of mutants){
+ assert.ok(config.includes(before),"Missing real config mutation anchor "+label);
+ assert.notEqual(config.replace(before,after),config,"Mutation does not change source: "+label);
+}
+if(process.argv[2]==="--emit-mutants"){
+ assert.ok(process.argv[3],"An isolated temporary output root is required");
+ for(const [label,before,after] of mutants){
+  const dest=join(process.argv[3],label);
+  mkdirSync(dest,{recursive:true});
+  writeFileSync(join(dest,"alertmanager.yml.template"),config.replace(before,after));
+ }
+ console.log("PASS emitted four wrong-source Alertmanager YAML fixtures for real container rejection");
+}else{
+ console.log("PASS Alertmanager learner YAML + Python exactly match executed files, all original progress IDs preserved, four wrong-source mutants available");
+}

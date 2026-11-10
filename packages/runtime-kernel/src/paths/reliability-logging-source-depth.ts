@@ -42,6 +42,13 @@ export const loggingDepthById: Record<string, LoggingSection[]> = {
   ],
   "correlation-ids": [
     {
+      "heading": "Run the prior Observability HTTP-to-outbox proof, then query emitted events",
+      "paragraphs": [
+        "The preceding Observability correlation-context lesson publishes a full Python 3 localhost HTTP and temporary SQLite outbox/consumer program. Run that exact code before this logging analysis. It prints api_acks=2, committed_outbox=2 and durable_effects=2; one worker log retains the API trace_id while a second worker log deliberately lacks it. Both workers have completed effects. This is the crucial distinction: absence of trace propagation is a failed context contract, not proof of missing business effects.",
+        "Use request_id to select the two events from each request, operation_id to check the independently persisted effect, and trace_id to decide whether a distributed trace context survived to the worker. Do not merge events merely because timestamps are close, do not use the request ID for authorization, and do not claim a real trace was exported into Tempo. The code models event emission in memory; Graylog search is a separate later acceptance gate."
+      ]
+    },
+    {
       "heading": "Context must survive asynchronous boundaries",
       "paragraphs": [
         "A request identifier groups related events only if each component carries the same contextual value. Steward may accept a client-supplied traceparent for standards-compliant tracing but must not treat an arbitrary header as proof of identity or as an authorization token. At the API boundary, create a server-controlled operation ID or validate and normalize accepted context; record it in the outbox record and published message metadata so the consumer sees the same logical operation even when a retry creates a new delivery attempt.",
@@ -107,6 +114,13 @@ export const loggingDepthById: Record<string, LoggingSection[]> = {
     }
   ],
   "privacy-security": [
+    {
+      "heading": "Execute an allowlist against a real synthetic Authorization header",
+      "paragraphs": [
+        "The original Observability correlation_lab.py sends an actual localhost POST with the deliberately fake Authorization header Bearer DO_NOT_LOG_CLASSROOM_TOKEN. Its API event emitter builds only component, event, operation_id, request_id, trace_id and outcome fields; it does not serialize arbitrary headers, bodies or exception strings. Run the full proof and inspect the final secret_absent=True. Then intentionally add the incoming Authorization value to api_event: the source must exit on its allowlist assertion, not silently ship the token.",
+        "Emitted synthetic events are only stored in the program's in-memory array. They have not been transported to or indexed by Graylog. A real verification would require checking the restricted source log and the indexed backend with a synthetic sentinel while also reviewing pipelines, redaction rules and access controls. Never print, commit or use a real credential in a classroom test."
+      ]
+    },
     {
       "heading": "Redaction must happen before centralization",
       "paragraphs": [

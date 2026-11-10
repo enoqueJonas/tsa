@@ -2,6 +2,8 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { metricsDeepSections } from "./reliability-metrics-source-depth";
 import { extraMetricsBlocks } from "./reliability-sli-metrics-worked";
+import { metricsScrapeEvidenceBlocks } from "./reliability-metrics-scrape-evidence";
+import { recordingRulesEngineBlocks } from "./reliability-prometheus-rule-engine-depth";
 
 const prometheus: LearningResource = { title: "Prometheus Documentation", url: "https://prometheus.io/docs/introduction/overview/" };
 const promql: LearningResource = { title: "Prometheus Querying Basics", url: "https://prometheus.io/docs/prometheus/latest/querying/basics/" };
@@ -31,13 +33,51 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         ...extraMetricsBlocks(spec.id),
+        ...(spec.id === "prometheus-architecture" ? [] : metricsScrapeEvidenceBlocks(spec.id)),
         ...(metricsDeepSections[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Question before chart", body: "A metric is valuable when its meaning, labels and aggregation support a concrete reliability decision. A dashboard full of available numbers is not evidence that Steward is observable." },
         { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
     return { id: `metrics-prometheus-grafana-${spec.id}`, title: spec.title, activities: [
         { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
-        { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: spec.practice, deliverables: ["Metric/query/dashboard evidence", "Meaning and label definition", "Operational interpretation"], completionCriteria: ["The signal has defined semantics.", "Labels avoid uncontrolled cardinality.", "The learner can explain what decision the result supports and what it does not prove."] } },
+        ...(spec.id === "prometheus-architecture" ? [{
+            id: "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading",
+            title: "Scrape Health, Missing Series and Stale Metrics",
+            estimatedMinutes: 65,
+            content: {
+                type: "reading" as const,
+                body: "Run a genuine local metrics endpoint and independently distinguish successful scrapes, failed scrapes, stale data and zero traffic before trusting Prometheus or Grafana.",
+                blocks: metricsScrapeEvidenceBlocks(spec.id),
+            },
+        }] : []),
+        ...(spec.id === "recording-rules" ? [{
+            id: "metrics-prometheus-grafana-recording-rules-promtool-reading",
+            title: "Recording Rule Evaluation and Synthetic Alert Tests",
+            estimatedMinutes: 75,
+            content: {
+                type: "reading" as const,
+                body: "Define matched PromQL recording expressions, execute official promtool alert tests and diagnose missing telemetry without claiming live production signals.",
+                blocks: recordingRulesEngineBlocks,
+            },
+        }] : []),
+        { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: [...spec.practice, ...(spec.id === "prometheus-architecture" ? [
+            "Execute the exact preceding scrape_lab.py Python 3 source, not a separate copied test fixture. Record actual HTTP 201, 503, 201 user requests and the successful localhost /metrics exposition with initialized 2xx and 5xx counters.",
+            "Reproduce metrics HTTP 503 while user API and /health stay available, then stale HTTP 200 metrics and source recovery; record the independent observed request count and distinguish modeled up=0, modeled up=1 and UNKNOWN.",
+            "Run changed-case checks by disabling the scrape outage, removing the stale response and dropping a failed request counter increment. Each unsafe change must be detected by an assertion before any production dashboard is trusted.",
+            "State which remaining claims need a real Prometheus target, TSDB/rate and Grafana environment, and do not claim this local client models PromQL.",
+        ] : spec.id === "promql" ? [
+            "Use the same real scrape_lab.py output from Prometheus Architecture; explain zero-traffic 0/0, failed scrape with continued business requests, and stale-but-200 exporter as separate cases.",
+            "In an approved real Prometheus instance, compare /api/v1/targets expected target inventory, up{job=\"steward-api\"}, absent_over_time(up{job=\"steward-api\"}[10m]) and the route-level rate denominator.",
+            "Do not replace missing/empty vectors with zero without checking both collection coverage and valid request population; label real PromQL evaluation UNVERIFIED if not executed.",
+        ] : spec.id === "grafana" ? [
+            "Review the same source program's failed scrape and stale 200 outcomes. List the exact graph/panel states that would incorrectly imply zero errors or healthy telemetry.",
+            "In an approved Grafana dashboard with real Prometheus data, disconnect a disposable target, capture the actual No data/Error/alert state and restore it. If the backend is absent, explicitly record NOT_TESTED.",
+        ] : spec.id === "recording-rules" ? [
+            "From the new focused reading, copy the exact committed steward.rules.yml and steward.test.yml to a disposable directory. Run promtool check rules steward.rules.yml, followed by promtool test rules steward.test.yml; retain the actual real rule-engine output.",
+            "Explain why source 2xx/5xx counters are initialized, rate is applied before summation, job/route/time-window populations match, and no traffic or missing data cannot be converted into a green 0% ratio.",
+            "Break one rule at a time while preserving test expectations: replace the configured-target up==0 alert with up==1; remove the 5xx selector from the numerator; replace absent_over_time with up==0. Show official promtool rejecting each source mutation, then restore the fixtures.",
+            "If real Prometheus is available, verify exact /api/v1/rules and /api/v1/alerts output with controlled traffic. Without it, mark rule-engine synthetic evaluation complete but live target, storage, Alertmanager delivery and learner competence UNVERIFIED.",
+        ] : [])], deliverables: ["Metric/query/dashboard evidence", "Meaning and label definition", "Operational interpretation", ...(["prometheus-architecture","promql","grafana"].includes(spec.id)?["Source-executed scrape failure, no-data or actual live query-evidence boundary"] : []), ...(spec.id === "recording-rules" ? ["Executed official promtool source, unit tests and deliberate wrong-rule rejection"] : [])], completionCriteria: ["The signal has defined semantics.", "Labels avoid uncontrolled cardinality.", "The learner can explain what decision the result supports and what it does not prove.", ...(["prometheus-architecture","promql","grafana"].includes(spec.id)?["Zero observations, missed scrapes and stale successful responses are not silently presented as a healthy 0% error rate."] : []), ...(spec.id === "recording-rules" ? ["Recorded ratio and alert states are checked by real Prometheus rule-engine tests without claiming live ingestion or paging."] : [])] } },
         { id: `metrics-prometheus-grafana-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
 }

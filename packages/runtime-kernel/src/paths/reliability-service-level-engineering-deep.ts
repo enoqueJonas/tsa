@@ -2,6 +2,8 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { sloDeepSections } from "./reliability-slo-source-depth";
 import { extraSliBlocks } from "./reliability-sli-metrics-worked";
+import { serviceLevelLifecycleBlocks } from "./reliability-service-level-lifecycle-evidence";
+import { sloBurnRateEngineBlocks } from "./reliability-slo-burn-engine-depth";
 
 const sreWorkbook: LearningResource = { title: "Google SRE Workbook — Implementing SLOs", url: "https://sre.google/workbook/implementing-slos/" };
 const sreBook: LearningResource = { title: "Google SRE — Service Level Objectives", url: "https://sre.google/sre-book/service-level-objectives/", kind: "reference" };
@@ -24,13 +26,39 @@ function deepLesson(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         ...extraSliBlocks(spec.id),
+        ...serviceLevelLifecycleBlocks(spec.id),
         ...(sloDeepSections[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Measure user-visible reliability", body: "A service objective is useful only when its indicator represents behavior users or dependent systems actually care about and when the target changes engineering decisions." },
         { type: "resources", title: "Reference material", resources: resourcesBySloTopic[spec.id] ?? [sreWorkbook, sreBook] },
     ];
     return { id: `service-level-engineering-${spec.id}`, title: spec.title, activities: [
         { id: `service-level-engineering-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
-        { id: `service-level-engineering-${spec.id}-002`, title: `Engineer: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the Steward capability/risk map and whatever trustworthy evidence already exists. Define the service-level semantics and measurement specification before choosing Prometheus/Grafana instrumentation; later metrics work will operationalize these definitions. Do not invent a target that cannot be measured consistently.", instructions: spec.practice, deliverables: ["Service-level artifact", "Measurement evidence", "Decision/trade-off note"], completionCriteria: ["The indicator and target have explicit semantics.", "The measure reflects service behavior rather than host health alone.", "The learner explains how the result affects an engineering or release decision."] } },
+        ...(spec.id === "windowing" ? [{
+            id: "service-level-engineering-windowing-promtool-burn-rate-reading",
+            title: "Prove Two-Window Error-Budget Burn with Real Prometheus Rules",
+            estimatedMinutes: 75,
+            content: {
+                type: "reading" as const,
+                body: "Derive a request-based 99.9% SLO burn rate, execute official Prometheus 1h/5m rules and falsify noisy or misleading alert policy using changed-case histories.",
+                blocks: sloBurnRateEngineBlocks,
+            },
+        }] : []),
+        { id: `service-level-engineering-${spec.id}-002`, title: `Engineer: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the Steward capability/risk map and whatever trustworthy evidence already exists. Define the service-level semantics and measurement specification before choosing Prometheus/Grafana instrumentation; later metrics work will operationalize these definitions. Do not invent a target that cannot be measured consistently.", instructions: [...spec.practice, ...(spec.id === "slis" ? [
+            "Execute the full Python 3 / SQLite lifecycle cohort program in this reading. Keep the real committed-operation denominator and independently query the effects; capture the status, timely numerator and telemetry coverage lines.",
+            "Change b's consumer completion from t=95 to t=75, predict the new SLI and show the observed result. Restore the code, then demonstrate why an extra HTTP 202 without a database commit must not enlarge the lifecycle denominator.",
+            "Report the actual SQL source/LEFT JOIN and timestamp cutoff that decide whether a committed operation is a timely good event; list which parts are simulated rather than observed Steward behavior.",
+        ] : spec.id === "error-budgets" ? [
+            "Reuse the exact lifecycle cohort from SLIs and independently derive a theoretical 0.4 permitted failure count, two actual failures and 5.00x budget consumption; do not round a fractional budget into a claim that 0.4 of an event physically failed.",
+            "Recalculate for 100 eligible commits, 96 timely effects and a hypothetical 99% SLO. Explain why dividing by HTTP acknowledgments or sampled telemetry is an invalid denominator.",
+        ] : spec.id === "windowing" ? [
+            "Reuse the same SQLite program and show how only b, c and d enter the [20,50) event-time window. Record its 1/3 timely result and explicit low-volume no-page decision.",
+            "Change as_of from 120 to 75: capture the cohort-maturity failure and explain why an operation with a deadline in the future remains PENDING rather than BAD.",
+            "Explain the 3/4 event-stream coverage gap and fail-closed review outcome. State how to distinguish genuinely zero traffic from missing telemetry.",
+            "Execute the immediately preceding exact Prometheus burn-rate rule and unit test YAML with official promtool check rules and promtool test rules. Prove both 1h and 5m ratios equal 0.02 in the sustained 2% request-failure case and that the ticket alert fires.",
+            "Explain independently why a recovered five-minute window does not justify a ticket based on a still-high one-hour ratio, and why a five-minute spike alone is insufficient without a high one-hour average.",
+            "Falsify AND-to-OR, erroneous 2xx+5xx numerator and removed minimum-traffic threshold using wrong-source fixtures against unchanged official promtool expectations. No unavailable vector or zero traffic is a 'healthy' SLO statement.",
+            "Show that deriving 14.4x from 2% of a 30-day budget in one hour assumes reasonably stationary traffic when interpreting a request-count budget; real event-volume variation requires actual numerator and denominator totals.",
+        ] : [])], deliverables: ["Service-level artifact", "Measurement evidence", "Decision/trade-off note", ...(["slis","error-budgets","windowing"].includes(spec.id) ? ["Runnable original-source lifecycle/measurement experiment with negative evidence", ...(spec.id === "windowing" ? ["Official promtool multiwindow burn-rate evaluation and three deliberate wrong-source rejections"] : [])] : [])], completionCriteria: ["The indicator and target have explicit semantics.", "The measure reflects service behavior rather than host health alone.", "The learner explains how the result affects an engineering or release decision.", ...(["slis","error-budgets","windowing"].includes(spec.id) ? ["Source-extracted Python proof and a deliberately changed outcome show the correct event population, deadline and observability limits.", ...(spec.id === "windowing" ? ["Actual official Prometheus rule-engine tests distinguish sustained burn, recovered symptoms, short spikes, low traffic and telemetry gaps."] : [])] : [])] } },
         { id: `service-level-engineering-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
 }

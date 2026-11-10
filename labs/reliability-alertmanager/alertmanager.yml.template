@@ -1,0 +1,38 @@
+# Loopback-only lab: rendered by the runner with a disposable local port.
+# This is not production receiver routing or paging authorization.
+global:
+  resolve_timeout: 30s
+route:
+  receiver: fallback-test-webhook
+  group_by: ['service', 'environment', 'team']
+  group_wait: 2s
+  group_interval: 5s
+  repeat_interval: 30s
+  routes:
+    - matchers:
+        - team="reliability"
+        - severity="ticket"
+      receiver: reliability-test-webhook
+    - matchers:
+        - team="security"
+        - severity="ticket"
+      receiver: security-test-webhook
+receivers:
+  - name: fallback-test-webhook
+    webhook_configs:
+      - url: 'http://127.0.0.1:__RECEIVER_PORT__/fallback'
+        send_resolved: true
+  - name: reliability-test-webhook
+    webhook_configs:
+      - url: 'http://127.0.0.1:__RECEIVER_PORT__/reliability'
+        send_resolved: true
+  - name: security-test-webhook
+    webhook_configs:
+      - url: 'http://127.0.0.1:__RECEIVER_PORT__/security'
+        send_resolved: true
+inhibit_rules:
+  - source_matchers:
+      - alertname="DatabaseDown"
+    target_matchers:
+      - alertname="ApiDependencyFailed"
+    equal: ['service', 'environment', 'team']
