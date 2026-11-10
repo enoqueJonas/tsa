@@ -104,6 +104,10 @@ def main():
     try:
         with tempfile.TemporaryDirectory(prefix="tsa-forwarding-") as d:
             root=Path(d)
+            # Prometheus image runs as an unprivileged user. The temporary
+            # directory is 0700 by default; allow traversal of just this
+            # disposable lab directory. Files remain read-only Docker mounts.
+            os.chmod(root, 0o755)
             am_config=root/"alertmanager.yml"
             am_config.write_text(AM_TEMPLATE.read_text().replace("__RECEIVER_PORT__",str(webhook_port)))
             condition = "== 1" if RULE_VARIANT=="correct" else "== 0"
