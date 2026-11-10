@@ -47,7 +47,7 @@ for(const original of ["-001","-002","-003"]){
 }
 for(const required of [
  "Falsify AND-to-OR","official promtool check rules",
- "no traffic is a 'healthy'","stationary traffic"
+ "zero traffic is a 'healthy'","stationary traffic"
 ])assert.ok(service.includes(required),"Original practical lacks falsifiable burn-rate transfer: "+required);
 const mutations=[
  ["wrong-or-window", s=>s.replace(
