@@ -19,7 +19,7 @@ export const alertmanagerOutageRecoveryBlocks: LessonBlock[] = [
   },
   {
     "type": "paragraph",
-    "text": "Run the exact Python source from the immediately preceding Prometheus-forwarding reading with TSA_FORWARD_SCENARIO=alertmanager-outage. It starts an actual Prometheus v3.13.3 process scraping a localhost gauge and an actual Alertmanager v0.28.1 instance with localhost webhook. After both report ready and the baseline produces no notification, the lab uses Docker stop on ONLY the Alertmanager container. The synthetic metric becomes 1. The real Prometheus /api/v1/alerts must show TSAForwardingProbe state=firing even while the Alertmanager listener is stopped. Prometheus's own prometheus_notifications_errors_total must rise; the receiver must not contain a firing receipt. This disambiguates failed notification transport from failed rule evaluation or a user-service outage."
+    "text": "Run the exact Python source from the immediately preceding Prometheus-forwarding reading with TSA_FORWARD_SCENARIO=alertmanager-outage. It starts an actual Prometheus v3.13.3 process scraping a localhost gauge and an actual Alertmanager v0.28.1 instance with localhost webhook. After both report ready and the baseline produces no notification, the lab uses Docker stop on ONLY the Alertmanager container. The synthetic metric becomes 1. The real Prometheus /api/v1/alerts must show TSAForwardingProbe state=firing even while the Alertmanager listener is stopped. Prometheus's own prometheus_notifications_errors_total and prometheus_notifications_dropped_total must rise; the receiver must not contain a firing receipt. These are queried directly from real Prometheus /metrics, not /api/v1/query: the disposable job does not scrape Prometheus's own internal metrics into its TSDB. A metric being exported does not mean a PromQL query can find it. This disambiguates failed notification transport from failed rule evaluation or a user-service outage."
   },
   {
     "type": "paragraph",
@@ -55,7 +55,7 @@ export const alertmanagerOutageRecoveryBlocks: LessonBlock[] = [
   },
   {
     "type": "paragraph",
-    "text": "Investigate in order: (1) verify current rules via /api/v1/alerts and rule-evaluation health; (2) verify Prometheus target/Alertmanager discovery and prometheus_notifications_errors_total plus prometheus_notifications_dropped_total without equating error, queued and dropped events; (3) query Alertmanager readiness and the active alerts API; (4) examine alertmanager_notifications_failed_total and receiver HTTP status/latency; (5) verify the intended external recipient actually received and acknowledged the incident. An accepted 200 webhook response is still not proof that a human saw or acted on a page."
+    "text": "Investigate in order: (1) verify current rules via /api/v1/alerts and rule-evaluation health; (2) verify Prometheus target/Alertmanager discovery and the self-exposed prometheus_notifications_errors_total plus prometheus_notifications_dropped_total without equating error, queued and dropped events; (3) query Alertmanager readiness and the active alerts API; (4) examine alertmanager_notifications_failed_total and receiver HTTP status/latency; (5) verify the intended external recipient actually received and acknowledged the incident. An accepted 200 webhook response is still not proof that a human saw or acted on a page."
   },
   {
     "type": "paragraph",
