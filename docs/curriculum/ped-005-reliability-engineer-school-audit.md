@@ -240,3 +240,30 @@ The learner must still run a real Prometheus server against an approved target, 
 ### Independent acceptance still outstanding
 
 Real `promtool test rules` on **synthetic samples** can prove correct rule-engine evaluation and distinguish some missing-data states; it does **not** mean any actual Steward metrics, Prometheus target, persistent TSDB, production query coverage, Grafana panel, Alertmanager notification/deduplication, on-call acknowledgement or runbook effectiveness was observed. The source explicitly requires a live restricted test environment for those steps. Uncoached learner teach-back remains OPEN. Keep Reliability issue #327 OPEN; draft PR #408 remains stacked on draft #404 and unmerged.
+
+
+## Actual Alertmanager delivery routing, grouping, inhibition, and 503/recovery — 10 November 2026
+
+The preceding Prometheus recording-rule batch has exact-head **20/20 SUCCESS** for `2fafd6f8e3845405bdffb45163783227102bbfd8` in [CI #42778669823](https://github.com/enoqueJonas/tsa/actions/runs/42778669823), including real `promtool` expression evaluation on synthetic time series. This new Alertmanager batch has **not** inherited that evidence and must independently pass the enlarged 21-job workflow.
+
+### Source gap and teaching split
+
+The pre-existing original Alertmanager reading `reliability-alertmanager-implementation-001` already contained a standard-library localhost HTTP webhook that manually delivered fake `firing`, received 503, and manually sent `resolved`. This genuinely demonstrated only the **receiver** HTTP interface, **not Alertmanager** routing/grouping/inhibition/delivery. Prior source labeling was appropriately explicit. The original practicals `-002`, `-003` and reflection `-004` remained unproven as real running infrastructure.
+
+Two focused readings have now been inserted **after original `-001`, before original `-002`** without renaming or deleting any old activity IDs:
+- `reliability-alertmanager-implementation-route-mechanics-reading`: real routing tree semantics, `group_wait`/ `group_interval` / `repeat_interval`, duplicate suppression, scoped parent/derivative inhibition, safe fallback, and exact source YAML with no remote receiver.
+- `reliability-alertmanager-implementation-live-delivery-reading`: exact source-published Python runner that executes the official pinned Alertmanager **`prom/alertmanager:v0.28.1`** Docker image on Linux, binds a real HTTP receiver to OS-selected `127.0.0.1` port, renders the single committed config template, posts test alerts to the **actual Alertmanager v2 API**, and inspects actual resulting receiver webhooks. It demonstrates a matched group of two alerts becoming one notification, immediate duplicate suppressions, security-team and fallback routes, parent `DatabaseDown` inhibiting related `ApiDependencyFailed`, a genuine receiver 503, fresh notification after receiver recovery, and resolved webhook. Receiver attempts and HTTP-200 accepted deliveries are tracked separately.
+
+The runtime lab source is `scripts/check-reliability-alertmanager-runtime.py`, template `labs/reliability-alertmanager/alertmanager.yml.template`, published **byte-identically** in `reliability-alertmanager-real-runtime.ts`. The group/interval values (2s/5s/30s) and `severity=ticket` are disposable classroom settings, **not production paging policy**.
+
+### Test claims and negative controls
+
+- `scripts/check-reliability-alertmanager-source.mjs` asserts byte-level parity of learner-visible config/Python and committed executed files, preserved original IDs and original paired practice transfer requirements. It generates **four** isolated intentionally wrong configs: split grouping via `alertname`, wrong security matcher, broken parent inhibition, and wrong reliability route.
+- New dedicated GitHub Actions `real-alertmanager-delivery` job runs the **actual** official Alertmanager Docker image, proves all receiver observations against source-published learner Python, and requires each wrong config to fail actual receiver assertions. CI browser traversal checks both focused readings, source Copy, original activity IDs and 390px layout.
+- The original practicals `-002` and `-003` now explicitly demand that real lab and mutated config outcomes before any claim of real Alertmanager operation. Failures of a local receiver (HTTP 503), missing owner route, grouping mistakes and dependency inhibition cannot be declared handled merely from YAML. A resolved notification is observed at the receiver rather than inferred from alert labels.
+
+### Strict remaining operational boundary
+
+This actual Alertmanager runtime lab uses **synthetic alert arrays manually posted via the `/api/v2/alerts` API**, bypassing Prometheus. Therefore it **does not prove** the missing Prometheus rule→Alertmanager forwarding edge, production service discovery, production Alertmanager HA/cluster state, true external email/Slack/PagerDuty receipt, Alertmanager retry of a previously rejected request, end-user acknowledgment, on-call response or unaided learner competence. A successfully delivered **fresh group after recovery** is not proof that an older HTTP 503 was retried or that exactly-once notification semantics exist.
+
+Real deployed Steward/Prometheus→Alertmanager and recipient evidence remains explicitly **UNVERIFIED** under issue #327. PR #408 stays DRAFT/UNMERGED, stacked on draft #404.
