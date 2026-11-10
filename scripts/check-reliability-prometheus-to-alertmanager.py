@@ -19,6 +19,8 @@ PROMETHEUS_IMAGE = "prom/prometheus:v3.13.3"
 ALERTMANAGER_IMAGE = "prom/alertmanager:v0.28.1"
 RULE_VARIANT = os.getenv("TSA_FORWARD_RULE_VARIANT", "correct")
 assert RULE_VARIANT in {"correct", "wrong-condition"}, RULE_VARIANT
+SCENARIO = os.getenv("TSA_FORWARD_SCENARIO", "normal")
+assert SCENARIO in {"normal", "alertmanager-outage", "outage-without-disconnect"}, SCENARIO
 AM_TEMPLATE = Path("labs/reliability-alertmanager/alertmanager.yml.template")
 assert AM_TEMPLATE.exists()
 
@@ -92,6 +94,8 @@ def start_container(cmd):
 def main():
     assert os.name=="posix", "Requires a disposable Linux Docker runner"
     metrics_port, am_port, prom_port, webhook_port = port(), port(), port(), port()
+    am_container_name = "tsa-forward-am-" + str(am_port)
+    paused = False
     assert len({metrics_port,am_port,prom_port,webhook_port})==4
     metrics = ThreadingHTTPServer(("127.0.0.1", metrics_port), MetricSource)
     receiver = ThreadingHTTPServer(("127.0.0.1", webhook_port), Receiver)
@@ -130,6 +134,7 @@ def main():
             )
             children.append(start_container([
                 "docker","run","--rm","--network","host",
+                "--name",am_container_name,
                 "-v",str(am_config)+":/etc/alertmanager.yml:ro",
                 "--entrypoint","/bin/alertmanager",ALERTMANAGER_IMAGE,
                 "--config.file=/etc/alertmanager.yml",
@@ -142,7 +147,8 @@ def main():
                 PROMETHEUS_IMAGE,"--config.file=/etc/tsa/prometheus.yml",
                 "--web.listen-address=127.0.0.1:"+str(prom_port),
                 "--storage.tsdb.path=/tmp/tsa-prometheus",
-                "--storage.tsdb.retention.time=1h"
+                "--storage.tsdb.retention.time=1h",
+                "--rules.alert.resend-delay=5s"
             ]))
             for name,url in [("Alertmanager","http://127.0.0.1:"+str(am_port)+"/-/ready"),
                              ("Prometheus","http://127.0.0.1:"+str(prom_port)+"/-/ready")]:
@@ -183,8 +189,64 @@ def main():
                 "Premature alert before synthetic impact condition: "
                 + json.dumps(baseline_receipts))
             print("PROMETHEUS_FORWARDING_BASELINE_PASS: inactive gauge sent no alert",flush=True)
-            with Source.lock:
-                Source.active=True
+            if SCENARIO in {"alertmanager-outage", "outage-without-disconnect"}:
+                # This branch runs real Prometheus+AM after readiness, but
+                # intentionally makes Alertmanager unreachable as the alert fires.
+                if SCENARIO == "alertmanager-outage":
+                    subprocess.run(["docker","pause",am_container_name],
+                                   check=True,timeout=12,stdout=subprocess.DEVNULL)
+                    paused = True
+                with Source.lock:
+                    Source.active = True
+                alert_api = "http://127.0.0.1:"+str(prom_port)+"/api/v1/alerts"
+                until = time.monotonic() + 24
+                while time.monotonic() < until:
+                    result = json.loads(query(alert_api)[1])
+                    if any(a.get("labels",{}).get("alertname")=="TSAForwardingProbe"
+                           and a.get("state")=="firing"
+                           for a in result.get("data",{}).get("alerts",[])):
+                        break
+                    time.sleep(.3)
+                else:
+                    raise AssertionError("Prometheus itself never evaluated synthetic alert firing")
+                print("PROMETHEUS_RULE_STILL_FIRING_WHILE_ALERTMANAGER_UNREACHABLE_PASS",
+                      flush=True)
+                # This metric is observed from the real Prometheus process.
+                # An inaccessible receiver is NOT a successful notification.
+                errors_query = ("http://127.0.0.1:"+str(prom_port)
+                                +"/api/v1/query?query=prometheus_notifications_errors_total")
+                stop = time.monotonic() + 32
+                while time.monotonic() < stop:
+                    with Source.lock:
+                        early_receipts = [x.copy() for x in Source.receipts]
+                    assert not any("TSAForwardingProbe" in x["alert_names"]
+                                   and x["status"]=="firing" for x in early_receipts), (
+                        "Receiver accepted an alert during an asserted Alertmanager outage: "
+                        +json.dumps(early_receipts))
+                    result = json.loads(query(errors_query)[1])
+                    values=result.get("data",{}).get("result",[])
+                    if any(float(x.get("value",[0,"0"])[1])>0 for x in values):
+                        break
+                    time.sleep(.35)
+                else:
+                    raise AssertionError(
+                        "Expected real Prometheus notification errors during unavailable Alertmanager")
+                print("REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS: firing rule but failed forwarding",
+                      flush=True)
+                if paused:
+                    subprocess.run(["docker","unpause",am_container_name],
+                                   check=True,timeout=12,stdout=subprocess.DEVNULL)
+                    paused = False
+                # Do not assume the rejected alert was buffered or retry
+                # exactly once: prove a fresh actual HTTP delivery after recovery.
+                wait_for("recovered Alertmanager firing webhook",lambda xs:any(
+                    x["path"]=="/reliability" and x["status"]=="firing"
+                    and "TSAForwardingProbe" in x["alert_names"] for x in xs),seconds=65)
+                print("REAL_PROMETHEUS_ALERTMANAGER_RECOVERY_PASS: post-outage receiver accepted firing",
+                      flush=True)
+            else:
+                with Source.lock:
+                    Source.active=True
             received=wait_for("Prometheus-generated firing alert",lambda xs:any(
                 x["path"]=="/reliability" and x["status"]=="firing"
                 and "TSAForwardingProbe" in x["alert_names"] for x in xs))
@@ -198,6 +260,10 @@ def main():
             print("PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS: real resolved delivery",flush=True)
             print("LOCAL_ONLY: real Prometheus/Alertmanager transport, synthetic signal, no Steward/PagerDuty/human acknowledgment",flush=True)
     finally:
+        if paused:
+            subprocess.run(["docker","unpause",am_container_name],
+                           check=False,timeout=12,stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
         for p in children:
             if p.poll() is None:
                 p.terminate()
