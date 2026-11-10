@@ -180,6 +180,11 @@ def run():
   # Use the real lesson's Next action to advance through the gating flow;
   # direct-linking to an unstarted practical can legitimately be redirected.
   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+  # The change is asynchronous; a hidden Loading label is not a navigation
+  # oracle. Require the actual target URL, rather than checking too early.
+  page.wait_for_function("""expected => (
+    new URLSearchParams(location.search).get("activity") === expected
+  )""",arg=choice_practice,timeout=15000)
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   actual_choice=page.evaluate("new URLSearchParams(location.search).get('activity')")
   assert actual_choice==choice_practice,(
@@ -233,6 +238,11 @@ def run():
    page.screenshot(path=str(ART/f"discovery-stakeholder-{index+1}-390.png"),full_page=True)
    page.set_viewport_size({"width":1440,"height":900})
    page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected_next=(stakeholder_steps[index+1][0] if index+1<len(stakeholder_steps)
+                  else "capstone-problem-discovery-stakeholder-discovery-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected_next,timeout=15000)
   final_stakeholder_practice="capstone-problem-discovery-stakeholder-discovery-practice"
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
