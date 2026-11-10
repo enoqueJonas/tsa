@@ -8,6 +8,7 @@ import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirement
 import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNegotiationBlocks } from "./professional-engineer-discovery-constraints";
 import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperimentBlocks } from "./professional-engineer-discovery-ambiguity";
 import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
+import { riskFoundationsBlocks, riskControlsBlocks, riskResidualBlocks } from "./professional-engineer-discovery-risk";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -20,6 +21,7 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isConstraints = id === "capstone-problem-discovery-constraints";
   const isAmbiguity = id === "capstone-problem-discovery-working-with-ambiguity";
   const isQuality = id === "capstone-problem-discovery-quality-attributes";
+  const isRisk = id === "capstone-problem-discovery-risk";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
@@ -27,7 +29,8 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks]
     : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks]
     : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
-    : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks] : undefined;
+    : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks]
+    : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -112,8 +115,22 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Compare correctness, useful availability, privacy, accessibility and operating cost using scenario-specific decisions.",blocks:qualityTradeoffBlocks},
     },
   ] : [];
+  const riskReadings: Activity[] = isRisk ? [
+    {
+      id: `${id}-controls-reading`,
+      title: "Failure Modes, Control Evidence and Idempotent Transitions",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Explain why prevention, detection and recovery are distinct risk controls and execute a narrow exact-source duplicate-transition oracle.",blocks:riskControlsBlocks},
+    },
+    {
+      id: `${id}-residual-decisions-reading`,
+      title: "Residual Risk, Escalation and Defensible Decisions",
+      estimatedMinutes: 70,
+      content: {type:"reading",body:"Evaluate residual exposure, shared failures, authorization limits and decisions that must be blocked or revisited.",blocks:riskResidualBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
@@ -121,8 +138,9 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     ...constraintReadings,
     ...ambiguityReadings,
     ...qualityReadings,
+    ...riskReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -183,6 +201,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Describe two invalid conclusions that a green p95 or HTTP 200 can hide (incomplete cases and incorrect/out-of-date protected results). Write both allowed and forbidden access/transition oracles and specify their independent persisted-state checks.",
           "Compare two technical alternatives with a causal quality trade-off record: lower lookup latency versus stale authorization or status, privacy versus traceable audit, and real operating effort. Show the authoritative status, unknowns, noncompensatory hard gates and a reversible decision trigger.",
           "Inject a change: the data owner prohibits an audit field or the operator capacity is halved. Update impacted quality scenarios, requirements, tests, source authority and architecture options; do not invent real targets or call the classroom fixture deployment approval.",
+        ] : []),
+        ...(isRisk ? [
+          "Write six causal risk/issue entries for a NEW capstone domain: an active incident, a forbidden data or authority boundary, supplier dependency, duplication or state correctness, restoration/operator capacity, and a user-adoption/value harm. Record the affected actors, credible failure path, uncertain event, consequences, source and its confidence, responsible owner and time horizon.",
+          "Distinguish prospective risk from an existing issue, a hazard, a threat and a technical vulnerability. Explain why multiplying ordinal likelihood and impact categories does NOT produce a calibrated expected loss or make a prohibited disclosure tolerable.",
+          "For each material risk, identify specific prevention, detection and recovery methods with independent allowed and forbidden-action oracles; mark any unimplemented, untested or unauthorized mitigation as such rather than claiming residual exposure is low.",
+          "Execute the exact learner-visible Python risk-control program, preserve all nine source classification outputs, three deliveries with exactly one closure, and final marker. In separate disposable copies demonstrate NINE genuine AssertionError failures: skip each of eight classification gates or skip duplicate-event detection.",
+          "Build a risk-control/residual ledger linking source and failure path to mitigation, test evidence, residual owner decision, monitoring trigger, affected requirement and quality scenario IDs. Include one credible shared cause and one proposed mitigation that creates another risk.",
+          "Inject two changes: a mitigation introduces prohibited customer-data exports and a supplier begins reusing event identifiers. Reopen affected tests, risk assessments, permissions and design choices; document a lawful BLOCK, DEFER, ESCALATE_ISSUE or RESEARCH_REQUESTED outcome, not an automatically approved release.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -231,6 +257,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "An incomplete cohort, unauthorized data access, unverified data restore, insufficient sample or missed recovery and latency limit cannot be declared healthy by averaging or because the endpoint returns HTTP 200.",
           "The exact source program and eight unsafe mutations expose false p95, data-loss, access and recovery conclusions without falsely claiming production security, permitted data or a real SLO.",
           "A scenario-specific decision discusses at least two conflicts and includes viable DEFER/NARROW_SCOPE when noncompensatory safety/operational constraints cannot be met; actual learner transfer remains NOT_VALIDATED.",
+        ] : []),
+        ...(isRisk ? [
+          "Each risk record links an affected outcome and credible causal failure path to source type, uncertainty, controls and owner; existing damage is escalated as an issue, not filed only as future risk.",
+          "Risk prioritization distinguishes catastrophic/noncompensatory restrictions from negotiable delay or cost, with no invented numerical probability, authority or genuine acceptance signature.",
+          "Actual Python source and all nine unsafe variants reject false confidence about incidents, unverified origins, forbidden data export, nonimplemented or untested controls, residual approval and duplicate side effects.",
+          "The learner can defend residual and shared-cause decisions, update linked tests and scope, and block unsafe deployment; true independent learner mastery and real professional signoff remain NOT_VALIDATED.",
         ] : [])
       ]
     } }
