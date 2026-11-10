@@ -568,3 +568,70 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Framing failed for unrelated reason: "+why+" "+wrong.stderr);
 }
 console.log("PASS original Problem Framing workflow, source-exact timeline, two added readings and four rejected wrong inferences");
+
+
+// Original Module 2 Requirements: source-exact teaching evidence, not approval
+// or a real security assessment. Five wrong implementations must be caught.
+const requirementsSource=fs.readFileSync(root+"professional-engineer-discovery-requirements.ts","utf8");
+const requirementsPrefix="export const requirementsReviewGatePython = ";
+const requirementsLine=requirementsSource.split("\n").find(line=>line.startsWith(requirementsPrefix));
+assert.ok(requirementsLine?.endsWith(";"),"Missing source-published exact requirements gate");
+const requirementsPython=JSON.parse(requirementsLine.slice(requirementsPrefix.length,-1));
+function requirementsBlocks(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const idx=requirementsSource.indexOf(anchor);
+ assert.ok(idx>=0,"Missing authentic Requirements source "+name);
+ const start=idx+anchor.length;
+ const end=nextName?requirementsSource.indexOf("export const "+nextName+":",start):requirementsSource.length;
+ assert.ok(end>start,"Invalid Requirements source block boundaries "+name);
+ return JSON.parse(requirementsSource.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const requirementDerivation=requirementsBlocks("requirementsDerivationBlocks","requirementsAcceptanceBlocks");
+const requirementAcceptance=requirementsBlocks("requirementsAcceptanceBlocks","requirementsTraceabilityBlocks");
+const requirementTrace=requirementsBlocks("requirementsTraceabilityBlocks",null);
+for(const [name,blocks] of [["derivation",requirementDerivation],["acceptance",requirementAcceptance],["traceability",requirementTrace]]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Requirements "+name+" has too few distinct mechanisms");
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Requirements "+name+" remains abstract");
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=4100,
+  "Requirements "+name+" lacks worked examples and counterexamples");
+ assert.equal(blocks.filter(x=>x.type==="resources").length,1,"No primary reference for Requirements "+name);
+}
+assert.equal(requirementDerivation.filter(x=>x.type==="code").length,0);
+assert.equal(requirementAcceptance.filter(x=>x.type==="code").length,1);
+assert.equal(requirementTrace.filter(x=>x.type==="code").length,0);
+assert.equal(requirementAcceptance.find(x=>x.type==="code").code,requirementsPython,
+ "Actual learner-visible code must match the exact executed Requirements source");
+const originalRequirements=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const token of [
+ 'id === "capstone-problem-discovery-requirements"',
+ "...requirementsDerivationBlocks",
+ "...requirementReadings",
+ "-acceptance-reading",
+ "-traceability-reading",
+ "Run the exact learner-visible Python requirements-review gate",
+ 'reading("capstone-problem-discovery-requirements"'
+])assert.ok(originalRequirements.includes(token),"Original Requirements reading or practice not integrated: "+token);
+const originalPracticeAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(originalRequirements.indexOf("...requirementReadings")<originalRequirements.indexOf(originalPracticeAnchor),
+ "Must read Requirements acceptance and traceability before original practice");
+const requirementsGood=python(requirementsPython);
+assert.equal(requirementsGood.status,0,requirementsGood.stdout+"\n"+requirementsGood.stderr);
+for(const marker of ["claim_only: EVIDENCE_UNVERIFIED","no_owner: OWNER_UNCONFIRMED",
+ "vague_quality: UNTESTABLE","no_denial_test: UNSAFE_NEGATIVE_PATH",
+ "documented: REVIEWABLE_NOT_APPROVED","AUTHORIZATION_ALLOWED_AND_DENIED",
+ "REQUIREMENT_REVIEW_NOT_APPROVAL","REQUIREMENTS_EVIDENCE_ORACLE_PASS"]){
+ assert.ok(requirementsGood.stdout.includes(marker),"Missing exact Requirements learning trace: "+marker);
+}
+for(const [before,after,why] of [
+ ['if req.origin != "DOCUMENTED" or not req.source_reference:','if False:',"claimed evidence promoted"],
+ ["if not req.authority_verified:","if False:","unconfirmed owner ignored"],
+ ["if not req.measurable_oracle or not req.test_reference:","if False:","missing measurable oracle ignored"],
+ ["if not req.denial_oracle:","if False:","unauthorized negative path ignored"],
+ ["return requester == record_owner","return True","cross-owner disclosure permitted"]
+]){
+ assert.ok(requirementsPython.includes(before),"Mutation target missing "+why);
+ const wrong=python(requirementsPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"Wrong requirement behavior passed: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for "+why+": "+wrong.stderr);
+}
+console.log("PASS original Requirements derivation, acceptance and traceability, exact Python and five rejected unsafe mutations");
