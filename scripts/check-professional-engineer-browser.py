@@ -726,6 +726,99 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==risk_original_practice
   print("PASS original Risk -> controls/duplicate-event evidence -> residual decisions -> original practice; 390px, copyable code, Next, reload",flush=True)
+  # Success Measures: ORIGINAL reading -> eligible cohort/source-exact gate
+  # -> claim-evidence/causality -> ORIGINAL practice, with real Next/reentry.
+  # Synthetic prerequisite progress is navigation testing, not user mastery.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+    "capstone-problem-discovery-requirements-001",
+    "capstone-problem-discovery-requirements-acceptance-reading",
+    "capstone-problem-discovery-requirements-traceability-reading",
+    "capstone-problem-discovery-requirements-practice",
+    "capstone-problem-discovery-constraints-001",
+    "capstone-problem-discovery-constraints-feasibility-reading",
+    "capstone-problem-discovery-constraints-conflict-revision-reading",
+    "capstone-problem-discovery-constraints-practice",
+    "capstone-problem-discovery-working-with-ambiguity-001",
+    "capstone-problem-discovery-working-with-ambiguity-sensitivity-reading",
+    "capstone-problem-discovery-working-with-ambiguity-experiment-design-reading",
+    "capstone-problem-discovery-working-with-ambiguity-practice",
+    "capstone-problem-discovery-quality-attributes-001",
+    "capstone-problem-discovery-quality-attributes-measurement-reading",
+    "capstone-problem-discovery-quality-attributes-tradeoffs-reading",
+    "capstone-problem-discovery-quality-attributes-practice",
+    "capstone-problem-discovery-risk-001",
+    "capstone-problem-discovery-risk-controls-reading",
+    "capstone-problem-discovery-risk-residual-decisions-reading",
+    "capstone-problem-discovery-risk-practice",
+  ])
+  success_steps=(
+    ("capstone-problem-discovery-success-measures-and-evidence-001",
+     ("Distinguish outputs, activities, outcomes and unintended effects",
+      "Define one measurable outcome as a contract",
+      "Use balancing measures so improvement cannot mask harm")),
+    ("capstone-problem-discovery-success-measures-and-evidence-cohort-bias-reading",
+     ("Fix the eligible cohort before looking at favorable outcomes",
+      "Censoring, selection and case-mix affect every comparison",
+      "SUCCESS_EVIDENCE_COHORT_GATES_PASS")),
+    ("capstone-problem-discovery-success-measures-and-evidence-claims-evaluation-reading",
+     ("Build a hierarchy from claim to admissible evidence",
+      "Design collection that protects people and data integrity",
+      "Present an evidence-backed claim without overstating it")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":success_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,markers) in enumerate(success_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Success original lesson sequence wrong: {actual} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=3500,f"Success authored reading remains thin: {activity} {len(rendered)}"
+   for marker in markers:
+    assert marker in rendered,f"Missing source-derived Success teaching {activity}: {marker}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Success Python not copyable"
+    assert main.locator("figure pre").count()>0,"Success exact Python source not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Success Measures has 390px overflow "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-success-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected=(success_steps[index+1][0] if index+1<len(success_steps)
+             else "capstone-problem-discovery-success-measures-and-evidence-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected,timeout=15000)
+  success_original_practice="capstone-problem-discovery-success-measures-and-evidence-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==success_original_practice
+  practice_text=page.locator("main").last.inner_text()
+  for phrase in ("TEN wrong-source variants",
+                 "primary user outcome",
+                 "two balancing measures",
+                 "more difficult case mix"):
+   assert phrase in practice_text,"Original Success practical missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==success_original_practice
+  print("PASS original Success -> cohorts/denominators -> claim-evidence -> original practice; 390px, Python copy, real Next, reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
