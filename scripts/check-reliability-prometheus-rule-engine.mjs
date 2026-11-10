@@ -22,7 +22,7 @@ for(const x of ["status_class=\"5xx\"","sum by (route) (rate(","for: 2m","absent
 assert.ok(!rules.includes("or vector(0)"),"Missing observations must not become green zero");
 assert.ok(metrics.includes("metrics-prometheus-grafana-recording-rules-promtool-reading") && metrics.includes("blocks: recordingRulesEngineBlocks"),"Focused recording lesson is not rendered");
 assert.ok(metrics.includes("metrics-prometheus-grafana-"+String.fromCharCode(36)+"{spec.id}-001") && metrics.includes("metrics-prometheus-grafana-"+String.fromCharCode(36)+"{spec.id}-002") && metrics.includes("metrics-prometheus-grafana-"+String.fromCharCode(36)+"{spec.id}-003"),"Original progress IDs lost");
-assert.ok(alerts.includes("...actionableAlertEngineBlocks") && alerts.includes("LIVE_ALERT_DELIVERY_UNVERIFIED"),"Original actionable-alert source not wired or misclaims notification");
+assert.ok(alerts.includes('spec.id === "actionable-alerts" ? actionableAlertEngineBlocks : []') && alerts.includes("LIVE_ALERT_DELIVERY_UNVERIFIED"),"Original actionable-alert source not wired or misclaims notification");
 for(const t of ["pending","firing","up=0","absent_over_time"])assert.ok(alertSource.toLowerCase().includes(t.toLowerCase()),"Missing mechanism: "+t);
 for(const n of ["healthy_then_sustained_user_errors","initialized_zero_counters_no_traffic","configured_target_scrape_fails","brief_scrape_failure_does_not_fire","entirely_absent_expected_target"]) assert.ok(tests.includes("name: "+n),"Absent promtool case: "+n);
 const mutants=[
