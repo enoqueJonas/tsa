@@ -5,6 +5,7 @@ import { stakeholderMappingBlocks, stakeholderInterviewBlocks, stakeholderTriang
 import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
 import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemFramingBoundaryBlocks } from "./professional-engineer-discovery-framing";
 import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirementsTraceabilityBlocks } from "./professional-engineer-discovery-requirements";
+import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNegotiationBlocks } from "./professional-engineer-discovery-constraints";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -14,11 +15,13 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isStakeholder = id === "capstone-problem-discovery-stakeholder-discovery";
   const isFraming = id === "capstone-problem-discovery-problem-framing";
   const isRequirements = id === "capstone-problem-discovery-requirements";
+  const isConstraints = id === "capstone-problem-discovery-constraints";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
     : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks]
-    : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks] : undefined;
+    : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks]
+    : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -61,14 +64,29 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Trace each requirement to evidence, authority, acceptance and reversible decisions.",blocks:requirementsTraceabilityBlocks},
     },
   ] : [];
+  const constraintReadings: Activity[] = isConstraints ? [
+    {
+      id: `${id}-feasibility-reading`,
+      title: "Feasibility Gates Against Verified Constraints",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Check constraint provenance and compare feasible architecture candidates without trading away mandatory boundaries.",blocks:constraintsFeasibilityBlocks},
+    },
+    {
+      id: `${id}-conflict-revision-reading`,
+      title: "Conflicting Constraints, Negotiation and Decision Reversal",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Recognize impossible constraint combinations, identify decision owners and re-evaluate when evidence or capacity changes.",blocks:constraintsNegotiationBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
     ...requirementReadings,
+    ...constraintReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -105,6 +123,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Resolve a fictional or permitted real conflict between data visibility and unauthorized disclosure, documenting decision authority, dissent, alternative options, risk and a reversible decision log. Do not claim fictional interviews or simulated policy documents are real organizational approval.",
           "Change one upstream source or permission and show which requirement IDs, test IDs, decision status and quality/risk assumptions must be suspended or revised; record a meaningful rejection or DEFER outcome rather than making every candidate APPROVED.",
           "Explain which proposed behaviors are still unproven requirements and why source completeness, authorization, a passing test and actual stakeholder approval are different acceptance gates.",
+        ] : []),
+        ...(isConstraints ? [
+          "Write an eight-row constraints register for a genuinely new capstone domain, identifying each source/version, owner, applicability scope, evidence status, binding or negotiable nature, verification action and change trigger. A remembered legal claim must remain UNVERIFIED_SOURCE until a competent source is checked.",
+          "Distinguish hard contractual/data boundaries, measured operations capacity, a budget cap, protocol compatibility and implementation preferences. State which restrictions constrain an interface and which would improperly impose one technology on every component.",
+          "Run the exact published Python 3 constraints-classification and feasibility fixture. Preserve its five evidence classifications, five candidate outcomes and final marker; in separate copies break eight distinct evidence or feasibility gates and explain each rejected assertion.",
+          "Evaluate three different candidate architectures against binding constraints with a reason for every rejection or provisional acceptance. Include all violated gates, uncertainty ranges, operational costs and a choice to defer or narrow scope rather than invent approval.",
+          "Analyze a conflict between two genuinely binding constraints (e.g. a data-export prohibition and an external supplier exchange): propose authorized ways to change the agreement, reduce scope or find a permitted interface; never suppress the privacy gate for a feature score.",
+          "Inject two change events: revoke a previously claimed data-use permission and halve available operations capacity. Re-evaluate the feasibility matrix, affected requirement/test IDs, risk and architecture decision, with decision owner and a reversible audit log; mark real-source verification NOT_TESTED if absent.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -135,6 +161,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Every sensitive capability has positive and forbidden-action acceptance tests, and cannot be declared complete solely from an HTTP status or a Boolean fixture.",
           "The executed negative Python mutations demonstrate independent detection of missing evidence, approval, oracle and authorization; REVIEWABLE is never misreported as business approval.",
           "A source/policy change causes a visible versioned trace and correct DEFER/re-review behavior, with actual research and approvals explicitly marked NOT_TESTED unless established.",
+        ] : []),
+        ...(isConstraints ? [
+          "The register differentiates a documented applicable obligation from a preference, assumption, expired source or a binding rule governing a different scope.",
+          "No score, savings or architecture fashion can override a noncompensatory consent, data or safety restriction; an infeasible set produces a defer/narrow/renegotiate recommendation.",
+          "The source-exact Python output and eight failed unsafe mutants demonstrate source/authority/applicability/negotiability and export/budget/staffing/protocol controls without falsely claiming real contract validity.",
+          "A reviewer can trace every changed constraint to reopened design, requirements, quality, test and operational decisions, with actual legal/contractual or stakeholder review explicitly NOT_VALIDATED unless performed.",
         ] : [])
       ]
     } }
