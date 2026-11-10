@@ -509,3 +509,61 @@ for(const [before,why] of [
  assert.match(bad.stderr,/AssertionError/,"Wrong failure reason for stakeholder "+why+": "+bad.stderr);
 }
 console.log("PASS original stakeholder source, three navigable readings, exact Python and four unsafe mutants rejected");
+
+
+// Original Problem Framing: workflow and measurement before causal/scope claims.
+const framingSource=fs.readFileSync(root+"professional-engineer-discovery-framing.ts","utf8");
+const framingPrefix="export const problemFramingTimelinePython = ";
+const framingLine=framingSource.split("\n").find(line=>line.startsWith(framingPrefix));
+assert.ok(framingLine?.endsWith(";"),"Missing original Problem Framing executable source");
+const framingPython=JSON.parse(framingLine.slice(framingPrefix.length,-1));
+function framingBlocks(name,nextName){
+ const prefix="export const "+name+": LessonBlock[] = ";
+ const at=framingSource.indexOf(prefix);
+ assert.ok(at>=0,"Missing source-authored framing "+name);
+ const start=at+prefix.length;
+ const end=nextName?framingSource.indexOf(";\nexport const "+nextName+":",start):framingSource.lastIndexOf(";\n");
+ assert.ok(end>start,"Malformed framing source section "+name);
+ return JSON.parse(framingSource.slice(start,end));
+}
+const frameWorkflow=framingBlocks("problemFramingWorkflowBlocks","problemFramingMeasurementBlocks");
+const frameMeasured=framingBlocks("problemFramingMeasurementBlocks","problemFramingBoundaryBlocks");
+const frameBoundary=framingBlocks("problemFramingBoundaryBlocks",null);
+for(const [name,blocks,minimum] of [["workflow",frameWorkflow,3500],["measurement",frameMeasured,3000],["boundary",frameBoundary,3800]]){
+ assert.ok(blocks.filter(b=>b.type==="heading").length>=3,"Thin framing mechanisms "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").length>=6,"Thin framing prose "+name);
+ assert.ok(blocks.filter(b=>b.type==="resources").length===1,"Missing targeted reading resource "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n").length>=minimum,
+  "Insufficient explicit subject explanation "+name);
+}
+assert.equal(frameWorkflow.filter(b=>b.type==="code").length,0);
+assert.equal(frameMeasured.filter(b=>b.type==="code").length,1);
+assert.equal(frameBoundary.filter(b=>b.type==="code").length,0);
+assert.equal(frameMeasured.find(b=>b.type==="code").code,framingPython,"Published Python differs from test program");
+const frameOriginal=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+assert.ok(frameOriginal.includes('id === "capstone-problem-discovery-problem-framing"'),"Original framing ID not recognized");
+for(const exact of ["...problemFramingWorkflowBlocks","...framingReadings","-measurement-reading","-causality-boundary-reading",
+ "Run the exact learner-published Python nine-case timeline experiment",
+ 'reading("capstone-problem-discovery-problem-framing"']){
+ assert.ok(frameOriginal.includes(exact),"Missing original framing lesson/practice wiring "+exact);
+}
+assert.ok(frameOriginal.indexOf("...framingReadings")<frameOriginal.indexOf("-practice"),"Frame source teaching must precede original practical");
+const goodFrame=python(framingPython);
+assert.equal(goodFrame.status,0,goodFrame.stdout+"\n"+goodFrame.stderr);
+for(const marker of ["COHORT complete=6/9 unverified=3/9","STAGES supplier_gt50=3/6 document_gt30=2/6",
+"W03 document=40 supplier=10 total=60","W09 status_claim=RESOLVED evidence=INCOMPLETE",
+"X01 INVALID_CHRONOLOGY","CAUSE_NOT_IDENTIFIED","PROBLEM_FRAMING_TIMELINE_PROOF_PASS"]){
+ assert.ok(goodFrame.stdout.includes(marker),"Missing actual framing trace "+marker);
+}
+for(const [before,after,why] of [
+ ["supplier_wait = case.supplier_answered - case.documents_ready","supplier_wait = case.supplier_answered - case.opened","wrong supplier stage"],
+ ['return ("INCOMPLETE", None)','return ("COMPLETE", (0, 0, 0))',"missing cases treated as zero-success"],
+ ["if observed != sorted(observed):","if False:","invalid chronology accepted"],
+ ["long_document = sum(m[0] > 30 for m in complete)","long_document = sum(m[2] > 30 for m in complete)","total time passed as document stage"]
+]){
+ assert.ok(framingPython.includes(before),"Lost meaningful mutation "+why);
+ const wrong=python(framingPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"False framing inference was accepted: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Framing failed for unrelated reason: "+why+" "+wrong.stderr);
+}
+console.log("PASS original Problem Framing workflow, source-exact timeline, two added readings and four rejected wrong inferences");
