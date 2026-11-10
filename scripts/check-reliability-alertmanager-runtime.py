@@ -221,10 +221,9 @@ def perform_same_notification_retry(base):
                 and x["identities"][0]["labels"].get("proof_case")
                 == "same-rejected-alert"]
 
-    await_event(lambda e: any(x["response"] == response_code
-                             and x["services"] == ["steward-retry"]
-                             and x["names"] == ["SyntheticDeliveryFailure"]
-                             for x in e),
+    await_event(lambda e: e["response"] == response_code
+                and e["services"] == ["steward-retry"]
+                and e["names"] == ["SyntheticDeliveryFailure"],
                 "first actual receiver rejection", timeout=16)
     rejected = receipt_of(response_code)
     assert len(rejected) >= 1, "Expected at least one real 503/400 receiver rejection"
