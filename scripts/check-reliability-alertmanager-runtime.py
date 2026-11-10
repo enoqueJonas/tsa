@@ -7,6 +7,7 @@ import datetime as dt
 import json
 import os
 import socket
+import sqlite3
 import subprocess
 import tempfile
 import threading
@@ -18,7 +19,7 @@ from urllib.request import Request, urlopen
 
 IMAGE = "prom/alertmanager:v0.28.1"
 RETRY_MODE = os.getenv("TSA_AM_RETRY_MODE", "baseline")
-assert RETRY_MODE in {"baseline", "transient-503", "permanent-503", "nonretryable-400"}, RETRY_MODE
+assert RETRY_MODE in {"baseline", "transient-503", "permanent-503", "nonretryable-400", "ambiguous-503", "ambiguous-no-idempotency"}, RETRY_MODE
 TEMPLATE = Path(os.environ.get("TSA_ALERTMANAGER_CONFIG",
                                "labs/reliability-alertmanager/alertmanager.yml.template"))
 assert "__RECEIVER_PORT__" in TEMPLATE.read_text(encoding="utf8")
@@ -32,6 +33,7 @@ class State:
     attempts = []
     fail_receiver = False
     retry_http_status = 503
+    effect_db = None
     lock = threading.Lock()
 
 class Receiver(BaseHTTPRequestHandler):
@@ -56,6 +58,22 @@ class Receiver(BaseHTTPRequestHandler):
             should_fail = (State.fail_receiver and self.path == "/reliability"
                            and "SyntheticDeliveryFailure" in names)
             response_code = State.retry_http_status if should_fail else 200
+            # Durable side effect can COMMIT before HTTP 503 is returned.
+            # Retrying this identical webhook must not commit it twice.
+            if State.effect_db is not None and self.path == "/reliability" and (
+                names == ["SyntheticDeliveryFailure"]
+            ):
+                identity = json.dumps({
+                    "groupKey": payload.get("groupKey"),
+                    "identities": identities,
+                    "status": payload["status"]
+                }, sort_keys=True, separators=(",", ":"))
+                with sqlite3.connect(State.effect_db) as db:
+                    operation = ("INSERT INTO delivery_effects(identity, effect) VALUES (?,?)"
+                                 if RETRY_MODE == "ambiguous-no-idempotency"
+                                 else "INSERT OR IGNORE INTO delivery_effects(identity, effect) VALUES (?,?)")
+                    db.execute(operation, (identity, "synthetic-runbook-dispatch"))
+                    db.commit()
             State.attempts.append({
                 "route": self.path, "status": payload["status"],
                 "names": names, "services": services,
@@ -192,6 +210,13 @@ def perform(base):
     print("REAL_ALERTMANAGER_API_BOUNDARY_ONLY: no Prometheus-to-Alertmanager transport, "
           "production receiver, external pager or human acknowledgment")
 
+def committed_effects():
+    assert State.effect_db is not None
+    # Separate SQLite connection reads the real committed on-disk effect.
+    with sqlite3.connect(State.effect_db) as db:
+        return db.execute("SELECT identity, effect FROM delivery_effects ORDER BY id").fetchall()
+
+
 def perform_same_notification_retry(base):
     """One alert submission; observe same webhook notification across 503->200.
 
@@ -235,6 +260,14 @@ def perform_same_notification_retry(base):
     print("REAL_ALERTMANAGER_SAME_ALERT_REJECTED_PASS: first HTTP "
           + str(response_code) + ", one API submission, no accepted webhook",
           flush=True)
+    ambiguous = RETRY_MODE in {"ambiguous-503", "ambiguous-no-idempotency"}
+    if ambiguous:
+        first_effects = committed_effects()
+        assert len(first_effects) == 1, (
+            "AMBIGUOUS_COMMIT_BEFORE_503_MISSING: rejected receiver POST "
+            "did not persist exactly one genuine SQLite side effect")
+        print("REAL_AMBIGUOUS_503_COMMIT_PASS: SQLite side effect committed "
+              "before webhook returned HTTP 503; API submissions=1", flush=True)
 
     with State.lock:
         # In permanent 503 mutant do NOT recover: the unchanged positive
@@ -281,6 +314,17 @@ def perform_same_notification_retry(base):
           "one API submit, first webhook 503, then 200 with matching "
           "fingerprint, labels, startsAt, groupKey, firing state",
           flush=True)
+    if ambiguous:
+        later_effects = committed_effects()
+        if len(later_effects) != 1 or later_effects[0] != first_effects[0]:
+            raise AssertionError("DUPLICATE_NOTIFICATION_EFFECT_DETECTED: "
+                                 "same real webhook retried, but SQLite "
+                                 "committed " + str(len(later_effects))
+                                 + " side effects; not exactly-once effect")
+        print("REAL_AMBIGUOUS_RETRY_IDEMPOTENT_EFFECT_PASS: "
+              "two real receiver attempts, one durable SQLite effect, "
+              "same groupKey/fingerprint and only one producer POST",
+              flush=True)
     print("SAME_ALERT_RETRY_LOCAL_ONLY: no durable queue guarantee, "
           "external pager, Prometheus source or human ACK", flush=True)
 
@@ -296,6 +340,16 @@ def main():
     container = None
     try:
         with tempfile.TemporaryDirectory(prefix="tsa-am-real-") as scratch:
+            if RETRY_MODE in {"ambiguous-503", "ambiguous-no-idempotency"}:
+                State.effect_db = str(Path(scratch) / "webhook_effects.sqlite3")
+                with sqlite3.connect(State.effect_db) as db:
+                    db.execute("CREATE TABLE delivery_effects ("
+                               "id INTEGER PRIMARY KEY, identity TEXT NOT NULL, "
+                               "effect TEXT NOT NULL)")
+                    if RETRY_MODE == "ambiguous-503":
+                        db.execute("CREATE UNIQUE INDEX unique_notification_effect "
+                                   "ON delivery_effects(identity)")
+                    db.commit()
             config = Path(scratch) / "alertmanager.yml"
             config_text = TEMPLATE.read_text(encoding="utf8").replace(
                 "__RECEIVER_PORT__", str(receiver_port))
