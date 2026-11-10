@@ -286,7 +286,7 @@ def inspect_school(page):
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
-                    "metrics-prometheus-grafana-prometheus-architecture-001": "Exercise a genuine metrics endpoint before choosing Prometheus",
+                    "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading": "Exercise a genuine metrics endpoint before choosing Prometheus",
                     "metrics-prometheus-grafana-promql-001": "A green or empty query is a hypothesis until you compare its source data",
                     "metrics-prometheus-grafana-grafana-001": "Use an explicit no-data state instead of decorating telemetry gaps green",
                     "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
@@ -449,6 +449,7 @@ def inspect_school(page):
                 page.set_viewport_size({"width": 1440, "height": 900})
             if SCHOOL == "reliability-engineer" and activity_id in {
                 "metrics-prometheus-grafana-prometheus-architecture-001",
+                "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading",
                 "metrics-prometheus-grafana-prometheus-architecture-002",
                 "metrics-prometheus-grafana-promql-001",
                 "metrics-prometheus-grafana-promql-002",
@@ -456,8 +457,12 @@ def inspect_school(page):
                 "metrics-prometheus-grafana-grafana-002",
             }:
                 if activity_id == "metrics-prometheus-grafana-prometheus-architecture-001":
+                    assert "Prometheus collects time-series data primarily by scraping" in text, (
+                        "Original Prometheus fundamentals reading was lost in lesson split"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading":
                     assert content.get_by_role("button", name="Copy").count() >= 1, (
-                        "Original Prometheus Architecture reading has no copyable source"
+                        "Focused Prometheus failure-reading source is not copyable"
                     )
                     assert "ThreadingHTTPServer" in text and "http_requests_total" in text, (
                         "Original Prometheus reading does not expose actual local metrics"
