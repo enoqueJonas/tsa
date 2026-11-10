@@ -32,13 +32,23 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         ...extraMetricsBlocks(spec.id),
-        ...metricsScrapeEvidenceBlocks(spec.id),
+        ...(spec.id === "prometheus-architecture" ? [] : metricsScrapeEvidenceBlocks(spec.id)),
         ...(metricsDeepSections[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Question before chart", body: "A metric is valuable when its meaning, labels and aggregation support a concrete reliability decision. A dashboard full of available numbers is not evidence that Steward is observable." },
         { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
     return { id: `metrics-prometheus-grafana-${spec.id}`, title: spec.title, activities: [
         { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
+        ...(spec.id === "prometheus-architecture" ? [{
+            id: "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading",
+            title: "Scrape Health, Missing Series and Stale Metrics",
+            estimatedMinutes: 65,
+            content: {
+                type: "reading" as const,
+                body: "Run a genuine local metrics endpoint and independently distinguish successful scrapes, failed scrapes, stale data and zero traffic before trusting Prometheus or Grafana.",
+                blocks: metricsScrapeEvidenceBlocks(spec.id),
+            },
+        }] : []),
         { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: [...spec.practice, ...(spec.id === "prometheus-architecture" ? [
             "Execute the exact preceding scrape_lab.py Python 3 source, not a separate copied test fixture. Record actual HTTP 201, 503, 201 user requests and the successful localhost /metrics exposition with initialized 2xx and 5xx counters.",
             "Reproduce metrics HTTP 503 while user API and /health stay available, then stale HTTP 200 metrics and source recovery; record the independent observed request count and distinguish modeled up=0, modeled up=1 and UNKNOWN.",
