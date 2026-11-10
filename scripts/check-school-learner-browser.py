@@ -286,6 +286,9 @@ def inspect_school(page):
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
+                    "metrics-prometheus-grafana-prometheus-architecture-001": "Exercise a genuine metrics endpoint before choosing Prometheus",
+                    "metrics-prometheus-grafana-promql-001": "A green or empty query is a hypothesis until you compare its source data",
+                    "metrics-prometheus-grafana-grafana-001": "Use an explicit no-data state instead of decorating telemetry gaps green",
                     "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
@@ -308,6 +311,9 @@ def inspect_school(page):
                         # These lessons explicitly reuse executable source published
                         # in the preceding original Observability correlation lesson.
                         "observability-instrumentation-001",
+                        # PromQL reuses source from Architecture; Grafana is
+                        # concept/incident reasoning without duplicate Python.
+                        "metrics-prometheus-grafana-grafana-001",
                         "logging-correlation-ids-001",
                         "logging-privacy-security-001",
                         "reliability-observability-stack-integration-000",
@@ -440,6 +446,52 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Correlation/Logging activity overflows at 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "metrics-prometheus-grafana-prometheus-architecture-001",
+                "metrics-prometheus-grafana-prometheus-architecture-002",
+                "metrics-prometheus-grafana-promql-001",
+                "metrics-prometheus-grafana-promql-002",
+                "metrics-prometheus-grafana-grafana-001",
+                "metrics-prometheus-grafana-grafana-002",
+            }:
+                if activity_id == "metrics-prometheus-grafana-prometheus-architecture-001":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original Prometheus Architecture reading has no copyable source"
+                    )
+                    assert "ThreadingHTTPServer" in text and "http_requests_total" in text, (
+                        "Original Prometheus reading does not expose actual local metrics"
+                    )
+                    assert "stale_exporter:" in text and "LOCAL_SCRAPE_ONLY" in text, (
+                        "Original Prometheus source lost missing-telemetry provenance"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-prometheus-architecture-002":
+                    assert "Reproduce metrics HTTP 503" in text and "stale HTTP 200" in text, (
+                        "Original Prometheus practical lacks failed scrape and stale data"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-promql-001":
+                    assert "absent_over_time" in text and "missing series" in text, (
+                        "Original PromQL lesson lost no-target/no-data mechanics"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-promql-002":
+                    assert "If not executed" not in text or "UNVERIFIED" in text, (
+                        "Original PromQL practice must not imply unperformed live queries"
+                    )
+                    assert "do not replace missing" in text.lower(), (
+                        "Original PromQL practical masks missing measurements as zero"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-grafana-001":
+                    assert "No data, Error or alerting NoData" in text, (
+                        "Original Grafana reading lacks explicit failure state"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-grafana-002":
+                    assert "If the backend is absent" in text and "NOT_TESTED" in text, (
+                        "Original Grafana practical wrongly presumes real infrastructure"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Metrics source/practical overflows mobile viewport: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
