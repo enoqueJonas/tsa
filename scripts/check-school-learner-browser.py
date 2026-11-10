@@ -296,6 +296,7 @@ def inspect_school(page):
                     "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
                     "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
                     "reliability-alertmanager-implementation-same-notification-retry-reading": "A new successful alert is not a retry of a failed one",
+                    "reliability-alertmanager-implementation-ambiguous-side-effect-reading": "A failed webhook acknowledgment does not mean the receiver did nothing",
                     "reliability-alertmanager-implementation-prometheus-forwarding-reading": "Close the missing transport link with a real Prometheus rule",
                     "reliability-alertmanager-implementation-outage-recovery-reading": "A firing Prometheus rule does not imply a delivered page",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
@@ -557,6 +558,7 @@ def inspect_school(page):
                 "reliability-alertmanager-implementation-route-mechanics-reading",
                 "reliability-alertmanager-implementation-live-delivery-reading",
                 "reliability-alertmanager-implementation-same-notification-retry-reading",
+                "reliability-alertmanager-implementation-ambiguous-side-effect-reading",
                 "reliability-alertmanager-implementation-002",
                 "reliability-alertmanager-implementation-003",
             }:
@@ -591,6 +593,19 @@ def inspect_school(page):
                     assert "fingerprint" in text and "groupKey" in text and (
                         "startsAt" in text
                     ), "Original retry proof lacks stable delivery identity"
+                elif activity_id == "reliability-alertmanager-implementation-ambiguous-side-effect-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Source-published SQLite and two real ambiguous retry commands are not copyable"
+                    )
+                    assert "CREATE UNIQUE INDEX" in text and (
+                        "INSERT OR IGNORE" in text
+                    ), "Original path lost actual database idempotency mechanism"
+                    assert "TSA_AM_RETRY_MODE=ambiguous-503" in text and (
+                        "TSA_AM_RETRY_MODE=ambiguous-no-idempotency" in text
+                    ), "Positive and duplicate-effect changed-case are not in focused reading"
+                    assert "DUPLICATE_NOTIFICATION_EFFECT_DETECTED" in text, (
+                        "Reading does not require independent persisted-effect oracle"
+                    )
                 elif activity_id == "reliability-alertmanager-implementation-002":
                     assert "two distinct alerts no longer reach" not in text or (
                         "group_by" in text
@@ -605,6 +620,9 @@ def inspect_school(page):
                     assert "TSA_AM_RETRY_MODE=transient-503" in text and (
                         "SAME_ALERT_RETRY_NOT_PROVEN" in text
                     ), "Original recovery practical does not distinguish real same-notification retry from fresh delivery"
+                    assert "TSA_AM_RETRY_MODE=ambiguous-503" in text and (
+                        "TSA_AM_RETRY_MODE=ambiguous-no-idempotency" in text
+                    ), "Original recovery practical does not require a durable idempotent effect and broken mutant"
 
                     assert "TSA_FORWARD_SCENARIO=alertmanager-outage" in text and (
                         "prometheus_notifications_errors_total" in text
