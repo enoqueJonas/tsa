@@ -285,6 +285,7 @@ def inspect_school(page):
                     "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
+                    "service-level-engineering-windowing-promtool-burn-rate-reading": "Derive burn rate from a stated SLO, not a copied threshold",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
                     "metrics-prometheus-grafana-recording-rules-promtool-reading": "A recording rule is a stored time series, not proof of user health",
                     "alerting-and-on-call-actionable-alerts-001": "An alert is a decision pipeline, not a Boolean dashboard color",
@@ -342,6 +343,8 @@ def inspect_school(page):
                 "service-level-engineering-slis-001",
                 "service-level-engineering-error-budgets-001",
                 "service-level-engineering-windowing-001",
+                "service-level-engineering-windowing-promtool-burn-rate-reading",
+                "service-level-engineering-windowing-002",
                 "service-level-engineering-slis-002",
             }:
                 if activity_id == "service-level-engineering-slis-001":
@@ -366,6 +369,26 @@ def inspect_school(page):
                 if activity_id == "service-level-engineering-windowing-001":
                     assert "as_of=120" in text and "Change as_of to 75" in text, (
                         "Windowing follow-on lost source-derived maturity counterexample"
+                    )
+                if activity_id == "service-level-engineering-windowing-promtool-burn-rate-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Official multiwindow rule, seven-case fixture and command must be copyable"
+                    )
+                    assert "StewardRegistrationFastBudgetBurn" in text and "0.0144" in text, (
+                        "Source-published 14.4x rule or derived threshold lost"
+                    )
+                    assert "stale_long_window_after_healthy_recovery_does_not_fire" in text and (
+                        "tiny_population_cannot_authorize_incident_page" in text
+                    ), "Windowing lab lost recovered/low-volume changed cases"
+                    assert "variable traffic" in text and "synthetic" in text, (
+                        "Burn math overclaims constant event count or production evidence"
+                    )
+                if activity_id == "service-level-engineering-windowing-002":
+                    assert "official promtool check rules" in text and (
+                        "Falsify AND-to-OR" in text
+                    ), "Original windowing practical lost official rules and negative mutation"
+                    assert "reasonably stationary traffic" in text, (
+                        "Windowing practical assumes volume-independent budget percentages"
                     )
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert not page.evaluate(
