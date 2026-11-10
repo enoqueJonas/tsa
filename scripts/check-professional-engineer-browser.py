@@ -143,6 +143,53 @@ def run():
    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
    assert page.evaluate("new URLSearchParams(location.search).get('activity')")==expected.removesuffix("-reading")+"-practice"
    print("PASS Professional rendered source, mobile, next-at-top and reload:",expected,flush=True)
+  # Newly expanded FIRST ORIGINAL Capstone Problem Discovery reading.
+  # Seed only the existing evidence-provenance prerequisite in an isolated
+  # browser profile; this is navigation coverage, not learner validation.
+  from urllib.parse import urlencode
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+  ])
+  choice_id="capstone-problem-discovery-choosing-a-substantial-problem-001"
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":choice_id
+  }),wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==choice_id
+  choice_main=page.locator("main").last
+  choice_text=choice_main.inner_text()
+  assert len(choice_text)>=3800,"Problem choice remains a thin original reading"
+  for requirement in (
+    "A problem is not a feature request",
+    "Evidence has a type, source and permission boundary",
+    "Compare two imperfect candidates, not two technologies",
+    "Break the rule before trusting it",
+    "DISCOVERY_SELECTION_GATES_PASS",
+  ):
+   assert requirement in choice_text,"Missing original-choice teaching: "+requirement
+  assert choice_main.get_by_role("button",name="Copy").count()>0,"Discovery Python is not copyable"
+  assert choice_main.locator("figure pre").count()>0,"Discovery Python block was not rendered"
+  page.set_viewport_size({"width":390,"height":844})
+  assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),"Discovery choice 390px overflow"
+  page.screenshot(path=str(ART/"discovery-problem-choice-390.png"),full_page=True)
+  page.set_viewport_size({"width":1440,"height":900})
+  choice_practice="capstone-problem-discovery-choosing-a-substantial-problem-practice"
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":choice_practice
+  }),wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==choice_practice
+  assert "promised stakeholder access" in page.locator("main").last.inner_text(),(
+    "Original problem-choice practice must challenge false access claims"
+  )
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==choice_practice
+  print("PASS original discovery problem-choice reading/practice, copyable code, 390px and reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
