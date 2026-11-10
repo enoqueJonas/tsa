@@ -76,7 +76,7 @@ for(const [name,before,after] of negative) {
 for(const phrase of [
   "absent_over_time(up{job=\"steward-api\"}[10m])",
   "a missing series is not equivalent to",
-  "no live Prometheus instance",
+  "NOT the Prometheus binary",
   "No data, Error or alerting NoData"
 ]) {
   assert.ok(source.toLowerCase().includes(phrase.toLowerCase()),
