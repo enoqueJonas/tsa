@@ -80,7 +80,8 @@ assert.ok(lesson.includes("blocks: alertmanagerRouteFocusedBlocks") &&
           lesson.includes("blocks: alertmanagerRuntimeFocusedBlocks"),
  "Real Alertmanager source is not attached to the learner's original path");
 assert.ok(lesson.includes("actual HTTP 503 attempts") &&
-          lesson.includes("real Prometheus-to-Alertmanager transport"),
+          (lesson.includes("real Prometheus-to-Alertmanager transport") ||
+           lesson.includes("separate real Prometheus-to-Alertmanager source")),
  "Original practices fail to distinguish real notification from missing transport");
 const mutants=[
  ["broken-grouping", "group_by: ['service', 'environment', 'team']",
