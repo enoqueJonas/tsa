@@ -295,6 +295,7 @@ def inspect_school(page):
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
                     "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
                     "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
+                    "reliability-alertmanager-implementation-same-notification-retry-reading": "A new successful alert is not a retry of a failed one",
                     "reliability-alertmanager-implementation-prometheus-forwarding-reading": "Close the missing transport link with a real Prometheus rule",
                     "reliability-alertmanager-implementation-outage-recovery-reading": "A firing Prometheus rule does not imply a delivered page",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
@@ -555,6 +556,7 @@ def inspect_school(page):
                 "reliability-alertmanager-implementation-001",
                 "reliability-alertmanager-implementation-route-mechanics-reading",
                 "reliability-alertmanager-implementation-live-delivery-reading",
+                "reliability-alertmanager-implementation-same-notification-retry-reading",
                 "reliability-alertmanager-implementation-002",
                 "reliability-alertmanager-implementation-003",
             }:
@@ -576,6 +578,19 @@ def inspect_school(page):
                     assert "REAL_ALERTMANAGER_RESOLVED_PASS" in text and (
                         "REAL_ALERTMANAGER_API_BOUNDARY_ONLY" in text
                     ), "Learner source misstates real Alertmanager output and limitations"
+                elif activity_id == "reliability-alertmanager-implementation-same-notification-retry-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Same notification 503/400/permanent failure source commands are not copyable"
+                    )
+                    assert "TSA_AM_RETRY_MODE=transient-503" in text and (
+                        "TSA_AM_RETRY_MODE=nonretryable-400" in text
+                    ), "Focused retry lesson does not execute positive and non-retryable case"
+                    assert "TSA_AM_RETRY_MODE=permanent-503" in text and (
+                        "SAME_ALERT_RETRY_NOT_PROVEN" in text
+                    ), "Focused retry lesson does not falsify failed permanent delivery"
+                    assert "fingerprint" in text and "groupKey" in text and (
+                        "startsAt" in text
+                    ), "Original retry proof lacks stable delivery identity"
                 elif activity_id == "reliability-alertmanager-implementation-002":
                     assert "two distinct alerts no longer reach" not in text or (
                         "group_by" in text
@@ -587,6 +602,10 @@ def inspect_school(page):
                     assert "actual HTTP 503 attempts" in text and (
                         "fresh group" in text
                     ), "Original failure/recovery practical conflates rejected and delivered"
+                    assert "TSA_AM_RETRY_MODE=transient-503" in text and (
+                        "SAME_ALERT_RETRY_NOT_PROVEN" in text
+                    ), "Original recovery practical does not distinguish real same-notification retry from fresh delivery"
+
                     assert "TSA_FORWARD_SCENARIO=alertmanager-outage" in text and (
                         "prometheus_notifications_errors_total" in text
                     ), "Original recovery practical does not require genuine lost Alertmanager transport"
