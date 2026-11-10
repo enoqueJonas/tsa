@@ -1,9 +1,164 @@
 import type { Lesson } from "./lesson";
+import type { LessonBlock } from "../activities/content";
+import type { Activity } from "../activities";
+import { stakeholderMappingBlocks, stakeholderInterviewBlocks, stakeholderTriangulationBlocks } from "./professional-engineer-discovery-stakeholders";
+import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
+import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemFramingBoundaryBlocks } from "./professional-engineer-discovery-framing";
+import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirementsTraceabilityBlocks } from "./professional-engineer-discovery-requirements";
+import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNegotiationBlocks } from "./professional-engineer-discovery-constraints";
+import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperimentBlocks } from "./professional-engineer-discovery-ambiguity";
+import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
+import { riskFoundationsBlocks, riskControlsBlocks, riskResidualBlocks } from "./professional-engineer-discovery-risk";
+import { successOutcomesBlocks, successCohortsBlocks, successClaimsBlocks } from "./professional-engineer-discovery-success-measures";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
+  // Remediate specific ORIGINAL topics only; preserve every existing ID.
+  // Stakeholder Discovery has distinct prerequisite mechanisms, so interview
+  // and triangulation are separately navigable before the original practice.
+  const isProblemSelection = id === "capstone-problem-discovery-choosing-a-substantial-problem";
+  const isStakeholder = id === "capstone-problem-discovery-stakeholder-discovery";
+  const isFraming = id === "capstone-problem-discovery-problem-framing";
+  const isRequirements = id === "capstone-problem-discovery-requirements";
+  const isConstraints = id === "capstone-problem-discovery-constraints";
+  const isAmbiguity = id === "capstone-problem-discovery-working-with-ambiguity";
+  const isQuality = id === "capstone-problem-discovery-quality-attributes";
+  const isRisk = id === "capstone-problem-discovery-risk";
+  const isSuccess = id === "capstone-problem-discovery-success-measures-and-evidence";
+  const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
+    ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
+    : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
+    : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks]
+    : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks]
+    : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks]
+    : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
+    : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks]
+    : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks]
+    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks] : undefined;
+  const stakeholderReadings: Activity[] = isStakeholder ? [
+    {
+      id: `${id}-interview-method-reading`,
+      title: "Interviewing Without Leading and Recording Consent",
+      estimatedMinutes: 55,
+      content: {type:"reading",body:"Conduct ethical, neutral interviews and distinguish testimony from actual observation.",blocks:stakeholderInterviewBlocks},
+    },
+    {
+      id: `${id}-triangulation-reading`,
+      title: "Triangulating Conflicting Stakeholder Evidence",
+      estimatedMinutes: 55,
+      content: {type:"reading",body:"Challenge conflicting reports and turn uncertainty into an authorized research plan.",blocks:stakeholderTriangulationBlocks},
+    },
+  ] : [];
+  const framingReadings: Activity[] = isFraming ? [
+    {
+      id: `${id}-measurement-reading`,
+      title: "Measuring Workflow Stages Without Fabricating Completion",
+      estimatedMinutes: 65,
+      content: {type:"reading",body:"Measure a lifecycle cohort and separate incomplete status from genuine outcome evidence.",blocks:problemFramingMeasurementBlocks},
+    },
+    {
+      id: `${id}-causality-boundary-reading`,
+      title: "Causal Hypotheses, Problem Statements and Scope Boundaries",
+      estimatedMinutes: 60,
+      content: {type:"reading",body:"Challenge causal assumptions and define a falsifiable, solution-neutral problem boundary.",blocks:problemFramingBoundaryBlocks},
+    },
+  ] : [];
+  const requirementReadings: Activity[] = isRequirements ? [
+    {
+      id: `${id}-acceptance-reading`,
+      title: "Acceptance Criteria, Domain Rules and Negative-Path Oracles",
+      estimatedMinutes: 70,
+      content: {type:"reading",body:"Turn candidate obligations into observable success and rejection conditions without making up approval.",blocks:requirementsAcceptanceBlocks},
+    },
+    {
+      id: `${id}-traceability-reading`,
+      title: "Requirements Traceability, Conflicts and Change Impact",
+      estimatedMinutes: 65,
+      content: {type:"reading",body:"Trace each requirement to evidence, authority, acceptance and reversible decisions.",blocks:requirementsTraceabilityBlocks},
+    },
+  ] : [];
+  const constraintReadings: Activity[] = isConstraints ? [
+    {
+      id: `${id}-feasibility-reading`,
+      title: "Feasibility Gates Against Verified Constraints",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Check constraint provenance and compare feasible architecture candidates without trading away mandatory boundaries.",blocks:constraintsFeasibilityBlocks},
+    },
+    {
+      id: `${id}-conflict-revision-reading`,
+      title: "Conflicting Constraints, Negotiation and Decision Reversal",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Recognize impossible constraint combinations, identify decision owners and re-evaluate when evidence or capacity changes.",blocks:constraintsNegotiationBlocks},
+    },
+  ] : [];
+  const ambiguityReadings: Activity[] = isAmbiguity ? [
+    {
+      id: `${id}-sensitivity-reading`,
+      title: "Decision Sensitivity and the Value of Information",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Evaluate hypothetical payoffs, probability uncertainty and the ceiling on information value without inventing evidence.",blocks:ambiguitySensitivityBlocks},
+    },
+    {
+      id: `${id}-experiment-design-reading`,
+      title: "Authorized Experiments, Reversibility and Decision Records",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Choose discriminating, safe investigations; define stop rules and preserve reversibility.",blocks:ambiguityExperimentBlocks},
+    },
+  ] : [];
+  const qualityReadings: Activity[] = isQuality ? [
+    {
+      id: `${id}-measurement-reading`,
+      title: "Measuring Latency, Access Safety and Verified Recovery",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Define exact eligible observations and negative quality oracles, rather than inferring safe production behavior from a green number.",blocks:qualityMeasurementBlocks},
+    },
+    {
+      id: `${id}-tradeoffs-reading`,
+      title: "Quality Trade-offs, Priorities and Operational Decisions",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Compare correctness, useful availability, privacy, accessibility and operating cost using scenario-specific decisions.",blocks:qualityTradeoffBlocks},
+    },
+  ] : [];
+  const riskReadings: Activity[] = isRisk ? [
+    {
+      id: `${id}-controls-reading`,
+      title: "Failure Modes, Control Evidence and Idempotent Transitions",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Explain why prevention, detection and recovery are distinct risk controls and execute a narrow exact-source duplicate-transition oracle.",blocks:riskControlsBlocks},
+    },
+    {
+      id: `${id}-residual-decisions-reading`,
+      title: "Residual Risk, Escalation and Defensible Decisions",
+      estimatedMinutes: 70,
+      content: {type:"reading",body:"Evaluate residual exposure, shared failures, authorization limits and decisions that must be blocked or revisited.",blocks:riskResidualBlocks},
+    },
+  ] : [];
+  const successReadings: Activity[] = isSuccess ? [
+    {
+      id: `${id}-cohort-bias-reading`,
+      title: "Cohorts, Denominator Bias and Verified Outcomes",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Measure eligible outcomes, missing evidence and biased completed-only reports with an exact source example.",blocks:successCohortsBlocks},
+    },
+    {
+      id: `${id}-claims-evaluation-reading`,
+      title: "Evidence Quality, Causal Claims and Honest Evaluation",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Trace claims to permissible evidence, predeclare outcomes and distinguish observed differences from causally demonstrated effects.",blocks:successClaimsBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: minutes, content: { type: "reading", body } },
-    { id: `${id}-practice`, title: `Discovery work: ${title}`, estimatedMinutes: 45, content: {
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : minutes,
+      content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
+    ...stakeholderReadings,
+    ...framingReadings,
+    ...requirementReadings,
+    ...constraintReadings,
+    ...ambiguityReadings,
+    ...qualityReadings,
+    ...riskReadings,
+    ...successReadings,
+    { id: `${id}-practice`, title: `Discovery work: ${title}`,
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -11,14 +166,136 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
         "Apply this concept to the current discovery brief or candidate problem using evidence available now; label stakeholder statements, observations, assumptions and inferences separately.",
         "Record what changed in your understanding, including evidence that weakens or contradicts the current framing rather than only evidence that confirms it.",
         "Update the relevant discovery artifact and identify any downstream requirement, constraint, quality attribute, risk, success measure or scope decision that must now be reconsidered.",
-        "State the next highest-value question or validation action. If current evidence is sufficient and nothing changes, record why retaining the current framing is justified."
+        "State the next highest-value question or validation action. If current evidence is sufficient and nothing changes, record why retaining the current framing is justified.",
+        ...(isProblemSelection ? [
+          "Write two solution-neutral candidate problem statements, each with an affected actor, observed or sourced harm, alternative causal explanation and explicit evidence quality.",
+          "For each candidate, distinguish promised stakeholder access from actually verified permission to collect safe minimal evidence. Record UNKNOWN rather than claiming interviews that have not occurred.",
+          "Run the exact published Python discovery-selection gate; preserve output, then break the access-verified and consent conditions separately and show which assertions reject false readiness.",
+          "Compare the candidates using non-compensatory access/safety/scope gates before preferences; write one falsification observation and the condition for choosing neither candidate.",
+        ] : []),
+        ...(isStakeholder ? [
+          "Construct a stakeholder-by-workflow handoff matrix: frontline user, operator, affected non-user, decision owner and any other domain-specific role. Distinguish authority, direct experience, access and participation permissions.",
+          "Run the original reading's exact Python stakeholder-coverage fixture. Preserve the five actual outputs, then independently corrupt consent rejection, missing-role coverage and leading-question rejection; show the intended assertions reject each altered source.",
+          "Draft a neutral interview guide: open recent-event questions, one positive counterexample, two role-specific prompts, a deliberately leading question rewritten neutrally, and voluntary participation/recording consent instructions. Use only authorized records.",
+          "Build a claim and contradiction table for two opposing stakeholder accounts, with evidence type, source dependency, possible measurement bias, permitted validation action and an explicit UNKNOWN/NOT_TESTED for absent data.",
+          "Produce one falsifiable revised discovery claim and record how an omitted or non-consenting voice limits it. Do not invent interview quotes, obtained permission, numerical incidence rates or an approved product.",
+        ] : []),
+        ...(isFraming ? [
+          "Draw a current-state workflow for one unit of work, including at least one branch/failure and an accountable actor, event artifact and permission boundary for each handoff; do not replace it with a future software architecture.",
+          "Write two competing causal hypotheses for a concrete observed or explicitly hypothetical symptom and one discriminating observation that could refute each explanation.",
+          "Run the exact learner-published Python nine-case timeline experiment; preserve expected 6/9 complete and 3/9 unverified, W03 stage attribution, W09 missing close and X01 invalid chronology. Explain every cohort denominator.",
+          "In separate disposable code copies, show four correct assertion failures: missing-to-zero fake completion, supplier wait measured from intake, reversed chronology accepted and total time mistaken for document preparation time.",
+          "Write a six-field solution-neutral problem frame, in/out-of-scope boundary and a missing-data/authorized-evidence plan. Change the case so average completed time improves while unresolved cases grow; explain why that is not success.",
+          "Specify the next real validation decision, its permission/owner, alternate nontechnical interventions and the exact evidence that would reverse the preferred frame; mark actual fieldwork NOT_TESTED unless performed.",
+        ] : []),
+        ...(isRequirements ? [
+          "Create an original six-row requirements ledger for a NEW capstone workflow: business outcome, user capabilities, domain/data rule, measurable quality constraint and explicit forbidden action. Keep evidence provenance, owner, approval status and verification reference per row; UNKNOWN is a valid state.",
+          "For at least three candidate requirements, trace an independently supported problem to role/outcome, exact source/permission, verifiable wording and Given–When–Then acceptance examples. Include an authorized allowed case and a forbidden record-access or state-change case.",
+          "Run the exact learner-visible Python requirements-review gate and preserve all five statuses and allowed/denied outputs. In separate copies reject five unsafe mutations: claimed evidence accepted, missing owner accepted, missing measurable oracle accepted, no denial oracle accepted, and unconditional access permitted.",
+          "Resolve a fictional or permitted real conflict between data visibility and unauthorized disclosure, documenting decision authority, dissent, alternative options, risk and a reversible decision log. Do not claim fictional interviews or simulated policy documents are real organizational approval.",
+          "Change one upstream source or permission and show which requirement IDs, test IDs, decision status and quality/risk assumptions must be suspended or revised; record a meaningful rejection or DEFER outcome rather than making every candidate APPROVED.",
+          "Explain which proposed behaviors are still unproven requirements and why source completeness, authorization, a passing test and actual stakeholder approval are different acceptance gates.",
+        ] : []),
+        ...(isConstraints ? [
+          "Write an eight-row constraints register for a genuinely new capstone domain, identifying each source/version, owner, applicability scope, evidence status, binding or negotiable nature, verification action and change trigger. A remembered legal claim must remain UNVERIFIED_SOURCE until a competent source is checked.",
+          "Distinguish hard contractual/data boundaries, measured operations capacity, a budget cap, protocol compatibility and implementation preferences. State which restrictions constrain an interface and which would improperly impose one technology on every component.",
+          "Run the exact published Python 3 constraints-classification and feasibility fixture. Preserve its five evidence classifications, five candidate outcomes and final marker; in separate copies break eight distinct evidence or feasibility gates and explain each rejected assertion.",
+          "Evaluate three different candidate architectures against binding constraints with a reason for every rejection or provisional acceptance. Include all violated gates, uncertainty ranges, operational costs and a choice to defer or narrow scope rather than invent approval.",
+          "Analyze a conflict between two genuinely binding constraints (e.g. a data-export prohibition and an external supplier exchange): propose authorized ways to change the agreement, reduce scope or find a permitted interface; never suppress the privacy gate for a feature score.",
+          "Inject two change events: revoke a previously claimed data-use permission and halve available operations capacity. Re-evaluate the feasibility matrix, affected requirement/test IDs, risk and architecture decision, with decision owner and a reversible audit log; mark real-source verification NOT_TESTED if absent.",
+        ] : []),
+        ...(isAmbiguity ? [
+          "Produce a six-entry uncertainty register in a genuinely new capstone domain. Distinguish unclear terminology, missing knowledge, conflicting evidence and a risk consequence; include provenance, authority to verify, alternative hypotheses, consequence and real reversibility.",
+          "Run the exact learner-visible Python sensitivity and perfect-information-ceiling example. Preserve baseline intake 38 versus supplier automation 36, the decision flip at 0.70, EVPI 48, and uncalibrated/authorization cautions. Explain why these invented numbers are not real forecasts.",
+          "In separate throwaway copies reject eight incorrect implementations: inverted probability weighting, missing automation downside, fixed recommendation, false stability, wrong perfect-information ceiling, ignored research authorization, ignored safety and ignored research-cost ceiling.",
+          "Design a permission-aware experiment charter, selecting a real discriminating method (authorized observation, targeted interview, bounded technical spike or controlled test) rather than building a demo for its own sake; include alternative explanation, sampling/source limits, stop condition, rollback and what the result cannot prove.",
+          "Document one irreversible or costly-to-reverse architecture decision, one safely reversible choice, an owner and a date/condition triggering review. Show a changed recommendation when a data-use permission is revoked or the experimental result contradicts the initial belief.",
+          "Deliver an explicit PROCEED_WITH_GUARDRAILS, DEFER, RESEARCH_REQUESTED or NO_AUTHORIZATION_TO_ACT decision. Mark field evidence NOT_TESTED unless actually obtained; never promote simulated beliefs or a script PASS into stakeholder approval.",
+        ] : []),
+        ...(isQuality ? [
+          "Build a six-scenario quality attribute catalogue for a NEW capstone workflow: access/privacy, p95 and workload, degraded dependency, restoration/data loss, accessible task completion and real operator-maintenance capacity. For each, identify the stakeholder, stimulus, environment, useful response, eligible denominator, source/owner and unknown or verified target.",
+          "Run the exact learner-visible Python quality evidence fixture: preserve 20 eligible successful observations, nearest-rank p95=250ms, maximum=780ms, fictional RTO=30min and RPO=8min; explain why this is not a real SLO, privacy assurance or restore result.",
+          "In separate disposable source copies, reject EIGHT misleading shortcuts: median substituted for p95, tiny samples accepted, incomplete observation ignored, unauthorized disclosure ignored, unverified restore accepted, RTO or RPO breach ignored and p95 tail breach accepted; preserve all observed AssertionError evidence.",
+          "Describe two invalid conclusions that a green p95 or HTTP 200 can hide (incomplete cases and incorrect/out-of-date protected results). Write both allowed and forbidden access/transition oracles and specify their independent persisted-state checks.",
+          "Compare two technical alternatives with a causal quality trade-off record: lower lookup latency versus stale authorization or status, privacy versus traceable audit, and real operating effort. Show the authoritative status, unknowns, noncompensatory hard gates and a reversible decision trigger.",
+          "Inject a change: the data owner prohibits an audit field or the operator capacity is halved. Update impacted quality scenarios, requirements, tests, source authority and architecture options; do not invent real targets or call the classroom fixture deployment approval.",
+        ] : []),
+        ...(isRisk ? [
+          "Write six causal risk/issue entries for a NEW capstone domain: an active incident, a forbidden data or authority boundary, supplier dependency, duplication or state correctness, restoration/operator capacity, and a user-adoption/value harm. Record the affected actors, credible failure path, uncertain event, consequences, source and its confidence, responsible owner and time horizon.",
+          "Distinguish prospective risk from an existing issue, a hazard, a threat and a technical vulnerability. Explain why multiplying ordinal likelihood and impact categories does NOT produce a calibrated expected loss or make a prohibited disclosure tolerable.",
+          "For each material risk, identify specific prevention, detection and recovery methods with independent allowed and forbidden-action oracles; mark any unimplemented, untested or unauthorized mitigation as such rather than claiming residual exposure is low.",
+          "Execute the exact learner-visible Python risk-control program, preserve all nine source classification outputs, three deliveries with exactly one closure, and final marker. In separate disposable copies demonstrate NINE genuine AssertionError failures: skip each of eight classification gates or skip duplicate-event detection.",
+          "Build a risk-control/residual ledger linking source and failure path to mitigation, test evidence, residual owner decision, monitoring trigger, affected requirement and quality scenario IDs. Include one credible shared cause and one proposed mitigation that creates another risk.",
+          "Inject two changes: a mitigation introduces prohibited customer-data exports and a supplier begins reusing event identifiers. Reopen affected tests, risk assessments, permissions and design choices; document a lawful BLOCK, DEFER, ESCALATE_ISSUE or RESEARCH_REQUESTED outcome, not an automatically approved release.",
+        ] : []),
+        ...(isSuccess ? [
+          "Define a new-domain primary user outcome, an explicit eligible cohort, its fixed observation/follow-up window, baseline source and validity, numerator/denominator, treatment of missing/unknown cases and who can authorize collection. Contrast this with an implementation-activity metric that does not demonstrate benefit.",
+          "Run the exact learner-visible Python success-evidence cohort program. Preserve baseline verified 3/8 and completed-only 3/6 versus pilot verified 4/8 and completed-only 4/5, plus the increasing unknown counts 3 to 4. Explain how the seemingly impressive 80% omits unresolved or unverified work.",
+          "In separate disposable copies, reject TEN wrong-source variants with real AssertionError: eight bypassed reporting gates, a numerator that trusts CLOSED without decision/notification and a denominator that silently excludes open eligible cases.",
+          "Write a metric measurement contract with eligibility version, owner, permitted source, authoritative event, inclusion/exclusion rule, missing-data treatment, baseline and target approval status, two balancing measures for unintended harm, and explicit criteria for a STOP or INCONCLUSIVE result.",
+          "Build a claim-to-evidence ledger showing what unit, integration, browser and quality tests can and cannot establish; propose a comparability/causal evaluation plan without calling a before-after pilot a causal effect.",
+          "Change two assumptions: discover an omitted intake channel and a more difficult case mix in the pilot. Recompute or suspend the outcome claim, update dependent requirements/risk and quality IDs and write a decision record that can truthfully say IMPACT_NOT_VERIFIED or DATA_COLLECTION_NOT_AUTHORIZED.",
+        ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
       completionCriteria: [
         "The work is solution-neutral and does not select architecture or technology prematurely.",
         "Contradictory or missing evidence is visible rather than normalized away.",
         "New evidence is allowed to change the problem boundary or invalidate an earlier assumption.",
-        "The next discovery action is prioritized by uncertainty and consequence."
+        "The next discovery action is prioritized by uncertainty and consequence.",
+        ...(isProblemSelection ? [
+          "No candidate is declared research-ready from a stakeholder promise, a fictional example, or fabricated empirical evidence.",
+          "The negative program mutations are detected for the expected inference error, and any unverified candidate remains explicitly blocked.",
+          "Technology selection is deferred until a bounded workflow, evidence provenance, ethical access and a falsifiable outcome have been defended.",
+        ] : []),
+        ...(isStakeholder ? [
+          "Actual participants, organizational permissions and demographic/role gaps are documented without fabricating consultations; fictional teaching transcripts are not submitted as field evidence.",
+          "Stakeholder map includes a harmed non-user and separates decision power from firsthand workflow knowledge.",
+          "A reviewer can reconstruct exactly why the source program rejects unauthorized data collection, a leading interview, manager-only coverage and testimony-only causal overclaim.",
+          "Conflicting accounts and unknowns remain explicitly open until a discriminating permitted observation or document can resolve them.",
+        ] : []),
+        ...(isFraming ? [
+          "The documented source and runnable output have the same cohort/event definitions; missing/invalid lifecycle events are never silently converted into completed cases.",
+          "Each hypothesis has a plausible competing explanation, disconfirming test and authorized data source rather than an unqualified causal statement.",
+          "The problem statement names the affected role, workflow, population, outcome, evidence/unknowns, alternatives and scope without prescribing a technology or unsupported numerical improvement.",
+          "A reviewer can explain why lower completed-case average or a green status label may conceal worsening unresolved customer outcomes.",
+        ] : []),
+        ...(isRequirements ? [
+          "Requirements link to a bounded need, source provenance, authority and a verifiable outcome, not merely to a stakeholder preference or named technology.",
+          "Every sensitive capability has positive and forbidden-action acceptance tests, and cannot be declared complete solely from an HTTP status or a Boolean fixture.",
+          "The executed negative Python mutations demonstrate independent detection of missing evidence, approval, oracle and authorization; REVIEWABLE is never misreported as business approval.",
+          "A source/policy change causes a visible versioned trace and correct DEFER/re-review behavior, with actual research and approvals explicitly marked NOT_TESTED unless established.",
+        ] : []),
+        ...(isConstraints ? [
+          "The register differentiates a documented applicable obligation from a preference, assumption, expired source or a binding rule governing a different scope.",
+          "No score, savings or architecture fashion can override a noncompensatory consent, data or safety restriction; an infeasible set produces a defer/narrow/renegotiate recommendation.",
+          "The source-exact Python output and eight failed unsafe mutants demonstrate source/authority/applicability/negotiability and export/budget/staffing/protocol controls without falsely claiming real contract validity.",
+          "A reviewer can trace every changed constraint to reopened design, requirements, quality, test and operational decisions, with actual legal/contractual or stakeholder review explicitly NOT_VALIDATED unless performed.",
+        ] : []),
+        ...(isAmbiguity ? [
+          "The learner records where numbers come from and refuses unjustified confidence scores, interpretations of CLOSED and claims about actual supplier bottlenecks.",
+          "Each high-consequence unknown has competing explanations, a discriminating permitted study, decision dependency, safety gate and re-evaluation trigger.",
+          "The exact Python and eight deliberately wrong variants demonstrate uncertainty-sensitive decisions, EVPI as a theoretical ceiling and noncompensatory research authorization/safety.",
+          "A defensible recommendation may be DEFER/NO_AUTHORIZATION_TO_ACT, not an invented optimal architecture; real user research and uncoached independent transfer remain NOT_VALIDATED.",
+        ] : []),
+        ...(isQuality ? [
+          "Each quality claim has a named stakeholder, stimulus, workload and operating environment, response and independent observable success/failure oracle; unknown thresholds remain explicitly pending.",
+          "An incomplete cohort, unauthorized data access, unverified data restore, insufficient sample or missed recovery and latency limit cannot be declared healthy by averaging or because the endpoint returns HTTP 200.",
+          "The exact source program and eight unsafe mutations expose false p95, data-loss, access and recovery conclusions without falsely claiming production security, permitted data or a real SLO.",
+          "A scenario-specific decision discusses at least two conflicts and includes viable DEFER/NARROW_SCOPE when noncompensatory safety/operational constraints cannot be met; actual learner transfer remains NOT_VALIDATED.",
+        ] : []),
+        ...(isRisk ? [
+          "Each risk record links an affected outcome and credible causal failure path to source type, uncertainty, controls and owner; existing damage is escalated as an issue, not filed only as future risk.",
+          "Risk prioritization distinguishes catastrophic/noncompensatory restrictions from negotiable delay or cost, with no invented numerical probability, authority or genuine acceptance signature.",
+          "Actual Python source and all nine unsafe variants reject false confidence about incidents, unverified origins, forbidden data export, nonimplemented or untested controls, residual approval and duplicate side effects.",
+          "The learner can defend residual and shared-cause decisions, update linked tests and scope, and block unsafe deployment; true independent learner mastery and real professional signoff remain NOT_VALIDATED.",
+        ] : []),
+        ...(isSuccess ? [
+          "A reviewer can reproduce numerator, denominator and missing/outstanding states over the fixed eligible cohort and identify why a completed-only green number can conceal worsening unresolved customers.",
+          "The exact learner-visible Python and all ten unsafe mutations catch unverified sources, denied collection, missing baseline, denominator selection, unreported unknowns, unsupported causal attribution, missing harm guards, unapproved decisions and false numerator logic.",
+          "The claim-evidence mapping distinguishes verified code behavior, reported observations, comparisons and unproven causal impact, with predeclared success, failure, inconclusive and stop-for-harm conditions.",
+          "Actual customer outcomes, approved baselines, lawful permission and uncoached independent learner competence remain NOT_VALIDATED; classroom green output is not evidence of product impact.",
+        ] : [])
       ]
     } }
   ] };
