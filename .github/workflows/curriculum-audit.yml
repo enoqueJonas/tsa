@@ -449,6 +449,19 @@ jobs:
           grep -F 'SAME_ALERT_RETRY_NOT_PROVEN' "$RUNNER_TEMP/tsa-am-permanent-503.log" || { cat "$RUNNER_TEMP/tsa-am-permanent-503.log"; exit 1; }
           echo "PASS: official Alertmanager did not deliver the permanently rejected original webhook"
 
+      - name: Prove ambiguous 503 commits only one durable SQLite effect across the real same-notification retry
+        run: |
+          TSA_AM_RETRY_MODE=ambiguous-503 python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Reject duplicate SQLite effects when a real retried webhook loses its idempotency index
+        run: |
+          if TSA_AM_RETRY_MODE=ambiguous-no-idempotency python3 scripts/check-reliability-alertmanager-runtime.py > "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log" 2>&1; then
+            echo "FAIL: duplicate persisted webhook effects wrongly passed"
+            exit 1
+          fi
+          grep -F 'REAL_AMBIGUOUS_503_COMMIT_PASS' "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log" || { cat "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log"; exit 1; }
+          grep -F 'REAL_ALERTMANAGER_SAME_ALERT_503_RETRY_PASS' "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log" || { cat "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log"; exit 1; }
+          grep -F 'DUPLICATE_NOTIFICATION_EFFECT_DETECTED' "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log" || { cat "$RUNNER_TEMP/tsa-am-ambiguous-nonidempotent.log"; exit 1; }
+          echo "PASS: real Alertmanager retry exposed duplicate durable effects when receiver uniqueness was removed"
       - name: Prove real Prometheus evaluation forwarded via Alertmanager to firing and resolved webhooks
         run: |
           docker pull prom/prometheus:v3.13.3
