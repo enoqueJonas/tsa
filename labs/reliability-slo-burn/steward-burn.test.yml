@@ -1,0 +1,102 @@
+# Official promtool semantics, not a hand-written PromQL evaluator.
+# Each scenario supplies initialized classic counters sampled every 1m.
+rule_files:
+  - steward-burn.rules.yml
+evaluation_interval: 1m
+tests:
+  - name: sustained_two_percent_failure_fires_after_both_windows
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0+98x70'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0+2x70'
+    promql_expr_test:
+      - expr: 'steward:slo_registration_error_ratio:rate1h{job="steward-api"}'
+        eval_time: 70m
+        exp_samples:
+          - labels: 'steward:slo_registration_error_ratio:rate1h{job="steward-api"}'
+            value: 0.02
+      - expr: 'steward:slo_registration_error_ratio:rate5m{job="steward-api"}'
+        eval_time: 70m
+        exp_samples:
+          - labels: 'steward:slo_registration_error_ratio:rate5m{job="steward-api"}'
+            value: 0.02
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts:
+          - exp_labels:
+              job: steward-api
+              severity: ticket
+              team: reliability
+              evidence: synthetic
+            exp_annotations:
+              summary: Synthetic request SLO burn exceeds 1h and 5m thresholds
+
+  - name: healthy_half_percent_does_not_exceed_fourteen_point_four_burn
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0+199x70'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0+1x70'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
+
+  - name: stale_long_window_after_healthy_recovery_does_not_fire
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0+100x70'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0+3x60 180+0x9'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
+
+  - name: new_short_spike_without_long_budget_impact_does_not_fire
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0+100x70'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0+0x63 0+2x6'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
+
+  - name: tiny_population_cannot_authorize_incident_page
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0+0x70'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0+1x70'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
+
+  - name: initialized_zero_traffic_is_unknown_not_green
+    interval: 1m
+    input_series:
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="2xx"}'
+        values: '0x71'
+      - series: 'http_requests_total{job="steward-api",route="/register",status_class="5xx"}'
+        values: '0x71'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
+
+  - name: absent_metrics_are_unknown_not_a_pass
+    interval: 1m
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: StewardRegistrationFastBudgetBurn
+        exp_alerts: []
