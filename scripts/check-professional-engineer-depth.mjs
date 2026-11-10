@@ -801,3 +801,77 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Ambiguity mutant failed for unrelated reason "+why+": "+wrong.stderr);
 }
 console.log("PASS original Working with Ambiguity, exact Python sensitivity/EVPI, two focused readings, eight rejected false-certainty mutants");
+
+
+// Original Problem Discovery Quality Attributes: authored scenario mechanics,
+// exact evidence source, and trade-off analysis precede the retained practice.
+// All numeric examples are explicitly fictional, not production SLO claims.
+const qualityFile=fs.readFileSync(root+"professional-engineer-discovery-quality-attributes.ts","utf8");
+const qualityPrefix="export const qualityEvidencePython = ";
+const qualityLine=qualityFile.split("\n").find(x=>x.startsWith(qualityPrefix));
+assert.ok(qualityLine?.endsWith(";"),"Missing source-published quality attribute Python");
+const qualityPython=JSON.parse(qualityLine.slice(qualityPrefix.length,-1));
+function qualitySection(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=qualityFile.indexOf(anchor);
+ assert.ok(at>=0,"Missing authored original quality section "+name);
+ const start=at+anchor.length;
+ const end=nextName?qualityFile.indexOf("export const "+nextName+":",start):qualityFile.length;
+ assert.ok(end>start,"Invalid authored quality source boundaries "+name);
+ return JSON.parse(qualityFile.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const qaScenario=qualitySection("qualityScenarioBlocks","qualityMeasurementBlocks");
+const qaMeasured=qualitySection("qualityMeasurementBlocks","qualityTradeoffBlocks");
+const qaTradeoff=qualitySection("qualityTradeoffBlocks",null);
+for(const [label,blocks,min] of [
+ ["scenario",qaScenario,4700],
+ ["measurement",qaMeasured,4300],
+ ["tradeoffs",qaTradeoff,5400]
+]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Missing independently explained quality mechanisms "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Original quality "+label+" remains thin");
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=min,
+  "Original quality content needs explicit examples, failures and alternatives: "+label);
+ assert.ok(blocks.filter(x=>x.type==="resources").length===1,"Missing authoritative quality references "+label);
+}
+assert.equal(qaScenario.filter(x=>x.type==="code").length,0);
+assert.equal(qaMeasured.filter(x=>x.type==="code").length,1);
+assert.equal(qaTradeoff.filter(x=>x.type==="code").length,0);
+assert.equal(qaMeasured.find(x=>x.type==="code").code,qualityPython,
+ "The actually rendered quality attribute code differs from what CI executes");
+const originalQuality=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const token of [
+ 'id === "capstone-problem-discovery-quality-attributes"',
+ "...qualityScenarioBlocks","...qualityReadings","-measurement-reading","-tradeoffs-reading",
+ "Run the exact learner-visible Python quality evidence fixture",
+ "reject EIGHT misleading shortcuts",
+ 'reading("capstone-problem-discovery-quality-attributes"'
+]) assert.ok(originalQuality.includes(token),"Missing quality original reading/practice wiring: "+token);
+const originalPracticeStart="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(originalQuality.indexOf("...qualityReadings")<originalQuality.indexOf(originalPracticeStart),
+ "Quality teaching steps must precede the original practice");
+const goodQuality=python(qualityPython);
+assert.equal(goodQuality.status,0,goodQuality.stdout+"\n"+goodQuality.stderr);
+for(const phrase of [
+ "LATENCY eligible=20 p95_ms=250 maximum_ms=780 threshold_ms=300",
+ "REJECTED incomplete, unauthorized, unverified_restore, rto, rpo, small_cohort, tail_breach",
+ "RECOVERY fictional_RTO_minutes=30 fictional_RPO_minutes=8",
+ "REVIEWABLE_NOT_APPROVED; NO_EMPIRICAL_SLO_OR_SECURITY_ASSURANCE",
+ "QUALITY_ATTRIBUTE_EVIDENCE_GATE_PASS"
+]) assert.ok(goodQuality.stdout.includes(phrase),"Missing exact published quality result "+phrase);
+for(const [before,after,why] of [
+ ["ceil(len(samples) * 95 / 100) - 1","ceil(len(samples) * 50 / 100) - 1","median falsely presented as p95"],
+ ["if len(samples) < 20:","if False:","unrepresentative sample accepted"],
+ ["if any(not r.complete for r in records):","if False:","incomplete outcome hidden"],
+ ["if any(not a.authorized and (a.exposed_record or a.changed_record) for a in access):","if False:","unauthorized disclosure or mutation ignored"],
+ ["if not restore.data_verified or restore.restored_minute is None:","if False:","restore integrity not verified"],
+ ["if rto > 45:","if False:","recovery time miss ignored"],
+ ["if rpo > 15:","if False:","data-loss window miss ignored"],
+ ["if latency > 300:","if False:","tail latency violation ignored"]
+]){
+ assert.ok(qualityPython.includes(before),"No genuine source mutation target "+why);
+ const wrong=python(qualityPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"Incorrect quality inference passed: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Quality mutant failed for unrelated reason "+why+": "+wrong.stderr);
+}
+console.log("PASS original Quality Attributes scenario teaching, exact p95/privacy/recovery Python, two focused readings and eight rejected unsafe mutants");
