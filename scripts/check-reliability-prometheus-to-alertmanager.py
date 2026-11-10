@@ -144,8 +144,11 @@ def main():
                              ("Prometheus","http://127.0.0.1:"+str(prom_port)+"/-/ready")]:
                 deadline=time.monotonic()+35
                 while time.monotonic()<deadline:
-                    if any(p.poll() is not None for p in children):
-                        raise AssertionError(name+" container exited before ready")
+                    for component, child in zip(("Alertmanager", "Prometheus"), children):
+                        if child.poll() is not None:
+                            diagnostic = child.stderr.read()[-2500:] if child.stderr else ""
+                            raise AssertionError(component + " container exited before ready; exit="
+                                                 + str(child.returncode) + " stderr=" + diagnostic)
                     try:
                         if query(url)[0]==200:
                             break
