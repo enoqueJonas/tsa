@@ -1,0 +1,29 @@
+# Synthetic interactive registration HTTP SLI, not asynchronous completion.
+# Hypothetical 30-day 99.9% SLO => 0.001 allowed bad fraction.
+# Fast 2%-budget-in-1h threshold: 14.4 * 0.001 = 0.0144.
+# No paging authority or live Steward metrics: severity=ticket.
+groups:
+  - name: steward-registration-burn
+    interval: 1m
+    rules:
+      - record: steward:slo_registration_requests:rate1h
+        expr: sum by (job) (rate(http_requests_total{job="steward-api",route="/register"}[1h]))
+      - record: steward:slo_registration_errors:rate1h
+        expr: sum by (job) (rate(http_requests_total{job="steward-api",route="/register",status_class="5xx"}[1h]))
+      - record: steward:slo_registration_error_ratio:rate1h
+        expr: steward:slo_registration_errors:rate1h / steward:slo_registration_requests:rate1h
+      - record: steward:slo_registration_requests:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="steward-api",route="/register"}[5m]))
+      - record: steward:slo_registration_errors:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="steward-api",route="/register",status_class="5xx"}[5m]))
+      - record: steward:slo_registration_error_ratio:rate5m
+        expr: steward:slo_registration_errors:rate5m / steward:slo_registration_requests:rate5m
+      - alert: StewardRegistrationFastBudgetBurn
+        expr: (steward:slo_registration_error_ratio:rate1h > 0.0144) and on(job) (steward:slo_registration_error_ratio:rate5m > 0.0144) and on(job) (steward:slo_registration_requests:rate5m > 0.1)
+        for: 2m
+        labels:
+          severity: ticket
+          team: reliability
+          evidence: synthetic
+        annotations:
+          summary: "Synthetic request SLO burn exceeds 1h and 5m thresholds"
