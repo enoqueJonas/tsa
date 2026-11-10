@@ -522,9 +522,10 @@ function framingBlocks(name,nextName){
  const at=framingSource.indexOf(prefix);
  assert.ok(at>=0,"Missing source-authored framing "+name);
  const start=at+prefix.length;
- const end=nextName?framingSource.indexOf(";\nexport const "+nextName+":",start):framingSource.lastIndexOf(";\n");
+ const end=nextName?framingSource.indexOf("export const "+nextName+":",start):framingSource.length;
  assert.ok(end>start,"Malformed framing source section "+name);
- return JSON.parse(framingSource.slice(start,end));
+ // Ignore authoring whitespace between consecutive exact JSON literals, not teaching content.
+ return JSON.parse(framingSource.slice(start,end).trim().replace(/;\s*$/,""));
 }
 const frameWorkflow=framingBlocks("problemFramingWorkflowBlocks","problemFramingMeasurementBlocks");
 const frameMeasured=framingBlocks("problemFramingMeasurementBlocks","problemFramingBoundaryBlocks");
