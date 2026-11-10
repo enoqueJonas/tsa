@@ -19,11 +19,11 @@ export const alertmanagerOutageRecoveryBlocks: LessonBlock[] = [
   },
   {
     "type": "paragraph",
-    "text": "Run the exact Python source from the immediately preceding Prometheus-forwarding reading with TSA_FORWARD_SCENARIO=alertmanager-outage. It starts an actual Prometheus v3.13.3 process scraping a localhost gauge and an actual Alertmanager v0.28.1 instance with localhost webhook. After both report ready and the baseline produces no notification, the lab uses Docker pause on ONLY the Alertmanager container. The synthetic metric becomes 1. The real Prometheus /api/v1/alerts must show TSAForwardingProbe state=firing even while the Alertmanager listener is unavailable. Prometheus's own prometheus_notifications_errors_total must rise; the receiver must not contain a firing receipt. This disambiguates failed notification transport from failed rule evaluation or a user-service outage."
+    "text": "Run the exact Python source from the immediately preceding Prometheus-forwarding reading with TSA_FORWARD_SCENARIO=alertmanager-outage. It starts an actual Prometheus v3.13.3 process scraping a localhost gauge and an actual Alertmanager v0.28.1 instance with localhost webhook. After both report ready and the baseline produces no notification, the lab uses Docker stop on ONLY the Alertmanager container. The synthetic metric becomes 1. The real Prometheus /api/v1/alerts must show TSAForwardingProbe state=firing even while the Alertmanager listener is stopped. Prometheus's own prometheus_notifications_errors_total must rise; the receiver must not contain a firing receipt. This disambiguates failed notification transport from failed rule evaluation or a user-service outage."
   },
   {
     "type": "paragraph",
-    "text": "The lab configures --rules.alert.resend-delay=5s ONLY for the disposable experiment (the normal Prometheus default is 1m). Prometheus periodically resends firing alerts. After the test observes failed forwarding, it unpauses Alertmanager and demands an actual successful firing webhook, then sets the source gauge back to 0 and demands a resolved webhook. Avoid claiming an exact retry time, at-most-once delivery, guaranteed replay after arbitrary retention or a production paging SLA. Recovery is proved by independent received HTTP messages with matching alertname, status and reliability route."
+    "text": "The lab configures --rules.alert.resend-delay=5s ONLY for the disposable experiment (the normal Prometheus default is 1m). Prometheus periodically resends firing alerts. After the test observes failed forwarding, it starts a fresh disposable Alertmanager container with the same local configuration and demands an actual successful firing webhook, then sets the source gauge back to 0 and demands a resolved webhook. Avoid claiming an exact retry time, at-most-once delivery, guaranteed replay after arbitrary retention or a production paging SLA. Recovery is proved by independent received HTTP messages with matching alertname, status and reliability route."
   },
   {
     "type": "code",
@@ -39,7 +39,7 @@ export const alertmanagerOutageRecoveryBlocks: LessonBlock[] = [
   },
   {
     "type": "paragraph",
-    "text": "Run TSA_FORWARD_SCENARIO=outage-without-disconnect python3 scripts/check-reliability-prometheus-to-alertmanager.py in a disposable environment. This deliberately skips the Docker pause while leaving all expected-outage assertions intact. A genuine webhook receipt or absence of Prometheus notification errors must cause a nonzero exit. The negative outcome is meaningful only when it fails the outage oracle, not when the container cannot start or the Python script has a syntax error. Keep the baseline and receiver observation checks; do not hardcode a pass simply because the Python client can reach the Alertmanager API."
+    "text": "Run TSA_FORWARD_SCENARIO=outage-without-disconnect python3 scripts/check-reliability-prometheus-to-alertmanager.py in a disposable environment. This deliberately skips the Docker stop while leaving all expected-outage assertions intact. A genuine webhook receipt or absence of Prometheus notification errors must cause a nonzero exit. The negative outcome is meaningful only when it fails the outage oracle, not when the container cannot start or the Python script has a syntax error. Keep the baseline and receiver observation checks; do not hardcode a pass simply because the Python client can reach the Alertmanager API."
   },
   {
     "type": "code",
