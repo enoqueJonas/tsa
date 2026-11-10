@@ -958,3 +958,91 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Unrelated wrong-risk failure "+why+": "+wrong.stderr);
 }
 console.log("PASS original Risk failure paths, exact source control/side-effect Python, two focus readings and nine rejected unsafe mutants");
+
+
+// NINTH original discovery topic: Success Measures and Evidence.
+// Source-identical Python tests eligible-cohort denominators and guards
+// against unsupported causal inference, forbidden collection and hidden cases.
+const successFile=fs.readFileSync(root+"professional-engineer-discovery-success-measures.ts","utf8");
+const successPrefix="export const successEvidencePython = ";
+const successLine=successFile.split("\n").find(x=>x.startsWith(successPrefix));
+assert.ok(successLine?.endsWith(";"),"Missing literal learner-visible Success evidence source");
+const successPython=JSON.parse(successLine.slice(successPrefix.length,-1));
+function successSection(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=successFile.indexOf(anchor);
+ assert.ok(at>=0,"Original Success lacks required focused section "+name);
+ const start=at+anchor.length;
+ const end=nextName?successFile.indexOf("export const "+nextName+":",start):successFile.length;
+ assert.ok(end>start,"Malformed success content section "+name);
+ return JSON.parse(successFile.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const successFoundation=successSection("successOutcomesBlocks","successCohortsBlocks");
+const successCohort=successSection("successCohortsBlocks","successClaimsBlocks");
+const successClaim=successSection("successClaimsBlocks",null);
+for(const [label,blocks,minimum] of [
+ ["measure-contracts",successFoundation,4400],
+ ["eligible-cohorts",successCohort,4300],
+ ["claim-evidence",successClaim,5200]
+]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Success mechanics unexplained: "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Success reading shallow: "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=minimum,
+  "Success content lacks counterexamples: "+label);
+ assert.equal(blocks.filter(x=>x.type==="resources").length,1,"No targeted evidence references: "+label);
+}
+assert.equal(successFoundation.filter(x=>x.type==="code").length,0);
+assert.equal(successCohort.filter(x=>x.type==="code").length,1);
+assert.equal(successClaim.filter(x=>x.type==="code").length,0);
+assert.equal(successCohort.find(x=>x.type==="code").code,successPython,
+ "Executed success/denominator Python is NOT the code displayed to learners");
+const originalSuccess=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const token of [
+ 'id === "capstone-problem-discovery-success-measures-and-evidence"',
+ "...successOutcomesBlocks","...successReadings","-cohort-bias-reading","-claims-evaluation-reading",
+ "Run the exact learner-visible Python success-evidence cohort program",
+ "reject TEN wrong-source variants",
+ 'reading("capstone-problem-discovery-success-measures-and-evidence"'
+]){
+ assert.ok(originalSuccess.includes(token),"Original Success lesson or practice not wired: "+token);
+}
+const originalSuccessPracticeAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(originalSuccess.indexOf("...successReadings")<originalSuccess.indexOf(originalSuccessPracticeAnchor),
+ "New Success mechanisms must precede original practice");
+const successGood=python(successPython);
+assert.equal(successGood.status,0,successGood.stdout+"\n"+successGood.stderr);
+for(const marker of [
+ "missing_source: SOURCE_UNVERIFIED",
+ "no_permission: DATA_COLLECTION_NOT_AUTHORIZED",
+ "no_baseline: BASELINE_UNDEFINED",
+ "biased_denominator: DENOMINATOR_EXCLUDES_ELIGIBLE",
+ "unknown_hidden: UNKNOWN_OUTCOMES_HIDDEN",
+ "uncontrolled_comparison: CAUSAL_ATTRIBUTION_NOT_SUPPORTED",
+ "harm_ignored: HARM_GUARDRAIL_NOT_CHECKED",
+ "no_owner_decision: DECISION_NOT_APPROVED",
+ "BASE eligible=8 verified_success=3/8 completed_only=3/6 unknown=3",
+ "PILOT eligible=8 verified_success=4/8 completed_only=4/5 unknown=4",
+ "OBSERVED_COMPARISON_IS_NOT_CAUSAL_EFFECT",
+ "REVIEWABLE_NOT_CAUSALLY_PROVEN",
+ "SUCCESS_EVIDENCE_COHORT_GATES_PASS"
+]) assert.ok(successGood.stdout.includes(marker),"Published success example missing: "+marker);
+for(const [before,after,why] of [
+ ["if not c.source_verified:","if False:","unverified measurement source trusted"],
+ ["if not c.collection_authorized:","if False:","unlawful collection assumed permitted"],
+ ["if not c.baseline_defined:","if False:","missing baseline silently accepted"],
+ ["if not c.denominator_all_eligible:","if False:","selection-biased denominator accepted"],
+ ["if not c.unknowns_reported:","if False:","pending/unverified cases erased"],
+ ["if not c.comparison_defensible:","if False:","unsupported causal explanation promoted"],
+ ["if not c.harm_guardrails_checked:","if False:","balancing harms ignored"],
+ ["if not c.decision_owner_approved:","if False:","decision owner/signoff missing"],
+ ['good = sum(c.state == "CLOSED" and c.outcome_verified and c.customer_notified for c in cohort)',
+  'good = sum(c.state == "CLOSED" for c in cohort)',"CLOSED without proof treated as successful"],
+ ["return Fraction(good, len(cohort))",
+  'return Fraction(good, sum(c.state != "OPEN" for c in cohort))',"completed-only biased denominator called eligible cohort"]
+]){
+ assert.ok(successPython.includes(before),"Exact wrong-source target missing "+why);
+ const wrong=python(successPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"Wrong evidence inference passed assertions: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Wrong source failure reason "+why+": "+wrong.stderr);
+}
+console.log("PASS original Success Measures and Evidence, source-exact eligible cohort and reporting guards, two readings and ten rejected wrong inferences");
