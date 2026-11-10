@@ -10,6 +10,10 @@ const config=readFileSync(configPath,"utf8");
 const python=readFileSync(scriptPath,"utf8");
 const ts=readFileSync(tsPath,"utf8");
 const lesson=readFileSync(lessonPath,"utf8");
+const forwardingPath="scripts/check-reliability-prometheus-to-alertmanager.py";
+const forwardingText=readFileSync(forwardingPath,"utf8");
+const forwardingSource=readFileSync("packages/runtime-kernel/src/paths/reliability-prometheus-to-alertmanager-proof.ts","utf8");
+
 
 function published(name){
  const p="export const "+name+" = ";
@@ -21,6 +25,20 @@ assert.equal(published("alertmanagerLocalConfigTemplate"),config,
  "Learner-displayed routing configuration differs from actual Alertmanager input");
 assert.equal(published("alertmanagerLocalRuntimePython"),python,
  "Learner-displayed Python runner differs from executed actual Alertmanager program");
+const prefix="export const prometheusToAlertmanagerPython = ";
+const publishedLine=forwardingSource.split("\\n").find(line=>line.startsWith(prefix));
+assert.ok(publishedLine && publishedLine.endsWith(";"),"Real Prometheus forwarded source missing from learner reading");
+assert.equal(JSON.parse(publishedLine.slice(prefix.length,-1)),forwardingText,
+  "Actual Prometheus-to-Alertmanager runtime differs from copyable learner source");
+for(const required of ["PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_FIRING_PASS",
+ "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS",
+ "PROMETHEUS_FORWARDING_BASELINE_PASS",
+ 'TSA_FORWARD_RULE_VARIANT', "REAL_PROMETHEUS_SCRAPE_PASS"]){
+ assert.ok(forwardingText.includes(required),"Real forwarding coverage missing: "+required);
+}
+assert.ok(lesson.includes("blocks: prometheusToAlertmanagerBlocks"),
+ "New source is not wired to original Alertmanager learning path");
+
 for(const required of [
  'group_by: [\'service\', \'environment\', \'team\']',
  'group_wait: 2s','group_interval: 5s','repeat_interval: 30s',
@@ -47,6 +65,7 @@ const ids=[
  "reliability-alertmanager-implementation-001",
  "reliability-alertmanager-implementation-route-mechanics-reading",
  "reliability-alertmanager-implementation-live-delivery-reading",
+ "reliability-alertmanager-implementation-prometheus-forwarding-reading",
  "reliability-alertmanager-implementation-002",
  "reliability-alertmanager-implementation-003",
  "reliability-alertmanager-implementation-004"
