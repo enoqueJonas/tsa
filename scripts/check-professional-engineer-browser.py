@@ -177,12 +177,14 @@ def run():
   page.screenshot(path=str(ART/"discovery-problem-choice-390.png"),full_page=True)
   page.set_viewport_size({"width":1440,"height":900})
   choice_practice="capstone-problem-discovery-choosing-a-substantial-problem-practice"
-  page.goto(BASE+"/?"+urlencode({
-    "view":"curriculum","school":"professional-engineer",
-    "path":"capstone-problem-discovery","activity":choice_practice
-  }),wait_until="networkidle")
+  # Use the real lesson's Next action to advance through the gating flow;
+  # direct-linking to an unstarted practical can legitimately be redirected.
+  page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
-  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==choice_practice
+  actual_choice=page.evaluate("new URLSearchParams(location.search).get('activity')")
+  assert actual_choice==choice_practice,(
+    f"Original first-reading Next did not open its paired practice: {actual_choice}"
+  )
   assert "promised stakeholder access" in page.locator("main").last.inner_text(),(
     "Original problem-choice practice must challenge false access claims"
   )
