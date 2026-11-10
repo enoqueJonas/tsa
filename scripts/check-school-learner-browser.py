@@ -293,6 +293,8 @@ def inspect_school(page):
                     "metrics-prometheus-grafana-grafana-001": "Use an explicit no-data state instead of decorating telemetry gaps green",
                     "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
+                    "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
+                    "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
                     "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
                     "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
@@ -546,6 +548,47 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Recording/alerting source overflow at 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "reliability-alertmanager-implementation-001",
+                "reliability-alertmanager-implementation-route-mechanics-reading",
+                "reliability-alertmanager-implementation-live-delivery-reading",
+                "reliability-alertmanager-implementation-002",
+                "reliability-alertmanager-implementation-003",
+            }:
+                if activity_id == "reliability-alertmanager-implementation-001":
+                    assert "Receiver failure was unexpectedly accepted" in text, (
+                        "Original manual loopback test was displaced"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-route-mechanics-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Real route/group/inhibition template is not copyable"
+                    )
+                    assert "__RECEIVER_PORT__" in text and "group_interval: 5s" in text, (
+                        "Original route-focused reading lost exact test input"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-live-delivery-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 2, (
+                        "Real Alertmanager runtime Python and command not copyable"
+                    )
+                    assert "REAL_ALERTMANAGER_RESOLVED_PASS" in text and (
+                        "REAL_ALERTMANAGER_API_BOUNDARY_ONLY" in text
+                    ), "Learner source misstates real Alertmanager output and limitations"
+                elif activity_id == "reliability-alertmanager-implementation-002":
+                    assert "two distinct alerts no longer reach" not in text or (
+                        "group_by" in text
+                    ), "Practical lost wrong-grouping transfer"
+                    assert "real Prometheus-to-Alertmanager transport" in text, (
+                        "Original deployment practical overclaims Prometheus forwarding"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-003":
+                    assert "actual HTTP 503 attempts" in text and (
+                        "fresh group" in text
+                    ), "Original failure/recovery practical conflates rejected and delivered"
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Alertmanager real-source activity overflows 390px: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
