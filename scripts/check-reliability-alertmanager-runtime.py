@@ -17,7 +17,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 IMAGE = "prom/alertmanager:v0.28.1"
-TEMPLATE = Path("labs/reliability-alertmanager/alertmanager.yml.template")
+TEMPLATE = Path(os.environ.get("TSA_ALERTMANAGER_CONFIG",
+                               "labs/reliability-alertmanager/alertmanager.yml.template"))
 assert "__RECEIVER_PORT__" in TEMPLATE.read_text(encoding="utf8")
 
 def free_port():
