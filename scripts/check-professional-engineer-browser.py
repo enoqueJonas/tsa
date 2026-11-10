@@ -554,6 +554,91 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_ambiguity_practice
   print("PASS original Ambiguity -> sensitivity/EVPI -> ethical experiment -> original practice; 390px, source copy, Next and reload",flush=True)
+  # Quality Attributes: original scenario teaching -> exact p95/negative
+  # access/restore evidence -> trade-offs -> ORIGINAL practical, via real Next.
+  # This synthetic prerequisite seed tests navigation only, not learner mastery.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+    "capstone-problem-discovery-requirements-001",
+    "capstone-problem-discovery-requirements-acceptance-reading",
+    "capstone-problem-discovery-requirements-traceability-reading",
+    "capstone-problem-discovery-requirements-practice",
+    "capstone-problem-discovery-constraints-001",
+    "capstone-problem-discovery-constraints-feasibility-reading",
+    "capstone-problem-discovery-constraints-conflict-revision-reading",
+    "capstone-problem-discovery-constraints-practice",
+    "capstone-problem-discovery-working-with-ambiguity-001",
+    "capstone-problem-discovery-working-with-ambiguity-sensitivity-reading",
+    "capstone-problem-discovery-working-with-ambiguity-experiment-design-reading",
+    "capstone-problem-discovery-working-with-ambiguity-practice",
+  ])
+  quality_steps=(
+    ("capstone-problem-discovery-quality-attributes-001",
+     ("Understand quality attributes through observable consequences",
+      "Write one scenario with a trigger, environment and measurable response",
+      "Avoid five recurring mistakes in quality specifications")),
+    ("capstone-problem-discovery-quality-attributes-measurement-reading",
+     ("Measure the correct population, percentile and end-to-end boundary",
+      "Separate restoration time from possible data loss",
+      "QUALITY_ATTRIBUTE_EVIDENCE_GATE_PASS")),
+    ("capstone-problem-discovery-quality-attributes-tradeoffs-reading",
+     ("Keep availability, correctness and useful service distinct",
+      "Trade-off claims require a concrete failure and boundary",
+      "Use a scenario matrix and acknowledge incompatible targets")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":quality_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(quality_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==activity,f"Original Quality Attributes order wrong: {current} != {activity}"
+   main=page.locator("main").last
+   text_quality=main.inner_text()
+   assert len(text_quality)>=3500,f"Quality teaching still thin: {activity} ({len(text_quality)})"
+   for marker in requirements:
+    assert marker in text_quality,f"Missing key quality teaching {activity}: {marker}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Quality Python source not copyable"
+    assert main.locator("figure pre").count()>0,"Quality Python not displayed as code"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Quality Attributes overflow 390px: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-quality-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   next_activity=(quality_steps[index+1][0] if index+1<len(quality_steps)
+                  else "capstone-problem-discovery-quality-attributes-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=next_activity,timeout=15000)
+  original_quality_practice="capstone-problem-discovery-quality-attributes-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_quality_practice
+  quality_practice_text=page.locator("main").last.inner_text()
+  for text_marker in ("six-scenario quality attribute catalogue",
+                      "reject EIGHT misleading shortcuts",
+                      "incomplete cases and incorrect/out-of-date protected results",
+                      "data owner prohibits an audit field"):
+   assert text_marker in quality_practice_text,"Original Quality practical missing "+text_marker
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_quality_practice
+  print("PASS original Quality Attributes -> p95/privacy/recovery -> tradeoffs -> original practice; 390px, source copy, actual Next, reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
