@@ -153,6 +153,8 @@ jobs:
         run: node scripts/check-reliability-metrics-scrape-evidence.mjs
       - name: Check exact original recording-rule YAML and alerting lesson boundaries
         run: node scripts/check-reliability-prometheus-rule-engine.mjs
+      - name: Guard first-principles SLO burn math and exact Prometheus rule/test files
+        run: node scripts/check-reliability-slo-burn-engine.mjs
       - name: Verify exact authored Alertmanager routing and real HTTP driver source
         run: node scripts/check-reliability-alertmanager-source.mjs
       - name: Execute source-published traceparent handoff and missing-propagation evidence
@@ -414,6 +416,28 @@ jobs:
             fi
             echo "PASS: official promtool rejected mutated rule '$scenario'"
             tail -n 15 "$RUNNER_TEMP/promtool-$scenario.log"
+          done
+
+      - name: Evaluate real multiwindow SLO burn alert over seven changed-case histories
+        run: |
+          image="prom/prometheus:v3.13.3"
+          rules="$PWD/labs/reliability-slo-burn"
+          node scripts/check-reliability-slo-burn-engine.mjs
+          docker run --rm --network none -v "$rules:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" check rules steward-burn.rules.yml
+          docker run --rm --network none -v "$rules:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" test rules steward-burn.test.yml
+      - name: Require actual Prometheus evaluator to reject wrong burn window numerator and traffic floor
+        run: |
+          image="prom/prometheus:v3.13.3"
+          root="$RUNNER_TEMP/tsa-burn-mutants"
+          node scripts/check-reliability-slo-burn-engine.mjs --emit-mutants "$root"
+          for scenario in wrong-or-window wrong-error-numerator removed-traffic-floor; do
+            if docker run --rm --network none -v "$root/$scenario:/rules:ro" -w /rules --entrypoint /bin/promtool "$image" test rules steward-burn.test.yml > "$RUNNER_TEMP/burn-$scenario.log" 2>&1; then
+              echo "FAIL: incorrect $scenario burn-rate rule unexpectedly passed real Prometheus engine"
+              exit 1
+            fi
+            grep -Eq 'FAILED|unexpected|exp:' "$RUNNER_TEMP/burn-$scenario.log" || { cat "$RUNNER_TEMP/burn-$scenario.log"; exit 1; }
+            echo "PASS: official Prometheus engine rejects $scenario"
+            tail -n 10 "$RUNNER_TEMP/burn-$scenario.log"
           done
 
   real-alertmanager-delivery:
