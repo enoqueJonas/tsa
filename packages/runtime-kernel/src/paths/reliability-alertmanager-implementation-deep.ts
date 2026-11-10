@@ -2,6 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { alertDeliveryBlocks } from "./reliability-alert-delivery-proof";
 import { alertmanagerRouteFocusedBlocks, alertmanagerRuntimeFocusedBlocks } from "./reliability-alertmanager-real-runtime";
+import { prometheusToAlertmanagerBlocks } from "./reliability-prometheus-to-alertmanager-proof";
 
 const alertmanager: LearningResource = { title: "Prometheus Alertmanager", url: "https://prometheus.io/docs/alerting/latest/alertmanager/" };
 const notificationExamples: LearningResource = { title: "Alertmanager notification examples", url: "https://prometheus.io/docs/alerting/latest/notification_examples/" };
@@ -39,6 +40,16 @@ export const alertmanagerImplementationDeepLessons: Lesson[] = [
                 content: { type: "reading", body: "Run the actual Alertmanager binary against a localhost webhook, prove grouped and inhibited delivery, receiver 503 failure, fresh recovery and resolved messages without claiming a production pager.", blocks: alertmanagerRuntimeFocusedBlocks },
             },
             {
+                id: "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+                title: "Prove Actual Prometheus-to-Alertmanager Delivery",
+                estimatedMinutes: 75,
+                content: {
+                    type: "reading",
+                    body: "Execute a real Prometheus rule against a synthetic localhost metric, verify Alertmanager firing and resolved webhooks, and fail a deliberately inverted rule.",
+                    blocks: prometheusToAlertmanagerBlocks,
+                },
+            },
+            {
                 id: "reliability-alertmanager-implementation-002",
                 title: "Deploy and Route with Alertmanager",
                 estimatedMinutes: 150,
@@ -51,7 +62,8 @@ export const alertmanagerImplementationDeepLessons: Lesson[] = [
                     "Capture Alertmanager status/configuration evidence without publishing live credentials or receiver secrets.",
                     "Before live Steward configuration, run the exact Python 3 source from the focused Alertmanager runtime reading with the pinned official Docker image. Retain actual receiver evidence for grouping, team routing, fallback, inhibition and duplicate suppression; do not infer these from configuration alone.",
                     "In a disposable copy of the YAML, change group_by to include alertname and verify the exact live container test rejects the broken grouping. Restore it, then break the security route and prove an unserved security alert is detected.",
-                    "State the absent boundary: the synthetic driver submits to /api/v2/alerts directly; real Prometheus-to-Alertmanager transport, production paging receiver and human acknowledgment are UNVERIFIED unless separately tested."
+                    "Run the exact additional Prometheus-forwarding source from the focused reading; prove Prometheus API up=1, no premature alert, an actual firing webhook and an actual resolved webhook. Then set TSA_FORWARD_RULE_VARIANT=wrong-condition and verify the real transport test fails before source activation.",
+                    "Distinguish the directly submitted /api/v2/alerts Alertmanager grouping/route lab from the separate real Prometheus-to-Alertmanager source. Both use synthetic inputs; neither proves real Steward rules, production paging receiver or human acknowledgment.",
                 ], deliverables: ["Alertmanager deployment", "Prometheus-to-Alertmanager configuration", "Receiver evidence", "Routing tree", "Grouping evidence", "Inhibition evidence"], completionCriteria: ["A real Alertmanager instance receives Steward alerts from Prometheus.", "At least one firing and resolved notification reaches the intended real receiver.", "Routing is label-driven and tested.", "Grouping reduces duplicate incident noise.", "One inhibition/suppression case is proven rather than only described." ] },
             },
             {
