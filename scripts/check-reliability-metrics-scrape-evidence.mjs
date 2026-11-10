@@ -22,8 +22,17 @@ for(const required of ["ThreadingHTTPServer","text/plain; version=0.0.4",
 for(const id of ["prometheus-architecture","promql","grafana"]) {
   assert.ok(map[id]?.length>=1,"Original metrics follow-on lesson absent: "+id);
 }
-assert.ok(original.includes("...metricsScrapeEvidenceBlocks(spec.id)"),
-  "Metrics source must render inside original readings");
+assert.ok(original.includes('...(spec.id === "prometheus-architecture" ? [] : metricsScrapeEvidenceBlocks(spec.id))'),
+  "PromQL/Grafana source must render in their original readings");
+const focused='id: "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading"';
+assert.ok(original.includes(focused),"Scrape source must live in dedicated reading after original Prometheus Architecture");
+const first=original.indexOf('id: `metrics-prometheus-grafana-${spec.id}-001`');
+const middle=original.indexOf(focused);
+const practical=original.indexOf('id: `metrics-prometheus-grafana-${spec.id}-002`');
+assert.ok(first>=0 && first<middle && middle<practical,
+  "Do not replace existing learner progress IDs or put scrape evidence after original practical");
+assert.ok(original.includes('blocks: metricsScrapeEvidenceBlocks(spec.id)'),
+  "Original curriculum does not render published Python in focused scrape reading");
 for(const expected of [
   "Execute the exact preceding scrape_lab.py",
   "Reproduce metrics HTTP 503 while user API",
