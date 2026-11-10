@@ -191,3 +191,30 @@ The new source map `reliability-observability-correlation-evidence.ts` renders i
 This runs real localhost HTTP and real disposable SQLite commits and an independently queried durable effect. The worker is an in-process simulated separate consumer connection: **no RabbitMQ deliveries, publisher retries, real Steward services, live Graylog indexing, Tempo exporter or OpenTelemetry SDK**. The example's W3C-shaped `traceparent` demonstrates a context-carrying mechanism, not a verified real distributed trace or compliant real producer integration. In-memory logs demonstrate a source allowlist; **real centralized indexing and retention remain a separate unverified acceptance gate**.
 
 At this audit entry the latest matching-head workflow is still in progress; passing the old 19/19 run from the previous module does not certify this new code. Human uncoached learner-transfer and live integration continue as OPEN in issue #327.
+
+
+## Metrics/Prometheus/Grafana real local scrape lesson — 10 November 2026
+
+**Branch:** draft [PR #408](https://github.com/enoqueJonas/tsa/pull/408), stacked on draft Cloud/Delivery PR #404. This batch follows the previously exact-head green 19/19 Observability/Logging continuation; it needs a **new matching-head CI run** before technical acceptance.
+
+### Actual source and original activity placement
+
+New `packages/runtime-kernel/src/paths/reliability-metrics-scrape-evidence.ts` is rendered via `metricsScrapeEvidenceBlocks(spec.id)` in the **original** Metrics/Prometheus/Grafana source readings. No original lesson or activity ID was renamed or dropped.
+
+- **Prometheus Architecture original reading `metrics-prometheus-grafana-prometheus-architecture-001`:** source-published, executable Python 3 standard-library localhost `ThreadingHTTPServer` responds to real `POST /register`, `GET /health` and `GET /metrics`. Text exposition defines `http_requests_total` with two bounded `route="/register"`/`status_class` counter series (preinitialized `2xx=0`, `5xx=0`). A caller independently records observed 201/503/201 outcomes and confirms two successes + one failure in scraped counters. No user/request IDs enter metric labels.
+- **Zero traffic:** both initialized counters read zero but denominator is zero; class marks ratio `UNKNOWN`, **not** a healthy 0% error rate.
+- **Scrape outage:** the metrics HTTP endpoint returns 503 despite the user API and `/health` returning successful responses. The local *modeled scrape outcome* is `up=0`, with absent metrics and interval reported as UNKNOWN, not magically substituted with zeros.
+- **Stale-but-HTTP-200 exporter:** a deliberately defective metrics endpoint returns its previous text snapshot with 200, while a fourth actual client POST has succeeded. A naive transport-only `up=1` would miss the fact that the independently caller-observed request count is four and exposed total remains three. On recovery a fresh scrape shows three successes and one failure.
+- **PromQL original reading `metrics-prometheus-grafana-promql-001`:** reuses the above real endpoint and distinguishes configured-target failure (`up=0`), fully absent/stale discovery and a good scrape of stale exporter text. It teaches independent target inventory, evaluation windows, empty/zero denominator, labels, `/api/v1/targets`, `up{job="steward-api"}`, and `absent_over_time(up{job="steward-api"}[10m])` without presenting any one query as an explanation for all outages.
+- **Grafana original reading `metrics-prometheus-grafana-grafana-001`:** teaches explicit **No data / Error / alert NoData** expectations separately from green business metrics. Real panel behavior requires separately run Prometheus + Grafana and a disposable target; classroom localhost source is insufficient.
+- Original paired practical activities `-002` for all three topics now require source-executed changed-case diagnosis and/or real infrastructure verification with explicit **NOT_TESTED/UNVERIFIED** reporting when absent.
+
+`scripts/check-reliability-metrics-scrape-evidence.mjs` executes the **exact authored Python from the reading**, checks actual output, then runs six deliberate wrong-source mutations for false zero denominator, failed scrape treated healthy, stale-200 accepted as fresh, undercounted 5xx, removed zero-initialized class and dropped caller-side verification. Each mutation must fail a source assertion. GitHub Actions `curriculum-audit.yml` includes this gate. The original browser traversal checks reading headings, copyable source, practical transfer and 390px layout.
+
+### What these results could and could not establish
+
+The new program **does use real local HTTP requests and real Prometheus-compatible text exposition**; the scrape is run by Python `urllib`, not Prometheus itself. Its local `up` printout **models** a single fetch result; it does **not** query a genuine Prometheus-generated `up` series or exercise Prometheus's TSDB, scrape scheduler, staleness markers, rate/increase evaluation, service discovery, relabeling or Grafana rendering. A `/register` 201/503 is an explicit **synthetic HTTP response**, not proof of Steward's durable business effects. The cumulative 1/3=33.33% illustration is **not** a five-minute PromQL rate, real SLI or alert evaluation.
+
+The learner must still run a real Prometheus server against an approved target, demonstrate a 503 scrape plus disappearance and recovery with exact PromQL evaluation, verify actual Grafana NoData/alert behavior and independently explain changed-case conclusions. Real deployment and uncoached learner validation remain OPEN under #327, with PR #408 DRAFT/UNMERGED.
+
+**Primary references:** [Prometheus job/instance and generated up](https://prometheus.io/docs/concepts/jobs_instances/) and [PromQL selectors, lookback and stale samples](https://prometheus.io/docs/prometheus/latest/querying/basics/).
