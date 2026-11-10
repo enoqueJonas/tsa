@@ -433,6 +433,22 @@ jobs:
         run: |
           docker pull prom/alertmanager:v0.28.1
           python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Prove real Alertmanager retries the same rejected webhook 503 without API repost
+        run: |
+          TSA_AM_RETRY_MODE=transient-503 python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Distinguish nonretryable receiver HTTP 400 within bounded delivery context
+        run: |
+          TSA_AM_RETRY_MODE=nonretryable-400 python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Reject a permanent HTTP 503 receiver with the unchanged same-notification success oracle
+        run: |
+          if TSA_AM_RETRY_MODE=permanent-503 python3 scripts/check-reliability-alertmanager-runtime.py > "$RUNNER_TEMP/tsa-am-permanent-503.log" 2>&1; then
+            echo "FAIL: permanent HTTP 503 was wrongly accepted as a successful retry"
+            exit 1
+          fi
+          grep -F 'REAL_ALERTMANAGER_SAME_ALERT_REJECTED_PASS' "$RUNNER_TEMP/tsa-am-permanent-503.log" || { cat "$RUNNER_TEMP/tsa-am-permanent-503.log"; exit 1; }
+          grep -F 'SAME_ALERT_RETRY_NOT_PROVEN' "$RUNNER_TEMP/tsa-am-permanent-503.log" || { cat "$RUNNER_TEMP/tsa-am-permanent-503.log"; exit 1; }
+          echo "PASS: official Alertmanager did not deliver the permanently rejected original webhook"
+
       - name: Prove real Prometheus evaluation forwarded via Alertmanager to firing and resolved webhooks
         run: |
           docker pull prom/prometheus:v3.13.3
