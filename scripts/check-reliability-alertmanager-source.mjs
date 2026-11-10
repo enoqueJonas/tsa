@@ -74,10 +74,37 @@ for(const phrase of [
  "REAL_ALERTMANAGER_RESOLVED_PASS",
  "REAL_ALERTMANAGER_API_BOUNDARY_ONLY"
 ]) assert.ok(python.includes(phrase),"Actual runtime case absent: "+phrase);
+const retryLesson=readFileSync(
+ "packages/runtime-kernel/src/paths/reliability-alertmanager-same-notification-retry.ts","utf8");
+for(const required of [
+ "TSA_AM_RETRY_MODE","transient-503","nonretryable-400","permanent-503",
+ "REAL_ALERTMANAGER_SAME_ALERT_REJECTED_PASS",
+ "REAL_ALERTMANAGER_SAME_ALERT_503_RETRY_PASS",
+ "REAL_ALERTMANAGER_400_UNRECOVERABLE_PASS",
+ "SAME_ALERT_RETRY_NOT_PROVEN",
+ '"fingerprint"', '"startsAt"', '"groupKey"', "api_submissions == 1"
+]){
+ assert.ok(python.includes(required),"Published Alertmanager runtime lacks same-identity retry mechanism: "+required);
+}
+for(const expected of [
+ "blocks: alertmanagerSameNotificationRetryBlocks",
+ "TSA_AM_RETRY_MODE=transient-503",
+ "TSA_AM_RETRY_MODE=nonretryable-400",
+ "TSA_AM_RETRY_MODE=permanent-503",
+ "SAME_ALERT_RETRY_NOT_PROVEN"
+]){
+ assert.ok(lesson.includes(expected),"Original recovery practical/reading lacks same-event retry transfer: "+expected);
+}
+for(const required of ["same-retry-actual-503","same-retry-4xx-case","same-retry-permanent-failure",
+ "fresh", "fingerprint"]){
+ if(required==="fresh") continue;
+ assert.ok(retryLesson.includes(required),"Focused retry lesson is not testable: "+required);
+}
 const ids=[
  "reliability-alertmanager-implementation-001",
  "reliability-alertmanager-implementation-route-mechanics-reading",
  "reliability-alertmanager-implementation-live-delivery-reading",
+ "reliability-alertmanager-implementation-same-notification-retry-reading",
  "reliability-alertmanager-implementation-prometheus-forwarding-reading",
  "reliability-alertmanager-implementation-outage-recovery-reading",
  "reliability-alertmanager-implementation-002",
