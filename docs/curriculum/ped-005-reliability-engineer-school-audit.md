@@ -218,3 +218,25 @@ The new program **does use real local HTTP requests and real Prometheus-compatib
 The learner must still run a real Prometheus server against an approved target, demonstrate a 503 scrape plus disappearance and recovery with exact PromQL evaluation, verify actual Grafana NoData/alert behavior and independently explain changed-case conclusions. Real deployment and uncoached learner validation remain OPEN under #327, with PR #408 DRAFT/UNMERGED.
 
 **Primary references:** [Prometheus job/instance and generated up](https://prometheus.io/docs/concepts/jobs_instances/) and [PromQL selectors, lookback and stale samples](https://prometheus.io/docs/prometheus/latest/querying/basics/).
+
+
+## Recording Rules → Actionable Alerting: real Prometheus expression-engine tests — 10 November 2026
+
+**Decision:** The immediately preceding metrics/scrape batch's [matching-head workflow #42766248507](https://github.com/enoqueJonas/tsa/actions/runs/42766248507) was **CANCELLED** after 18/19 jobs, not fully green; the Cloud browser had not completed. Do not inherit a green result from an older SHA. This new batch must earn its own matching-head 20-job workflow.
+
+### Original learner order and genuine source
+
+- Preserved original Recording Rules Concepts reading `metrics-prometheus-grafana-recording-rules-001`, original practical `-002` and reflection `-003`; inserted one focused 75-minute `metrics-prometheus-grafana-recording-rules-promtool-reading` **between** original reading/practical. This follows the rule to split complicated mechanisms into multiple lessons without deleting progress IDs.
+- Committed **real Prometheus rule-engine inputs**, not a Python approximation, at `labs/reliability-prometheus-rules/steward.rules.yml` and `steward.test.yml`. They are embedded byte-for-byte as copyable YAML in `reliability-prometheus-rule-engine-depth.ts`. Three recording rules compute completed HTTP 5-minute request rates, 5xx rates and a matched `route`-label error ratio using `rate()` before `sum by (route)`. A user-error alert adds a minimum-traffic filter on route and `for: 2m`; a configured scrape failure uses `up{job="steward-api"} == 0`, while a **missing** expected target uses `absent_over_time(up{job="steward-api"}[5m])`. No universal `or vector(0)` hides missing telemetry. Demo 20%/0.10 req/sec thresholds and severity=ticket are **teaching policy**, not production SLO or paging authority.
+- `steward.test.yml` exercises five official Prometheus test groups: healthy→sustained 5xx, initialized zero-traffic counters, sustained failed configured target, transient scrape failure and absent expected target. The tests assert both PromQL recording-rule labels/values and pending/firing alert states. Original Prometheus source already explains localhost scrape failures but those tests did not execute PromQL; this new fixture targets that missing rule-engine boundary.
+- The original `alerting-and-on-call-actionable-alerts-001/002/003` IDs remain. `reliability-actionable-alerts-depth.ts` now teaches distinct stages of raw metric → Prometheus evaluation → Alertmanager transport → human action. The unchanged original practical now requires a real `promtool` result, a wrong-source test and separate actual notification receipt before claiming any operational alert delivery.
+
+### Technical gates and deliberate source failures
+
+- `scripts/check-reliability-prometheus-rule-engine.mjs` asserts the **two displayed YAML strings equal the exact committed fixture bytes**, checks original ID/wiring and incident categories, and emits three deliberate wrong-rule fixtures: `up==1` substituted for failure, 2xx+5xx mistakenly counted in the error numerator, and `up==0` substituted for missing-target detection.
+- The `validate` workflow runs that source guard. New independent `prometheus-rule-engine` job runs **official `promtool`** from the versioned `prom/prometheus:v3.13.3` image on read-only mounted lab sources, with container network disabled. It runs `promtool check rules` and `promtool test rules` against genuine Prometheus expression/alert semantics, then requires all three wrong-source fixtures to fail with the unchanged expected test data. No synthetic Python replacement or acceptance-by-static-text.
+- The original Reliability Playwright traversal checks fundamentals, the focused YAML+commands, negative-control transfer, original actionable alert teaching and original practice at 390px.
+
+### Independent acceptance still outstanding
+
+Real `promtool test rules` on **synthetic samples** can prove correct rule-engine evaluation and distinguish some missing-data states; it does **not** mean any actual Steward metrics, Prometheus target, persistent TSDB, production query coverage, Grafana panel, Alertmanager notification/deduplication, on-call acknowledgement or runbook effectiveness was observed. The source explicitly requires a live restricted test environment for those steps. Uncoached learner teach-back remains OPEN. Keep Reliability issue #327 OPEN; draft PR #408 remains stacked on draft #404 and unmerged.
