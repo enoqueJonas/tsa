@@ -10,6 +10,8 @@ import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperime
 import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
 import { riskFoundationsBlocks, riskControlsBlocks, riskResidualBlocks } from "./professional-engineer-discovery-risk";
 import { successOutcomesBlocks, successCohortsBlocks, successClaimsBlocks } from "./professional-engineer-discovery-success-measures";
+import { scopeFoundationsBlocks, scopeDependenciesBlocks, scopeChangeBlocks } from "./professional-engineer-discovery-scope";
+import { discoveryBriefStageActivities } from "./professional-engineer-discovery-brief";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -24,6 +26,7 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isQuality = id === "capstone-problem-discovery-quality-attributes";
   const isRisk = id === "capstone-problem-discovery-risk";
   const isSuccess = id === "capstone-problem-discovery-success-measures-and-evidence";
+  const isScope = id === "capstone-problem-discovery-scope-and-non-goals";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
@@ -33,7 +36,8 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
     : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks]
     : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks]
-    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks] : undefined;
+    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks]
+    : isScope ? [{type:"paragraph",text:body}, ...scopeFoundationsBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -146,8 +150,22 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Trace claims to permissible evidence, predeclare outcomes and distinguish observed differences from causally demonstrated effects.",blocks:successClaimsBlocks},
     },
   ] : [];
+  const scopeReadings: Activity[] = isScope ? [
+    {
+      id: `${id}-dependency-release-reading`,
+      title: "Dependency Closure, Safe Exclusions and Release-Slice Gates",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Build a minimal coherent end-to-end slice without removing indispensable protections, ownership or dependency evidence.",blocks:scopeDependenciesBlocks},
+    },
+    {
+      id: `${id}-change-decision-reading`,
+      title: "Scope Change, Authority and Evidence-Based Reframing",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Review versioned scope changes, operational handoffs and the conditions for deferral or changing the problem frame.",blocks:scopeChangeBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : isScope ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
@@ -157,8 +175,9 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     ...qualityReadings,
     ...riskReadings,
     ...successReadings,
+    ...scopeReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : isScope ? 125 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -235,6 +254,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Write a metric measurement contract with eligibility version, owner, permitted source, authoritative event, inclusion/exclusion rule, missing-data treatment, baseline and target approval status, two balancing measures for unintended harm, and explicit criteria for a STOP or INCONCLUSIVE result.",
           "Build a claim-to-evidence ledger showing what unit, integration, browser and quality tests can and cannot establish; propose a comparability/causal evaluation plan without calling a before-after pilot a causal effect.",
           "Change two assumptions: discover an omitted intake channel and a more difficult case mix in the pilot. Recompute or suspend the outcome claim, update dependent requirements/risk and quality IDs and write a decision record that can truthfully say IMPACT_NOT_VERIFIED or DATA_COLLECTION_NOT_AUTHORIZED.",
+        ] : []),
+        ...(isScope ? [
+          "Define a genuinely NEW-domain solution-neutral problem boundary and map three core outcomes, two indispensable privacy/integrity controls, two explicit non-goals, one external dependency and one deferred capability. For each exclusion, name the responsible remaining operator and safe user handoff.",
+          "Construct a dependency and evidence graph: identify actor, input, authoritative state, output, failure branch, downstream requirement/quality/risk/metric IDs, actual source/authority and independent positive plus forbidden-side-effect test for every core behavior.",
+          "Run the EXACT Python 3 scope decision source shown in the dependency reading. Preserve all eleven scope classification results, five change-review statuses, and the SCOPE_BOUNDARY_AND_CHANGE_GATES_PASS final marker; synthetic booleans are NOT real permissions or owner signatures.",
+          "In fifteen throwaway source copies, break each protective condition independently: prohibited export, mandatory-control inclusion, source verification, permission, owner, negative oracle, dependency, outcome link, new-feature change gating, handoff owner, excluded dependency verification, versioned baseline, traceability, verified capacity and decision approval. Capture each expected Python AssertionError.",
+          "Publish a versioned scope/non-goal/deferred/assumption register and change ledger: include requester, outcome, authorization status, acceptance tests, operator capacity and safe handoff, rationale for rejecting tempting technology, and explicit deferral/reconsideration triggers.",
+          "Inject three conflicting events: a supplier withdraws data-sharing permission, the manual process used by an excluded feature loses its operating owner, and a sponsor requests a broad export. Reopen relevant boundary and acceptance decisions; justify BLOCK, HOLD, NARROW_SCOPE, DEFER or REFRAME instead of claiming a green release.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -295,6 +322,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "The exact learner-visible Python and all ten unsafe mutations catch unverified sources, denied collection, missing baseline, denominator selection, unreported unknowns, unsupported causal attribution, missing harm guards, unapproved decisions and false numerator logic.",
           "The claim-evidence mapping distinguishes verified code behavior, reported observations, comparisons and unproven causal impact, with predeclared success, failure, inconclusive and stop-for-harm conditions.",
           "Actual customer outcomes, approved baselines, lawful permission and uncoached independent learner competence remain NOT_VALIDATED; classroom green output is not evidence of product impact.",
+        ] : []),
+        ...(isScope ? [
+          "The learner distinguishes accountable problem/system/operating/evidence boundaries and genuinely separate IN_SCOPE, NON_GOAL, DEFERRED, DEPENDENCY and ASSUMPTION states, with a safe remaining responsible party for every exclusion.",
+          "The authored source and thirteen independent assertion failures reject forbidden exports, discarded mandatory protections, unapproved requirements, missing control evidence or dependencies, and unsupported changes without inventing authority.",
+          "The smallest coherent outcome survives deliberate exclusion only when its integrity/privacy/recovery invariants, human handoffs and negative acceptance tests remain defensible; a partial demo is NOT called production-ready.",
+          "A reviewer can trace three new change events to affected risk/requirement/evidence/test IDs and an explicit HOLD, NARROW_SCOPE or REFRAME decision; real signoffs and independent learner transfer remain NOT_VALIDATED.",
         ] : [])
       ]
     } }
@@ -314,5 +347,48 @@ export const capstoneProblemDiscoveryDeepLessons: Lesson[] = [
   reading("capstone-problem-discovery-risk", "Risk", `${scenario}\n\nDiscovery-stage risk identifies uncertainty that could prevent the capstone or future system from meeting objectives. Consider product/value risk, delivery risk, technical feasibility, data/privacy/security exposure, dependency risk, operational capability and stakeholder adoption. Distinguish an issue that already exists from a risk whose outcome remains uncertain.\n\nRecord cause or condition, uncertain event, consequence, affected objective, likelihood/impact reasoning, owner and proposed response. Do not create a giant risk register merely for completeness. Focus on risks that influence scope, experiments, design decisions or stakeholder commitments. Early risk work should tell you what must be learned or constrained next.`, 30),
   reading("capstone-problem-discovery-success-measures-and-evidence", "Success Measures and Evidence", `${scenario}\n\nDefine how you will know whether the capstone solved the intended problem and whether important engineering claims are true. Separate outcome measures from implementation activity. “Deployed five services” is not success; reduced processing delay, correct transaction handling, bounded recovery or successful completion of a critical workflow may be.\n\nCreate an evidence strategy before implementation: what user/business outcomes can be observed, which quality claims require tests or experiments, what operational signals will matter, and which claims cannot realistically be verified within the capstone. Define baselines where possible. The defence should later distinguish verified behavior, inferred behavior and assumptions.`, 32),
   reading("capstone-problem-discovery-scope-and-non-goals", "Scope and Non-goals", `${scenario}\n\nScope is a deliberate boundary, not a list of everything that would be nice to build. Define the smallest coherent system that preserves the engineering depth needed for the capstone. Explicit non-goals prevent accidental expansion and clarify which adjacent problems remain outside responsibility.\n\nUse risk and dependency reasoning when cutting scope: removing a cosmetic feature may be safe, while removing authentication or recovery thinking may destroy the realism of a sensitive service. Identify deferred capabilities, assumptions and extension points without prematurely engineering for imaginary future scale. A professional engineer protects delivery by saying no to work that does not materially support the intended outcome or evidence.`, 28),
-  { id: "capstone-problem-discovery-lab-produce-the-capstone-discovery-brief", title: "Lab: Produce the Capstone Discovery Brief", activities: [{ id: "capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001", title: "Lab: Produce the Capstone Discovery Brief", estimatedMinutes: 360, content: { type: "practical", objective: "Produce and defend a discovery brief for an independent capstone problem before proposing architecture or implementation.", scenario, instructions: ["Identify at least three candidate problem domains and score them for stakeholder reality, engineering depth, evidence access, feasibility and ethical/legal practicality. Select one and document why the alternatives were rejected.", "Map the current-state workflow and stakeholder ecosystem. Conduct or simulate structured stakeholder discovery using available evidence; distinguish observed facts, stakeholder statements and your assumptions.", "Write a solution-neutral problem statement and problem frame describing current state, impact, suspected causes, boundaries and unresolved questions.", "Create a prioritized requirement set with sources and acceptance/evidence intent. Separate capabilities, domain rules, interfaces/data needs and quality requirements from implementation choices.", "Create a constraint register and classify each item as hard, negotiable, assumed or decision-created. Remove constraints that are actually preferences.", "Write prioritized quality-attribute scenarios and explain the important tensions between them.", "Create a focused discovery risk register and an assumption/uncertainty log. Choose validation activities for the highest-consequence unknowns.", "Define outcome measures and an evidence plan that states what the capstone will later be able to prove, how it will prove it and what may remain unverified.", "Set explicit scope and non-goals. Demonstrate at least one feature or technology you intentionally exclude because it does not improve the evidence or problem outcome enough to justify its cost.", "Conduct a discovery review. Challenge the brief from stakeholder, engineering, security/operations and delivery perspectives. Revise the brief where evidence changes your understanding."], deliverables: ["Candidate-problem evaluation and selection rationale", "Stakeholder map and discovery evidence", "Current-state workflow and solution-neutral problem frame", "Prioritized requirements with sources and evidence intent", "Constraint register", "Prioritized quality-attribute scenarios and trade-offs", "Discovery risk register and uncertainty/assumption log", "Success measures and evidence strategy", "Scope and non-goals", "Discovery review decision record and revised brief"], completionCriteria: ["The chosen problem is substantial enough to exercise the TSA journey but bounded enough to deliver.", "The problem statement does not prescribe the architecture or preferred technologies.", "Requirements, constraints, assumptions and stakeholder claims are distinguishable and traceable to sources or explicit reasoning.", "Quality attributes are expressed as meaningful scenarios and prioritized according to stakeholder outcomes and failure consequences.", "The highest-consequence uncertainties have explicit validation plans rather than hidden assumptions.", "Success measures focus on outcomes and demonstrable engineering behavior rather than technology count or implementation activity.", "Scope and non-goals are explicit and at least one tempting but unjustified feature or technology is rejected.", "Another reviewer can understand what problem is being solved, why it matters, what is known, what remains uncertain and what evidence will later determine success."] } }] }
+  { id: "capstone-problem-discovery-lab-produce-the-capstone-discovery-brief", title: "Lab: Produce the Capstone Discovery Brief", activities: [
+    ...discoveryBriefStageActivities,
+    {
+      "id": "capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001",
+      "title": "Lab: Produce the Capstone Discovery Brief",
+      "estimatedMinutes": 180,
+      "content": {
+        "type": "practical",
+        "objective": "Deliver and defend ONE versioned, evidence-limited Capstone Discovery Brief integrating Stage A source assessment, Stage B cross-domain traceability and Stage C adversarial decisions before proposing architecture.",
+        "scenario": "Choose a substantial NEW capstone problem. The fictional warranty-return example in the guided readings is only a demonstration, not real evidence, authorized fieldwork or competent review.",
+        "instructions": [
+          "Assemble ONE v1.0 discovery brief that visibly includes Stage A v0.1, Stage B v0.2 and Stage C v0.3 histories rather than three disconnected exercise files.",
+          "Open with a solution-neutral problem, affected actor and nonuser, current-state unit-of-work flow, the three candidate selection rationale, evidence authority and honest missing/contradictory sources.",
+          "Include a bidirectional claim-to-source-to-requirement-to-denied-oracle-to-quality-to-risk-to-metric-to-scope trace. Choose at least THREE important chains; label gaps, attempted falsifications and unperformed field tests.",
+          "Define constraints, hard protections and explicit owner-verifiable non-goals. Identify every external dependency and manual handoff with evidence of the responsible authority or an explicit hold.",
+          "Describe the primary customer outcome using a fixed eligible cohort including unresolved cases, a baseline and its actual source/permission, two balancing safety measures and why a before/after observation cannot alone prove impact.",
+          "Attach exact source output from the Stage B Python proof and FOURTEEN intentionally wrong-source variants, distinguishing synthetic structural proof from any actual test of a deployed platform.",
+          "Include five distinct adversarial challenges covering excluded voices, lifecycle correctness, privacy, recovery/operations and measurement. Show at least TWO pre-review claims changed, withdrawn or relabelled after the counterexamples.",
+          "Record which review was genuinely independent and which was SELF-REVIEW. Never fabricate participant interviews, real owner signatures, approved thresholds, customer outcomes, lawful consent or reviewer approvals.",
+          "Publish the versioned final change log, unresolved evidence and risk owners, competing alternatives, deliberate technology/feature exclusion and a clear discovery exit: RESEARCH_REQUIRED, REDUCE_SCOPE, REFRAME_PROBLEM or CONDITIONALLY_PROCEED_TO_PROPOSAL.",
+          "Defend the brief against fresh questions from someone unfamiliar with the project. Mark outside review NOT_VALIDATED if no second person assessed it. A course progress indicator is NOT independent acceptance or permission to deploy."
+        ],
+        "deliverables": [
+          "Single versioned Discovery Brief v1.0 with v0.1 → v0.2 → v0.3 decision history",
+          "At least three candidate decisions, current-state workflow, stakeholder and permission evidence",
+          "Three source-to-outcome trace chains with negative oracles, independent verification status and explicit gaps",
+          "Constraints, quality, risks, full-cohort success measures and accountable scope/non-goals",
+          "Exact learner-visible source and fourteen rejected mutants clearly marked FICTIONAL",
+          "Five-role adversarial objection log and at least two substantive revisions",
+          "Discovery exit decision, prohibited actions, outstanding research plan and reviewer independence record"
+        ],
+        "completionCriteria": [
+          "A reviewer who has not seen the prior worksheets can reconstruct the harmed person's current workflow, actor permissions and evidence limitations without consulting the author's memory.",
+          "At least three trace chains connect real or honestly unverified evidence to measurable acceptance, denied-side-effect verification, quality risks, outcome and a safe scope boundary.",
+          "A high-consequence claim is permitted to remain UNSUPPORTED, NOT_TESTED, or STOPPED; no fictional data or green Python printout becomes field evidence or production approval.",
+          "Every excluded feature that affects actual users names a responsible verified handoff or openly blocks the dependent promised outcome.",
+          "Five adversarial objections each attach to source and claim IDs, and at least two initial conclusions visibly change after contradictory evidence.",
+          "The final recommendation distinguishes investigation authorization, delivery feasibility, genuine stakeholder approval and actual production release; none are inferred from a submitted educational activity.",
+          "The independence of reviews and actual permission to use data are stated truthfully, with unknowns and the next safe evidence decision clearly owned.",
+          "The original final activity retains its stable ID and is completed independently of navigation, not mistaken for automatic human assessment of the artifact."
+        ]
+      }
+    }
+  ] }
 ];
