@@ -1046,3 +1046,96 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Wrong source failure reason "+why+": "+wrong.stderr);
 }
 console.log("PASS original Success Measures and Evidence, source-exact eligible cohort and reporting guards, two readings and ten rejected wrong inferences");
+
+
+// Tenth ORIGINAL discovery topic: Scope and Non-goals. Require actual
+// boundary/permission/control tests, NOT "small feature list" prose.
+const scopeFile=fs.readFileSync(root+"professional-engineer-discovery-scope.ts","utf8");
+const scopePrefix="export const scopeBoundaryPython = ";
+const scopeLine=scopeFile.split("\n").find(x=>x.startsWith(scopePrefix));
+assert.ok(scopeLine?.endsWith(";"),"Missing literal learner Scope Python");
+const scopePython=JSON.parse(scopeLine.slice(scopePrefix.length,-1));
+function scopeSection(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=scopeFile.indexOf(anchor);
+ assert.ok(at>=0,"Scope authored content not found: "+name);
+ const start=at+anchor.length;
+ const end=nextName?scopeFile.indexOf("export const "+nextName+":",start):scopeFile.length;
+ assert.ok(end>start,"Invalid Scope authored section bounds: "+name);
+ return JSON.parse(scopeFile.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const scopeBoundaries=scopeSection("scopeFoundationsBlocks","scopeDependenciesBlocks");
+const scopeDependencies=scopeSection("scopeDependenciesBlocks","scopeChangeBlocks");
+const scopeChanges=scopeSection("scopeChangeBlocks",null);
+for(const [name,blocks,min] of [
+ ["boundaries",scopeBoundaries,5200],
+ ["dependencies",scopeDependencies,4200],
+ ["changes",scopeChanges,5100]
+]){
+ assert.ok(blocks.filter(b=>b.type==="heading").length>=4,"Insufficient original Scope mechanisms: "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").length>=8,"Too few original Scope examples: "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n").length>=min,
+  "Scope reading requires worked counterexamples, not a catalogue of labels: "+name);
+ assert.equal(blocks.filter(b=>b.type==="resources").length,1,"Missing bounded Scope reading references: "+name);
+}
+assert.equal(scopeBoundaries.filter(b=>b.type==="code").length,0);
+assert.equal(scopeDependencies.filter(b=>b.type==="code").length,1);
+assert.equal(scopeChanges.filter(b=>b.type==="code").length,0);
+assert.equal(scopeDependencies.find(b=>b.type==="code").code,scopePython,
+ "CI must execute the EXACT Python displayed in the Scope reading");
+const scopeOriginal=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const token of [
+ 'id === "capstone-problem-discovery-scope-and-non-goals"',
+ "...scopeFoundationsBlocks","...scopeReadings",
+ "-dependency-release-reading","-change-decision-reading",
+ "Run the EXACT Python 3 scope decision source",
+ "In thirteen throwaway source copies",
+ 'reading("capstone-problem-discovery-scope-and-non-goals"'
+]) assert.ok(scopeOriginal.includes(token),"Missing original Scope/practice wiring: "+token);
+const scopePracticeAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(scopeOriginal.indexOf("...scopeReadings")<scopeOriginal.indexOf(scopePracticeAnchor),
+ "Scope independent mechanisms must precede original paired practical");
+const scopeGood=python(scopePython);
+assert.equal(scopeGood.status,0,scopeGood.stdout+"\n"+scopeGood.stderr);
+for(const marker of [
+ "core: CORE_REVIEWABLE_NOT_APPROVED",
+ "critical_control: CORE_REVIEWABLE_NOT_APPROVED",
+ "prohibited_export: STOP_PROHIBITED_EXPORT",
+ "unverified: HOLD_UNVERIFIED_SOURCE",
+ "no_consent: HOLD_NO_PERMISSION",
+ "no_owner: HOLD_NO_OWNER",
+ "no_oracle: HOLD_NO_NEGATIVE_ORACLE",
+ "unknown_dependency: HOLD_DEPENDENCY_UNKNOWN",
+ "no_outcome: HOLD_NO_OUTCOME_LINK",
+ "new_feature: CHANGE_REQUEST_NOT_AUTO_INCLUDED",
+ "excluded_marketing: NON_GOAL_WITH_HANDOFF",
+ "missing_baseline: UNKNOWN_BASELINE_HOLD",
+ "missing_impact: MISSING_TRACEABILITY_HOLD",
+ "capacity_claim_only: CAPACITY_NOT_VERIFIED_HOLD",
+ "unsigned_change: OWNER_DECISION_PENDING",
+ "reviewable_change: CHANGE_REVIEWABLE_NOT_RELEASE_APPROVED",
+ "BASELINE core control retained; out-of-scope marketing not silently deployed",
+ "NO_SIGNED_REAL_AUTHORITY; NO_PRODUCTION_OR_LEGAL_APPROVAL",
+ "SCOPE_BOUNDARY_AND_CHANGE_GATES_PASS"
+]) assert.ok(scopeGood.stdout.includes(marker),"Missing published Scope execution proof: "+marker);
+for(const [before,after,why] of [
+ ["if item.prohibited_export:","if False:","prohibited export silently permitted"],
+ ["if item.required or item.mandatory_control:","if item.required:","mandatory safety control treated as optional"],
+ ["if not item.source_verified:","if False:","unverified source accepted"],
+ ["if not item.collection_permitted:","if False:","permission bypassed"],
+ ["if not item.owner_named:","if False:","missing process owner ignored"],
+ ["if not item.negative_oracle_written:","if False:","no harmful-side-effect test accepted"],
+ ["if not item.dependency_checked:","if False:","dependency not checked"],
+ ["if not item.linked_outcome:","if False:","unjustified core inclusion"],
+ ["if item.new_request:","if False:","new extension automatically added"],
+ ["if not change.baseline_versioned:","if False:","unversioned baseline change"],
+ ["if not change.effect_traced:","if False:","untraced impact"],
+ ["if not change.capacity_verified:","if False:","unverified staffing claim"],
+ ["if not change.decision_owner_approved:","if False:","missing change authority"]
+]){
+ assert.ok(scopePython.includes(before),"Scope mutation target missing: "+why);
+ const bad=python(scopePython.replace(before,after));
+ assert.notEqual(bad.status,0,"Unsafe Scope mutant passed: "+why);
+ assert.match(bad.stderr,/AssertionError/,"Scope mutant failed for unrelated reason "+why+": "+bad.stderr);
+}
+console.log("PASS original Scope and Non-goals, exact source Python boundary/change gates, two additional readings, thirteen rejected unsafe mutants");
