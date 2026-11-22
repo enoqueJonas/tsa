@@ -50,7 +50,7 @@ export function AcademyDashboard({ onOpenCurriculum, onOpenPath }: AcademyDashbo
             <button type="button" onClick={() => onOpenPath(lastEntry.path, lastEntry.school)} className="mt-8 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200">Continue learning</button>
           </> : <>
             <h2 className="mt-6 max-w-3xl text-3xl font-semibold tracking-tight lg:text-4xl">Start your Technical Stewardship journey.</h2>
-            <p className="mt-4 max-w-2xl text-zinc-400">Your dashboard will become your learning cockpit as soon as you begin the first module.</p>
+            <p className="mt-4 max-w-2xl text-zinc-400">Choose any school or module to begin. Prerequisites are guidance, not access restrictions.</p>
             <button type="button" onClick={onOpenCurriculum} className="mt-8 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200">Explore curriculum</button>
           </>}
         </article>
@@ -69,7 +69,7 @@ export function AcademyDashboard({ onOpenCurriculum, onOpenPath }: AcademyDashbo
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <article className="rounded-3xl border border-zinc-200 bg-white p-7 shadow-sm">
-          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">The journey</p><h2 className="mt-2 text-2xl font-semibold">12 schools. One apprenticeship.</h2></div><button type="button" onClick={onOpenCurriculum} className="text-sm font-semibold text-blue-700 hover:text-blue-900">View curriculum →</button></div>
+          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">The journey</p><h2 className="mt-2 text-2xl font-semibold">12 schools. Choose your path.</h2></div><button type="button" onClick={onOpenCurriculum} className="text-sm font-semibold text-blue-700 hover:text-blue-900">View curriculum →</button></div>
           <div className="mt-6 space-y-2">{journey.schools.map((school, index) => {
             const schoolActivities = school.paths.flatMap((path) => activities(path));
             const completed = schoolActivities.filter((activity) => completedIds.has(activity.id)).length;

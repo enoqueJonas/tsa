@@ -31,8 +31,6 @@ export function LearningExperience({
   const [activity, setActivity] = useState(session.currentActivity());
   const [hasNext, setHasNext] = useState(session.hasNext());
   const [completedActivityIds, setCompletedActivityIds] = useState(session.completedActivityIds());
-  const [unlockedLessonIds, setUnlockedLessonIds] = useState(session.unlockedLessonIds());
-  const [unlockedActivityIds, setUnlockedActivityIds] = useState(session.unlockedActivityIds());
   const [reflectionResponse, setReflectionResponse] = useState(session.reflectionResponse(session.currentActivity().id));
   const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(session.canCompleteCurrentActivity());
 
@@ -42,15 +40,15 @@ export function LearningExperience({
     setActivity(currentActivity);
     setHasNext(session.hasNext());
     setCompletedActivityIds(session.completedActivityIds());
-    setUnlockedLessonIds(session.unlockedLessonIds());
-    setUnlockedActivityIds(session.unlockedActivityIds());
     setReflectionResponse(session.reflectionResponse(currentActivity.id));
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
     return currentActivity;
   }
 
-  function persist() {
-    void savePathProgress(activePath, session.progress());
+  // Navigation must not publish a new URL before its progress is durable.
+  // An immediate refresh after Next/Sidebar otherwise races the IndexedDB put.
+  async function persist() {
+    await savePathProgress(activePath, session.progress());
   }
 
   useEffect(() => {
@@ -78,20 +76,20 @@ export function LearningExperience({
     window.scrollTo(0, 0);
   }, [activity.id, restored]);
 
-  function primary() {
+  async function primary() {
     const id = session.currentActivity().id;
     const done = session.completedActivityIds().includes(id);
     if (!done && !session.completeCurrentActivity()) return;
     if (session.hasNext()) session.next();
     const current = sync();
-    persist();
+    await persist();
     onActivityChange?.(current.id);
   }
 
-  function select(id: string) {
+  async function select(id: string) {
     if (!session.goToActivity(id)) return;
     const current = sync();
-    persist();
+    await persist();
     onActivityChange?.(current.id);
   }
 
@@ -99,7 +97,7 @@ export function LearningExperience({
     if (!session.setReflectionResponse(activity.id, value)) return;
     setReflectionResponse(value);
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
-    persist();
+    void persist();
   }
 
   if (!ready || !restored) {
@@ -107,13 +105,18 @@ export function LearningExperience({
   }
 
   const done = completedActivityIds.includes(activity.id);
-  const finished = !hasNext && done;
+  // Free navigation means the last activity can be completed while earlier
+  // activities remain unfinished. Never display "Path complete" for that case.
+  const pathComplete = activePath.lessons.every((entry) =>
+    entry.activities.every((item) => completedActivityIds.includes(item.id))
+  );
+  const lastActivityDone = !hasNext && done;
   const last = lesson.activities[lesson.activities.length - 1]?.id === activity.id;
-  const disabled = finished || (!done && !canCompleteCurrentActivity);
+  const disabled = lastActivityDone || (!done && !canCompleteCurrentActivity);
 
   let label = "Next";
-  if (finished) label = "Path complete";
-  else if (!hasNext) label = "Complete path";
+  if (lastActivityDone) label = pathComplete ? "Path complete" : "Activity completed";
+  else if (!hasNext) label = "Mark activity complete";
   else if (last) label = "Next lesson";
 
   const readingContent = activity.content.type === "reading" ? activity.content : null;
@@ -140,8 +143,6 @@ export function LearningExperience({
           currentLesson={lesson}
           currentActivity={activity}
           completedActivityIds={completedActivityIds}
-          unlockedLessonIds={unlockedLessonIds}
-          unlockedActivityIds={unlockedActivityIds}
           onSelectActivity={select}
         />
 
