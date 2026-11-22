@@ -188,3 +188,93 @@ export const discoveryBriefTraceBlocks: LessonBlock[] = [
     ]
   }
 ];
+export const discoveryBriefReviewBlocks: LessonBlock[] = [
+  {
+    "type": "paragraph",
+    "text": "An adversarial review is not a pleasant meeting where the presenter reads their conclusions aloud and receives polite approval. Its job is to find the most consequential way the discovery brief could be false. A complete set of project artifacts is not proof of a correct problem selection or safe implementation boundary. The reviewer should be able to force a change to a claim, a test, an operating responsibility or a decision."
+  },
+  {
+    "type": "heading",
+    "id": "brief-c-lenses",
+    "level": 2,
+    "text": "Use distinct skeptical review roles"
+  },
+  {
+    "type": "paragraph",
+    "text": "The affected-nonuser lens asks who bears costs or privacy harm while being absent from interviews. A domain reviewer checks authoritative state and exceptional workflows. A privacy/security reviewer tests unauthorized access and forbidden data reuse. A reliability/operations reviewer challenges retries, incomplete outcomes, restore integrity and staffing. An evidence/outcomes reviewer attacks denominators and causal interpretations. A delivery reviewer tests permission, dependency ownership, scope and capacity. If one author simulates all these roles, mark SELF-REVIEW rather than claiming independent acceptance."
+  },
+  {
+    "type": "paragraph",
+    "text": "A credible review question is designed to falsify something material. The customer claim that all closed cases received a verified decision can be refuted by one CLOSED status lacking authoritative supplier proof. Ask for the real source and permitted method before accepting the revised claim. The answer 'all unit tests passed' is irrelevant to whether real supplier evidence exists. A useful written defense states the claim, competing cause, unavailable evidence and exact next authorized step."
+  },
+  {
+    "type": "heading",
+    "id": "brief-c-counterarguments",
+    "level": 2,
+    "text": "Record what would reverse a claim"
+  },
+  {
+    "type": "paragraph",
+    "text": "An objection ledger should contain reviewer role and independence, attacked claim ID, a plausible counterexample, affected person, event and source, permission status, a discriminating observation, result (SUPPORTED, REFUTED, UNKNOWN or NOT_TESTED), impacted requirement/quality/risk/metric/scope IDs, owner, decision and next trigger. Record rebuttal sources rather than argumentative wording. If observation cannot be performed lawfully, maintain a hold; an unavailable test cannot be silently marked passed."
+  },
+  {
+    "type": "paragraph",
+    "text": "For a privacy objection, specify an unauthorized operator asking for another case and verify response fields, cached data, state and audit. If the environment only permits synthetic identifiers, do not call it a penetration assessment of the production system. For reliability, inject a supplier timeout followed by a repeated callback and ask whether two user-visible closures occur. For operations, remove the named manual refund team and test whether the non-goal has a safe handoff. For measurement, include cases still OPEN after the chosen follow-up."
+  },
+  {
+    "type": "heading",
+    "id": "brief-c-contradictions",
+    "level": 2,
+    "text": "Make adverse evidence change at least two conclusions"
+  },
+  {
+    "type": "paragraph",
+    "text": "Inject a contradictory supplier timestamp: processing time might not be the original bottleneck because document preparation consumed more time. Withdraw or narrow the causal claim. Next, find that a success ratio excluded open cases: recompute the eligible cohort and weaken the progress conclusion. Finally remove permission for an integration: the proposed status guarantee may no longer be an in-scope promise. A review that preserves all initial statements despite these falsifiers has not demonstrated useful correction."
+  },
+  {
+    "type": "paragraph",
+    "text": "A reviewer challenge is valuable when it leads to a document change that can be verified: a requirement ID is withdrawn, a negative acceptance test is added, a quality target becomes PENDING, a metric denominator changes or scope is reduced with a named handoff. Merely appending a list of issues to the final page does not repair the argument. Maintain versioned v0.1, v0.2 and v0.3 with a small change log showing previous wording, new evidence, updated decision and retained uncertainty."
+  },
+  {
+    "type": "heading",
+    "id": "brief-c-exit",
+    "level": 2,
+    "text": "Distinguish permission to propose from permission to deploy"
+  },
+  {
+    "type": "paragraph",
+    "text": "Discovery can end in RESEARCH_REQUIRED, REDUCE_SCOPE, REFRAME_PROBLEM or CONDITIONALLY_PROCEED_TO_PROPOSAL. Even conditional progress means only that the evidence and boundary are sufficient to investigate technical alternatives under stated restrictions; it is not production approval, lawful data collection consent or proof of customer benefit. A critical prohibited exposure is a stop even if estimated delivery value is high. Missing operating responsibility is not compensated by a beautiful UI."
+  },
+  {
+    "type": "paragraph",
+    "text": "The decision record must name the actual competent authority, status of that person's agreement, unresolved material issues, reversibility, conditions that trigger reopening and the first permitted next experiment. Do not fabricate reviewer signatures or label a simulated panel independent. The field evidence and review history must still be sufficient for another engineer to challenge the choice without meeting the author."
+  },
+  {
+    "type": "heading",
+    "id": "brief-c-final",
+    "level": 2,
+    "text": "Transfer the defensible single artifact to Engineering Proposal"
+  },
+  {
+    "type": "paragraph",
+    "text": "Final Brief v1.0 should open with the solution-neutral problem, evidence maturity and explicit discovery-exit recommendation. It should link the three candidate rationale, affected actors, real current-state flow, contradictory sources, requirements and forbidden oracles, hard constraints, quality trade-offs, failure risks, full-cohort outcome measures, scope/non-goals and safe handoffs, reviewed objections and the actual evidence limitations. The next module should be able to use it as a source of truth without pretending unknowns are validated."
+  },
+  {
+    "type": "paragraph",
+    "text": "Use Stage A for sourcing and framing, Stage B for bidirectional requirement/evidence links and the exact executable refusal tests, and Stage C for skepticism, revision and decision. Present a case in your OWN domain that a reviewer would not already know from the fictional warranty scenario. Show at least one change that invalidates a previous recommendation and one technology deliberately excluded despite its appeal. If the only supporting sources are invented, the correct result is an authorized research plan, not a counterfeit completed discovery."
+  },
+  {
+    "type": "resources",
+    "title": "Review and handoff guidance",
+    "resources": [
+      {
+        "title": "GOV.UK Service Manual — Discovery phase",
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-discovery-phase-works"
+      },
+      {
+        "title": "NIST SP 800-30 — Risk assessment",
+        "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final"
+      }
+    ]
+  }
+];
