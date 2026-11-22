@@ -32,6 +32,11 @@ on:
       - packages/runtime-kernel/src/paths/professional-engineer-defence-teaching.ts
       - packages/runtime-kernel/src/paths/professional-engineer-defence-proofs.ts
       - apps/web/components/learning-experience.tsx
+      - apps/web/components/academy-browser.tsx
+      - apps/web/components/academy-dashboard.tsx
+      - apps/web/components/curriculum-sidebar.tsx
+      - packages/runtime-kernel/src/runtime/session.ts
+      - scripts/check-open-learning-navigation.py
       - scripts/check-professional-engineer-depth.mjs
       - scripts/check-professional-engineer-browser.py
       - .github/workflows/professional-engineer-depth.yml
@@ -85,12 +90,15 @@ jobs:
             sleep 1
           done
           python scripts/check-professional-engineer-browser.py
+          python scripts/check-open-learning-navigation.py
       - name: Upload browser evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: professional-engineer-390
-          path: artifacts/professional-engineer-browser/
+          path: |
+            artifacts/professional-engineer-browser/
+            artifacts/open-learning-navigation/
           if-no-files-found: warn
       - name: Strict learner-facing audit
         run: node scripts/audit-learner-facing-curriculum.mjs --strict
