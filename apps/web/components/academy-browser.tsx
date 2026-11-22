@@ -20,7 +20,7 @@ function formatMinutes(minutes: number) {
   return remainder ? `${hours}h ${remainder}m` : `${hours}h`;
 }
 
-function ModuleOutline({ path, index, onStart }: { path: LearningPath; index: number; onStart: (path: LearningPath) => void }) {
+function ModuleOutline({ path, index, onStart }: { path: LearningPath; index: number; onStart: (path: LearningPath, activityId?: string) => void }) {
   const { ready, pathStatus, pathPercent, progressForPath } = useAcademyProgress();
   const available = activityCount(path) > 0;
   const status = ready ? pathStatus(path) : "not-started";
@@ -56,7 +56,19 @@ function ModuleOutline({ path, index, onStart }: { path: LearningPath; index: nu
                 <span className={lessonCompleted ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700" : "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-zinc-200 text-[10px] text-zinc-400"}>{lessonCompleted ? "✓" : ""}</span>
                 <span className="font-medium text-zinc-900">{lesson.title}</span>
               </div>
-              <span className="text-xs text-zinc-400">{lessonActivities.length} activities{lessonMinutes ? ` · ${formatMinutes(lessonMinutes)}` : ""}</span>
+              <div className="flex flex-wrap items-center gap-3 md:justify-end">
+                <span className="text-xs text-zinc-400">{lessonActivities.length} activities{lessonMinutes ? ` · ${formatMinutes(lessonMinutes)}` : ""}</span>
+                {lessonActivities[0] && (
+                  <button
+                    type="button"
+                    onClick={() => onStart(path, lessonActivities[0].id)}
+                    className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-50"
+                    aria-label={`Open lesson ${lesson.title}`}
+                  >
+                    Open lesson
+                  </button>
+                )}
+              </div>
             </li>
           );
         })}
@@ -96,7 +108,7 @@ export function AcademyBrowser() {
   useEffect(() => { applyLocation(); const onPopState = () => applyLocation(); window.addEventListener("popstate", onPopState); return () => window.removeEventListener("popstate", onPopState); }, []);
   function pushRoute(params: { school?: string; path?: string; activity?: string }) { const url = new URL(window.location.href); url.search = ""; url.searchParams.set("view", "curriculum"); if (params.school) url.searchParams.set("school", params.school); if (params.path) url.searchParams.set("path", params.path); if (params.activity) url.searchParams.set("activity", params.activity); window.history.pushState({}, "", url); }
   function selectSchool(schoolId: string) { setSelectedSchoolId(schoolId); setActivePath(null); setInitialActivityId(undefined); pushRoute({ school: schoolId }); }
-  function startPath(path: LearningPath) { const school = journey.schools.find((candidate) => candidate.paths.some((item) => item.id === path.id)); const activityId = progressForPath(path.id)?.currentActivityId; setActivePath(path); setInitialActivityId(activityId); pushRoute({ school: school?.id, path: path.id, activity: activityId }); }
+  function startPath(path: LearningPath, requestedActivityId?: string) { const school = journey.schools.find((candidate) => candidate.paths.some((item) => item.id === path.id)); const activityId = requestedActivityId ?? progressForPath(path.id)?.currentActivityId; setActivePath(path); setInitialActivityId(activityId); pushRoute({ school: school?.id, path: path.id, activity: activityId }); }
   function activityChanged(activityId: string) { if (!activePath) return; const current = new URLSearchParams(window.location.search).get("activity"); if (current !== activityId) pushRoute({ school: selectedSchoolId, path: activePath.id, activity: activityId }); }
 
   const selectedSchool = journey.schools.find((school) => school.id === selectedSchoolId) ?? journey.schools[0];
@@ -113,7 +125,7 @@ export function AcademyBrowser() {
     <div className="grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)]">
       <aside>
         <div className="sticky top-8 rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm">
-          <div className="px-3 pb-4 pt-2"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Curriculum</p><p className="mt-2 text-sm leading-6 text-zinc-500">Move through the academy as one continuous engineering apprenticeship.</p></div>
+          <div className="px-3 pb-4 pt-2"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Curriculum</p><p className="mt-2 text-sm leading-6 text-zinc-500">Choose any school or module in any order. The sequence is recommended, not required.</p></div>
           <nav className="space-y-1">{journey.schools.map((school, index) => <SchoolNavigation key={school.id} school={school} index={index} selected={school.id === selectedSchool.id} onSelect={() => selectSchool(school.id)} />)}</nav>
         </div>
       </aside>
@@ -121,7 +133,7 @@ export function AcademyBrowser() {
       <section className={ready ? "min-w-0 opacity-100" : "min-w-0 opacity-70"}>
         <header className="rounded-3xl border border-zinc-200 bg-white px-7 py-8 shadow-sm lg:px-10">
           <div className="flex flex-wrap items-start justify-between gap-8">
-            <div><p className="text-sm font-semibold text-blue-600">School {selectedIndex + 1} of {journey.schools.length}</p><h2 className="mt-2 text-4xl font-bold tracking-tight text-zinc-950 lg:text-5xl">{selectedSchool.title}</h2><p className="mt-4 text-zinc-500">{selectedSchool.paths.length} modules · {totalLessons} lessons · {totalActivities} activities</p></div>
+            <div><p className="text-sm font-semibold text-blue-600">School {selectedIndex + 1} of {journey.schools.length}</p><h2 className="mt-2 text-4xl font-bold tracking-tight text-zinc-950 lg:text-5xl">{selectedSchool.title}</h2><p className="mt-4 text-zinc-500">{selectedSchool.paths.length} modules · {totalLessons} lessons · {totalActivities} activities</p><p className="mt-2 text-sm font-medium text-blue-700">All modules and lessons are available. Start wherever you need.</p></div>
             <div className="min-w-48 rounded-2xl bg-zinc-50 p-5"><div className="flex items-end justify-between gap-5"><span className="text-3xl font-semibold text-zinc-950">{schoolPercent}%</span><span className="text-xs text-zinc-500">{completedModules}/{selectedSchool.paths.length} modules</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-200"><div className="h-full rounded-full bg-zinc-950" style={{ width: `${schoolPercent}%` }} /></div></div>
           </div>
         </header>
