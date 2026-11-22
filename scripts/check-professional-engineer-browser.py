@@ -879,18 +879,94 @@ def run():
   page.reload(wait_until="networkidle")
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==scope_practice
-  # Scope stays next to the real, original discovery-brief integration lab.
+  # An original final lab cannot be treated as learner-validated just
+  # because the page loads. Traverse the SIX staged originals-compatible
+  # activities using the ACTUAL Next button, then the unchanged final ID.
   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson)$")).click()
-  original_brief="capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001"
+  lab_base="capstone-problem-discovery-lab-produce-the-capstone-discovery-brief"
+  brief_steps=(
+    (lab_base+"-evidence-method-reading",
+     ("Start with an affected person, a unit of work and the current state",
+      "Make provenance and permission separate evidence fields")),
+    (lab_base+"-evidence-packet-practice",
+     ("THREE candidate problems", "Brief v0.1")),
+    (lab_base+"-traceability-method-reading",
+     ("Connect evidence to consequence in both directions",
+      "DISCOVERY_BRIEF_TRACE_AND_ADVERSARIAL_GATES_PASS")),
+    (lab_base+"-traceability-packet-practice",
+     ("FOURTEEN disposable wrong-source variants", "Brief v0.2")),
+    (lab_base+"-adversarial-review-reading",
+     ("Use distinct skeptical review roles",
+      "Distinguish permission to propose from permission to deploy")),
+    (lab_base+"-adversarial-review-practice",
+     ("FIVE distinct lenses","Brief v0.3")),
+  )
+  first_brief=brief_steps[0][0]
   page.wait_for_function("""expected => (
     new URLSearchParams(location.search).get("activity") === expected
-  )""",arg=original_brief,timeout=15000)
+  )""",arg=first_brief,timeout=15000)
+  for index,(activity,requirements) in enumerate(brief_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Discovery stage order wrong: {actual} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=(4000 if index%2==0 else 1900),(
+     f"Discovery stage too shallow {activity}: {len(rendered)}"
+   )
+   for requirement in requirements:
+    assert requirement in rendered,(
+      f"Missing staged discovery teaching or practice contract {activity}: {requirement}"
+    )
+   if index==2:
+    assert main.get_by_role("button",name="Copy").count()>0,(
+      "Source-exact discovery review Python is not copyable"
+    )
+    assert main.locator("figure pre").count()>0,"Discovery review code is not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Staged Discovery Brief exceeds mobile width: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-brief-stage-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   following=(brief_steps[index+1][0] if index+1<len(brief_steps)
+              else lab_base+"-001")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=following,timeout=15000)
+  original_brief=lab_base+"-001"
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
-  assert "Produce and defend a discovery brief" in page.locator("main").last.inner_text()
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_brief
+  final_brief_text=page.locator("main").last.inner_text()
+  for marker in ("ONE v1.0 discovery brief","FOURTEEN intentionally wrong-source variants",
+                 "five distinct adversarial challenges",
+                 "at least TWO pre-review claims"):
+   assert marker in final_brief_text,"Original Discovery Brief final practical lacks "+marker
   page.reload(wait_until="networkidle")
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_brief
-  print("PASS original Scope -> dependency/release gates -> change decisions -> original practice -> original discovery brief; 390px, exact code, Next and reload",flush=True)
+  stage_completion=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+    });
+    try{
+      const req=db.transaction("path-progress","readonly")
+        .objectStore("path-progress").get("capstone-problem-discovery");
+      return await new Promise((resolve,reject)=>{
+        req.onsuccess=()=>resolve(req.result?.completedActivityIds ?? []);
+        req.onerror=()=>reject(req.error);
+      });
+    }finally{db.close();}
+  }""")
+  assert all(activity in stage_completion for activity,_ in brief_steps),(
+    "Discovery stages were lost when the original final practical was reached"
+  )
+  assert original_brief not in stage_completion,(
+    "Opening the unchanged final lab must not falsely mark it complete"
+  )
+  print("PASS original Scope -> 3 discovery readings/3 staged practices -> preserved original final brief; 390px, source copy, actual Next, reload, stage progress",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
