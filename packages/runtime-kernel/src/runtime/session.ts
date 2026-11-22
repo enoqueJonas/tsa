@@ -85,60 +85,17 @@ export function createLearningSession(
         return null;
     }
 
-    function getUnlockedLessonIds() {
-        const unlockedLessonIds: string[] = [];
-
-        for (let index = 0; index < activePath.lessons.length; index++) {
-            const lesson = lessonAt(index);
-
-            if (index === 0) {
-                unlockedLessonIds.push(lesson.id);
-                continue;
-            }
-
-            const previousLesson = lessonAt(index - 1);
-            const previousLessonComplete = previousLesson.activities.every(
-                (activity) => completedActivityIds.has(activity.id)
-            );
-
-            if (!previousLessonComplete) {
-                break;
-            }
-
-            unlockedLessonIds.push(lesson.id);
-        }
-
-        return unlockedLessonIds;
+    // Navigation is open across schools, modules, lessons and activities.
+    // The authored sequence remains a recommendation, never a prerequisite
+    // for reading, practising or resuming an independently chosen topic.
+    function getUnlockedLessonIds(): string[] {
+        return activePath.lessons.map((lesson) => lesson.id);
     }
 
-    function getUnlockedActivityIds() {
-        const unlockedLessonIds = new Set(getUnlockedLessonIds());
-        const unlockedActivityIds: string[] = [];
-
-        for (const lesson of activePath.lessons) {
-            if (!unlockedLessonIds.has(lesson.id)) {
-                continue;
-            }
-
-            for (let index = 0; index < lesson.activities.length; index++) {
-                const activity = activityAt(lesson, index);
-
-                if (index === 0) {
-                    unlockedActivityIds.push(activity.id);
-                    continue;
-                }
-
-                const previousActivity = activityAt(lesson, index - 1);
-
-                if (!completedActivityIds.has(previousActivity.id)) {
-                    break;
-                }
-
-                unlockedActivityIds.push(activity.id);
-            }
-        }
-
-        return unlockedActivityIds;
+    function getUnlockedActivityIds(): string[] {
+        return activePath.lessons.flatMap((lesson) =>
+            lesson.activities.map((activity) => activity.id)
+        );
     }
 
     function canCompleteActivity(activity: Activity) {
@@ -230,7 +187,7 @@ export function createLearningSession(
         goToActivity(activityId: string) {
             const location = findActivity(activityId);
 
-            if (!location || !getUnlockedActivityIds().includes(activityId)) {
+            if (!location) {
                 return false;
             }
 
@@ -276,12 +233,11 @@ export function createLearningSession(
             const location = findActivity(progress.currentActivityId);
 
             if (
-                !location ||
-                !getUnlockedActivityIds().includes(progress.currentActivityId)
+                !location
             ) {
-                // Curriculum remediation may retire generated orientation/prep
-                // activity IDs. Keep valid authored completions and resume at
-                // the first reachable incomplete activity, not page one.
+                // Curriculum remediation may retire older activity IDs. Keep valid
+                // authored completions and resume at the first incomplete
+                // activity; never require earlier lessons to be completed.
                 const unlockedIds = getUnlockedActivityIds();
                 const fallbackId = unlockedIds.find((id) => !completedActivityIds.has(id))
                     ?? unlockedIds[unlockedIds.length - 1];
