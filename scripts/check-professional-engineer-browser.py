@@ -870,7 +870,7 @@ def run():
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==scope_practice
   original_scope_practice=page.locator("main").last.inner_text()
   for marker in ("three core outcomes",
-                 "thirteen throwaway source copies",
+                 "fifteen throwaway source copies",
                  "supplier withdraws data-sharing permission",
                  "one external dependency"):
    assert marker in original_scope_practice,(
