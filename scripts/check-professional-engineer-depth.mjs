@@ -1207,9 +1207,9 @@ assert.ok(originalBrief.indexOf("...discoveryBriefStageActivities")<originalBrie
  "The original final practical must FOLLOW the independent staged learner work");
 for(const marker of [
  "ONE versioned, evidence-limited Capstone Discovery Brief",
- "Brief v0.1", "Brief v0.2", "Brief v0.3",
- "FIVE separate challenge lenses",
- "TWO former claims",
+ "Stage A v0.1", "Stage B v0.2", "Stage C v0.3",
+ "five distinct adversarial challenges",
+ "at least TWO pre-review claims",
  "FOURTEEN intentionally wrong-source variants",
  "RESEARCH_REQUIRED, REDUCE_SCOPE, REFRAME_PROBLEM"
 ]) assert.ok(originalBrief.includes(marker),"Final original brief lacks a falsifiable obligation: "+marker);
