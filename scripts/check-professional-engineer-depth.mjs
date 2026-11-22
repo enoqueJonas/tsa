@@ -1143,3 +1143,117 @@ for(const [before,after,why] of [
  assert.match(bad.stderr,/AssertionError/,"Scope mutant failed for unrelated reason "+why+": "+bad.stderr);
 }
 console.log("PASS original Scope and Non-goals, exact source Python boundary/change gates, two additional readings, fifteen rejected unsafe mutants");
+
+
+// The ORIGINAL final discovery-brief lab must be a staged, independently
+// falsifiable single artifact, not a generic list of worksheets.
+const briefSource=fs.readFileSync(root+"professional-engineer-discovery-brief.ts","utf8");
+const briefPrefix="export const discoveryBriefProofPython = ";
+const briefLine=briefSource.split("\n").find(x=>x.startsWith(briefPrefix));
+assert.ok(briefLine?.endsWith(";"),"Original discovery brief has no canonical learner-visible Python");
+const briefPython=JSON.parse(briefLine.slice(briefPrefix.length,-1));
+function briefArray(name,nextName,type){
+ const anchor="export const "+name+": "+type+" = ";
+ const at=briefSource.indexOf(anchor);
+ assert.ok(at>=0,"Discovery brief lacks "+name);
+ const start=at+anchor.length;
+ const end=nextName?briefSource.indexOf("export const "+nextName+":",start):briefSource.length;
+ assert.ok(end>start,"Malformed original lab section "+name);
+ return JSON.parse(briefSource.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const briefEvidence=briefArray("discoveryBriefEvidenceBlocks","discoveryBriefTraceBlocks","LessonBlock[]");
+const briefTrace=briefArray("discoveryBriefTraceBlocks","discoveryBriefReviewBlocks","LessonBlock[]");
+const briefReview=briefArray("discoveryBriefReviewBlocks","discoveryBriefStageActivities","LessonBlock[]");
+const briefStages=briefArray("discoveryBriefStageActivities",null,"Activity[]");
+for(const [name,blocks] of [
+ ["evidence",briefEvidence],["traceability",briefTrace],["adversarial",briefReview]
+]){
+ assert.ok(blocks.filter(b=>b.type==="heading").length>=5,"Discovery stage lacks taught mechanisms "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").length>=10,"Discovery stage has too few worked examples "+name);
+ assert.ok(blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n").length>=5000,
+  "Discovery stage too superficial: "+name);
+ assert.equal(blocks.filter(b=>b.type==="resources").length,1,"No targeted reading references in "+name);
+}
+assert.equal(briefEvidence.filter(b=>b.type==="code").length,0);
+assert.equal(briefTrace.filter(b=>b.type==="code").length,1);
+assert.equal(briefReview.filter(b=>b.type==="code").length,0);
+assert.equal(briefTrace.find(b=>b.type==="code").code,briefPython,
+ "CI must execute exactly the discovery-brief code visible to learners");
+const stagedIds=[
+ "evidence-method-reading","evidence-packet-practice",
+ "traceability-method-reading","traceability-packet-practice",
+ "adversarial-review-reading","adversarial-review-practice"
+].map(s=>"capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-"+s);
+assert.deepEqual(briefStages.map(x=>x.id),stagedIds,"Stages must form independent reading/practice pairs");
+for(const [index,stage] of briefStages.entries()){
+ const correctType=index%2===0?"reading":"practical";
+ assert.equal(stage.content.type,correctType,"Wrong discovery stage activity type: "+stage.id);
+ if(correctType==="reading"){
+  assert.ok(stage.content.blocks?.length>=14,"Missing substantive reading blocks "+stage.id);
+ }else{
+  assert.ok(stage.content.instructions.length>=6,"Stage practice has no worked deliverable contract "+stage.id);
+  assert.ok(stage.content.completionCriteria.length>=3,"Stage practice has no reviewer-facing criteria "+stage.id);
+  assert.ok(stage.content.deliverables.length>=4,"Stage evidence not concrete enough "+stage.id);
+ }
+}
+assert.equal(briefStages[2].content.blocks.find(b=>b.type==="code").code,briefPython,
+ "The staged trace teaching must use the identical proof as the canonical published code");
+const originalBrief=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+const originalStable='capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001';
+assert.ok(originalBrief.includes('...discoveryBriefStageActivities'),
+ "Original discovery lab never exposes its stage activities");
+assert.ok(originalBrief.includes(originalStable),"Original final discovery-brief activity ID must never change");
+assert.ok(originalBrief.indexOf("...discoveryBriefStageActivities")<originalBrief.indexOf(originalStable),
+ "The original final practical must FOLLOW the independent staged learner work");
+for(const marker of [
+ "ONE versioned, evidence-limited Capstone Discovery Brief",
+ "Brief v0.1", "Brief v0.2", "Brief v0.3",
+ "FIVE separate challenge lenses",
+ "TWO former claims",
+ "FOURTEEN intentionally wrong-source variants",
+ "RESEARCH_REQUIRED, REDUCE_SCOPE, REFRAME_PROBLEM"
+]) assert.ok(originalBrief.includes(marker),"Final original brief lacks a falsifiable obligation: "+marker);
+const actualBrief=python(briefPython);
+assert.equal(actualBrief.status,0,actualBrief.stdout+"\n"+actualBrief.stderr);
+for(const marker of [
+ "reference: STRUCTURALLY_REVIEWABLE_NOT_FIELD_APPROVED",
+ "missing_actor: OUTCOME_OR_STAKEHOLDER_MISSING",
+ "source_unverified: PRIMARY_EVIDENCE_UNVERIFIED",
+ "source_unpermitted: PRIMARY_EVIDENCE_NOT_PERMITTED",
+ "counter_unpermitted: COUNTEREVIDENCE_UNVERIFIED_OR_UNPERMITTED",
+ "hidden_contradiction: CONTRADICTION_HIDDEN",
+ "orphan_requirement: REQUIREMENT_NOT_SOURCE_LINKED",
+ "denied_test_missing: FORBIDDEN_ACTION_ORACLE_MISSING",
+ "unmeasured_quality: QUALITY_SCENARIO_NOT_MEASURABLE",
+ "risk_no_harm: RISK_NOT_CONNECTED_TO_HARM",
+ "unknowns_excluded: OUTCOME_DENOMINATOR_BIASED",
+ "ownerless_exclusion: EXCLUDED_HANDOFF_OWNER_MISSING",
+ "no_objection: ADVERSARIAL_OBJECTION_MISSING",
+ "unsupported_answer: OBJECTION_NOT_ANSWERED_WITH_EVIDENCE",
+ "unsigned_decision: REVIEW_DECISION_NOT_RECORDED",
+ "FICTIONAL_SOURCE_FLAGS_ARE_NOT_FIELD_PERMISSION",
+ "REVIEWABILITY_DOES_NOT_PROVE_PRODUCT_IMPACT",
+ "DISCOVERY_BRIEF_TRACE_AND_ADVERSARIAL_GATES_PASS"
+]) assert.ok(actualBrief.stdout.includes(marker),"Published original brief proof lacks "+marker);
+for(const [before,why] of [
+ ["if not b.stakeholder or not b.outcome:","no harmed actor/outcome"],
+ ["if not b.primary.verified:","unverified primary source"],
+ ["if not b.primary.permitted:","source used without permission"],
+ ["if not b.counter.verified or not b.counter.permitted:","unverified/unpermitted contradictory source"],
+ ["if not b.contradiction_disclosed:","counterevidence hidden"],
+ ["if b.requirement.source_id != b.primary.source_id:","orphan requirement"],
+ ["if not b.requirement.denied_test:","forbidden outcome has no oracle"],
+ ["if b.quality.requirement_id != b.requirement.requirement_id or not b.quality.environment or b.quality.max_ms is None:","unmeasured quality"],
+ ["if b.risk.requirement_id != b.requirement.requirement_id or not b.risk.harm:","risk has no harm"],
+ ["if b.metric.requirement_id != b.requirement.requirement_id or not b.metric.includes_unresolved:","missing unresolved cases in denominator"],
+ ["if not b.non_goal_owner:","out-of-scope work has no owner"],
+ ["if not b.review.objection:","no adversarial challenge"],
+ ["if not b.review.evidence_based_response:","unfounded objection response"],
+ ["if not b.review.owner_decision_recorded:","no recorded final decision"]
+]){
+ assert.ok(briefPython.includes(before),"No actual mutation target: "+why);
+ const wrong=python(briefPython.replace(before,"if False:"));
+ assert.notEqual(wrong.status,0,"Wrong discovery-brief answer passed: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Unexpected unrelated failure "+why+": "+wrong.stderr);
+}
+console.log("PASS original Discovery Brief staged 3 readings/3 practices, stable final ID, exact Python and fourteen rejected false-green traces");
