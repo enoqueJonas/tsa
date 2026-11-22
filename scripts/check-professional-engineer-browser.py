@@ -819,6 +819,78 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==success_original_practice
   print("PASS original Success -> cohorts/denominators -> claim-evidence -> original practice; 390px, Python copy, real Next, reload",flush=True)
+  # TENTH original discovery topic: a free-navigation deep link to the
+  # original Scope reading, then source-exact dependency + change stages and
+  # the retained original practical, finally the ORIGINAL discovery brief.
+  # No previous module completion is needed: progression is a recommendation.
+  scope_steps=(
+    ("capstone-problem-discovery-scope-and-non-goals-001",
+     ("Distinguish the problem, system, operating and evidence boundaries",
+      "In scope, non-goal, deferred, dependency and assumption mean different things",
+      "Find the smallest coherent end-to-end slice, not the easiest demo")),
+    ("capstone-problem-discovery-scope-and-non-goals-dependency-release-reading",
+     ("Trace prerequisites and negative paths before removing work",
+      "Build a thin but trustworthy release boundary",
+      "SCOPE_BOUNDARY_AND_CHANGE_GATES_PASS")),
+    ("capstone-problem-discovery-scope-and-non-goals-change-decision-reading",
+     ("Separate request, investigation, decision and implementation",
+      "Reopen the whole boundary when evidence changes the problem",
+      "Independent scope review in a different domain")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":scope_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(scope_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==activity,f"Original Scope sequence incorrect: {current} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=3800,f"Original Scope remains a thin reading: {activity} ({len(rendered)})"
+   for marker in requirements:
+    assert marker in rendered,f"Original Scope lacks taught mechanism {activity}: {marker}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Scope Python is not copyable"
+    assert main.locator("figure pre").count()>0,"Scope source was not displayed"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Original Scope reading overflows 390px: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-scope-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   following=(scope_steps[index+1][0] if index+1<len(scope_steps)
+              else "capstone-problem-discovery-scope-and-non-goals-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=following,timeout=15000)
+  scope_practice="capstone-problem-discovery-scope-and-non-goals-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==scope_practice
+  original_scope_practice=page.locator("main").last.inner_text()
+  for marker in ("three core outcomes",
+                 "thirteen throwaway source copies",
+                 "supplier withdraws data-sharing permission",
+                 "one external dependency"):
+   assert marker in original_scope_practice,(
+     "Original Scope practical missing independently demonstrable demand: "+marker
+   )
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==scope_practice
+  # Scope stays next to the real, original discovery-brief integration lab.
+  page.get_by_role("button",name=re.compile(r"^(Next|Next lesson)$")).click()
+  original_brief="capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001"
+  page.wait_for_function("""expected => (
+    new URLSearchParams(location.search).get("activity") === expected
+  )""",arg=original_brief,timeout=15000)
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert "Produce and defend a discovery brief" in page.locator("main").last.inner_text()
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_brief
+  print("PASS original Scope -> dependency/release gates -> change decisions -> original practice -> original discovery brief; 390px, exact code, Next and reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
