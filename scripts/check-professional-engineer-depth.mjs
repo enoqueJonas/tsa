@@ -1089,7 +1089,7 @@ for(const token of [
  "...scopeFoundationsBlocks","...scopeReadings",
  "-dependency-release-reading","-change-decision-reading",
  "Run the EXACT Python 3 scope decision source",
- "In thirteen throwaway source copies",
+ "In fifteen throwaway source copies",
  'reading("capstone-problem-discovery-scope-and-non-goals"'
 ]) assert.ok(scopeOriginal.includes(token),"Missing original Scope/practice wiring: "+token);
 const scopePracticeAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
@@ -1109,6 +1109,8 @@ for(const marker of [
  "no_outcome: HOLD_NO_OUTCOME_LINK",
  "new_feature: CHANGE_REQUEST_NOT_AUTO_INCLUDED",
  "excluded_marketing: NON_GOAL_WITH_HANDOFF",
+ "excluded_owner_missing: NON_GOAL_HANDOFF_OWNER_MISSING",
+ "excluded_unverified_handoff: NON_GOAL_HANDOFF_UNVERIFIED",
  "missing_baseline: UNKNOWN_BASELINE_HOLD",
  "missing_impact: MISSING_TRACEABILITY_HOLD",
  "capacity_claim_only: CAPACITY_NOT_VERIFIED_HOLD",
@@ -1128,6 +1130,8 @@ for(const [before,after,why] of [
  ["if not item.dependency_checked:","if False:","dependency not checked"],
  ["if not item.linked_outcome:","if False:","unjustified core inclusion"],
  ["if item.new_request:","if False:","new extension automatically added"],
+ ["if not item.owner_named:\n        return \"NON_GOAL_HANDOFF_OWNER_MISSING\"","if False:\n        return \"NON_GOAL_HANDOFF_OWNER_MISSING\"","excluded work without an accountable owner"],
+ ["if not item.dependency_checked:\n        return \"NON_GOAL_HANDOFF_UNVERIFIED\"","if False:\n        return \"NON_GOAL_HANDOFF_UNVERIFIED\"","excluded work without verified handoff dependency"],
  ["if not change.baseline_versioned:","if False:","unversioned baseline change"],
  ["if not change.effect_traced:","if False:","untraced impact"],
  ["if not change.capacity_verified:","if False:","unverified staffing claim"],
@@ -1138,4 +1142,4 @@ for(const [before,after,why] of [
  assert.notEqual(bad.status,0,"Unsafe Scope mutant passed: "+why);
  assert.match(bad.stderr,/AssertionError/,"Scope mutant failed for unrelated reason "+why+": "+bad.stderr);
 }
-console.log("PASS original Scope and Non-goals, exact source Python boundary/change gates, two additional readings, thirteen rejected unsafe mutants");
+console.log("PASS original Scope and Non-goals, exact source Python boundary/change gates, two additional readings, fifteen rejected unsafe mutants");
