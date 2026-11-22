@@ -10,6 +10,7 @@ import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperime
 import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
 import { riskFoundationsBlocks, riskControlsBlocks, riskResidualBlocks } from "./professional-engineer-discovery-risk";
 import { successOutcomesBlocks, successCohortsBlocks, successClaimsBlocks } from "./professional-engineer-discovery-success-measures";
+import { scopeFoundationsBlocks, scopeDependenciesBlocks, scopeChangeBlocks } from "./professional-engineer-discovery-scope";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -24,6 +25,7 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isQuality = id === "capstone-problem-discovery-quality-attributes";
   const isRisk = id === "capstone-problem-discovery-risk";
   const isSuccess = id === "capstone-problem-discovery-success-measures-and-evidence";
+  const isScope = id === "capstone-problem-discovery-scope-and-non-goals";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
@@ -33,7 +35,8 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
     : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks]
     : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks]
-    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks] : undefined;
+    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks]
+    : isScope ? [{type:"paragraph",text:body}, ...scopeFoundationsBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -146,8 +149,22 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Trace claims to permissible evidence, predeclare outcomes and distinguish observed differences from causally demonstrated effects.",blocks:successClaimsBlocks},
     },
   ] : [];
+  const scopeReadings: Activity[] = isScope ? [
+    {
+      id: `${id}-dependency-release-reading`,
+      title: "Dependency Closure, Safe Exclusions and Release-Slice Gates",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Build a minimal coherent end-to-end slice without removing indispensable protections, ownership or dependency evidence.",blocks:scopeDependenciesBlocks},
+    },
+    {
+      id: `${id}-change-decision-reading`,
+      title: "Scope Change, Authority and Evidence-Based Reframing",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Review versioned scope changes, operational handoffs and the conditions for deferral or changing the problem frame.",blocks:scopeChangeBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : isScope ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
@@ -157,8 +174,9 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     ...qualityReadings,
     ...riskReadings,
     ...successReadings,
+    ...scopeReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : isScope ? 125 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -235,6 +253,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Write a metric measurement contract with eligibility version, owner, permitted source, authoritative event, inclusion/exclusion rule, missing-data treatment, baseline and target approval status, two balancing measures for unintended harm, and explicit criteria for a STOP or INCONCLUSIVE result.",
           "Build a claim-to-evidence ledger showing what unit, integration, browser and quality tests can and cannot establish; propose a comparability/causal evaluation plan without calling a before-after pilot a causal effect.",
           "Change two assumptions: discover an omitted intake channel and a more difficult case mix in the pilot. Recompute or suspend the outcome claim, update dependent requirements/risk and quality IDs and write a decision record that can truthfully say IMPACT_NOT_VERIFIED or DATA_COLLECTION_NOT_AUTHORIZED.",
+        ] : []),
+        ...(isScope ? [
+          "Define a genuinely NEW-domain solution-neutral problem boundary and map three core outcomes, two indispensable privacy/integrity controls, two explicit non-goals, one external dependency and one deferred capability. For each exclusion, name the responsible remaining operator and safe user handoff.",
+          "Construct a dependency and evidence graph: identify actor, input, authoritative state, output, failure branch, downstream requirement/quality/risk/metric IDs, actual source/authority and independent positive plus forbidden-side-effect test for every core behavior.",
+          "Run the EXACT Python 3 scope decision source shown in the dependency reading. Preserve all eleven scope classification results, five change-review statuses, and the SCOPE_BOUNDARY_AND_CHANGE_GATES_PASS final marker; synthetic booleans are NOT real permissions or owner signatures.",
+          "In thirteen throwaway source copies, break each protective condition independently: prohibited export, mandatory-control inclusion, source verification, permission, owner, negative oracle, dependency, outcome link, new-feature change gating, versioned baseline, traceability, verified capacity and decision approval. Capture each expected Python AssertionError.",
+          "Publish a versioned scope/non-goal/deferred/assumption register and change ledger: include requester, outcome, authorization status, acceptance tests, operator capacity and safe handoff, rationale for rejecting tempting technology, and explicit deferral/reconsideration triggers.",
+          "Inject three conflicting events: a supplier withdraws data-sharing permission, the manual process used by an excluded feature loses its operating owner, and a sponsor requests a broad export. Reopen relevant boundary and acceptance decisions; justify BLOCK, HOLD, NARROW_SCOPE, DEFER or REFRAME instead of claiming a green release.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -295,6 +321,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "The exact learner-visible Python and all ten unsafe mutations catch unverified sources, denied collection, missing baseline, denominator selection, unreported unknowns, unsupported causal attribution, missing harm guards, unapproved decisions and false numerator logic.",
           "The claim-evidence mapping distinguishes verified code behavior, reported observations, comparisons and unproven causal impact, with predeclared success, failure, inconclusive and stop-for-harm conditions.",
           "Actual customer outcomes, approved baselines, lawful permission and uncoached independent learner competence remain NOT_VALIDATED; classroom green output is not evidence of product impact.",
+        ] : []),
+        ...(isScope ? [
+          "The learner distinguishes accountable problem/system/operating/evidence boundaries and genuinely separate IN_SCOPE, NON_GOAL, DEFERRED, DEPENDENCY and ASSUMPTION states, with a safe remaining responsible party for every exclusion.",
+          "The authored source and thirteen independent assertion failures reject forbidden exports, discarded mandatory protections, unapproved requirements, missing control evidence or dependencies, and unsupported changes without inventing authority.",
+          "The smallest coherent outcome survives deliberate exclusion only when its integrity/privacy/recovery invariants, human handoffs and negative acceptance tests remain defensible; a partial demo is NOT called production-ready.",
+          "A reviewer can trace three new change events to affected risk/requirement/evidence/test IDs and an explicit HOLD, NARROW_SCOPE or REFRAME decision; real signoffs and independent learner transfer remain NOT_VALIDATED.",
         ] : [])
       ]
     } }
