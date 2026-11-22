@@ -31,8 +31,6 @@ export function LearningExperience({
   const [activity, setActivity] = useState(session.currentActivity());
   const [hasNext, setHasNext] = useState(session.hasNext());
   const [completedActivityIds, setCompletedActivityIds] = useState(session.completedActivityIds());
-  const [unlockedLessonIds, setUnlockedLessonIds] = useState(session.unlockedLessonIds());
-  const [unlockedActivityIds, setUnlockedActivityIds] = useState(session.unlockedActivityIds());
   const [reflectionResponse, setReflectionResponse] = useState(session.reflectionResponse(session.currentActivity().id));
   const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(session.canCompleteCurrentActivity());
 
@@ -42,8 +40,6 @@ export function LearningExperience({
     setActivity(currentActivity);
     setHasNext(session.hasNext());
     setCompletedActivityIds(session.completedActivityIds());
-    setUnlockedLessonIds(session.unlockedLessonIds());
-    setUnlockedActivityIds(session.unlockedActivityIds());
     setReflectionResponse(session.reflectionResponse(currentActivity.id));
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
     return currentActivity;
@@ -147,8 +143,6 @@ export function LearningExperience({
           currentLesson={lesson}
           currentActivity={activity}
           completedActivityIds={completedActivityIds}
-          unlockedLessonIds={unlockedLessonIds}
-          unlockedActivityIds={unlockedActivityIds}
           onSelectActivity={select}
         />
 
