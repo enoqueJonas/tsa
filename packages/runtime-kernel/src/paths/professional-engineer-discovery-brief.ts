@@ -92,3 +92,99 @@ export const discoveryBriefEvidenceBlocks: LessonBlock[] = [
     ]
   }
 ];
+export const discoveryBriefTraceBlocks: LessonBlock[] = [
+  {
+    "type": "paragraph",
+    "text": "The second stage connects the original requirements, constraints, quality scenarios, risk register, success measures and scope into ONE inspectable argument. Tables that contain all the expected headings can still be wrong when their rows have no shared source, false acceptance tests, hidden denominators or undefined non-goal owners. The cross-domain trace is supposed to make those contradictions visible before architecture is chosen."
+  },
+  {
+    "type": "heading",
+    "id": "brief-b-trace",
+    "level": 2,
+    "text": "Connect evidence to consequence in both directions"
+  },
+  {
+    "type": "paragraph",
+    "text": "For a fictional return, a trace might be E-DOC-1 → C-STATUS-1 → R-ACCESS → T-ALLOW and T-DENY → Q-ACCESS under a named network and load → RISK-LEAK → M-VERIFIED-CLOSURE with ALL eligible cases → SCOPE-STATUS and NON-GOAL-AUTO-REFUND owned externally. Going backward should identify the harmed person, source and permission. Going forward should identify the allowed behavior, forbidden side effect, owner and event that could falsify the claimed outcome. A row with a fashionable technology but no source or outcome is an orphan."
+  },
+  {
+    "type": "paragraph",
+    "text": "A valid requirement must be traceable to a claim that has a legitimate source, and its negative oracle must say what must remain unchanged after rejection. For an unauthorized operator, simply observing HTTP 403 is insufficient if data leaked into response, logs or persisted state. A quality threshold also needs stimulus, environment, eligible population and approved objective status. A risk without a concrete harmed stakeholder or mechanism is just a category label. No confidence tag can convert hypothetical source content into real access authorization."
+  },
+  {
+    "type": "heading",
+    "id": "brief-b-evidence-ladder",
+    "level": 2,
+    "text": "Do not infer field success from software behavior"
+  },
+  {
+    "type": "paragraph",
+    "text": "Unit tests may show that a handler rejects a duplicated event in a mock. An integration test can verify permitted contract handling in a stated environment. A controlled restore drill can reveal which state is actually recovered. None alone demonstrates that customers understood the result, that a supplier is authoritative, that consent exists or that the product caused an improvement. Define separate proof for implementation behavior, operational correctness, real user outcomes and causal impact, including independent review and source provenance."
+  },
+  {
+    "type": "paragraph",
+    "text": "One example of a misleading metric is a high closure ratio calculated only among completed return cases. Open cases often bear the greatest harm. Preserve a predeclared eligible denominator, fixed observation/follow-up window, missing outcomes, baseline comparability and safety guardrails. A green synthetic p95, a passing denied-path test and a self-reported satisfaction survey are different kinds of evidence. If the real source is unavailable, the metric contract is planned, not observed."
+  },
+  {
+    "type": "heading",
+    "id": "brief-b-nongoals",
+    "level": 2,
+    "text": "An excluded capability still has consequences"
+  },
+  {
+    "type": "paragraph",
+    "text": "When automated refunds are out of scope, the system cannot claim money was refunded simply because a status field changed. Identify the actual human or external system that performs the excluded work, which evidence authorizes an in-scope notification, and what the customer is told if the handoff fails. If the responsible operator does not exist or has no available capacity, the exclusion is unsafe; narrow scope or suspend the downstream promise. Scope and risk registers should both reference that gap."
+  },
+  {
+    "type": "paragraph",
+    "text": "Revisit a dependency when proposed integration permission is revoked, a field contains protected data, an operating owner leaves, or the supplier cannot produce an authoritative event. Every change must identify affected requirements, negative tests, quality claims, outcome metrics and delivery feasibility. Do not describe a fake sandbox flag as a signed customer contract. A dependency graph with missing nodes is evidence of an honest hold, not proof of a working interface."
+  },
+  {
+    "type": "heading",
+    "id": "brief-b-code",
+    "level": 2,
+    "text": "Run and falsify the exact published structural review"
+  },
+  {
+    "type": "paragraph",
+    "text": "Save the entire Python block below as discovery_brief_review.py and execute python3 discovery_brief_review.py. The standard library fixture evaluates a FICTIONAL trace and fourteen distinct breakages: missing harmed actor, unverified or unpermitted source, unpermitted counterevidence, hidden contradiction, orphaned requirement, missing forbidden-action oracle, quality without measurable context, risk without harm, metric that drops unresolved cases, excluded handoff with no owner, missing reviewer objection, ungrounded answer and missing owner decision. The best result is STRUCTURALLY_REVIEWABLE_NOT_FIELD_APPROVED, never production or field approval."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "Source-exact Python 3 — discovery trace, negative acceptance and adversarial review refusals",
+    "code": "from dataclasses import dataclass, replace\n\n# FICTIONAL structural review fixture. No real permission or sign-off exists.\n@dataclass(frozen=True)\nclass Evidence:\n    source_id: str\n    verified: bool\n    permitted: bool\n\n@dataclass(frozen=True)\nclass Requirement:\n    requirement_id: str\n    source_id: str\n    denied_test: str\n\n@dataclass(frozen=True)\nclass Quality:\n    requirement_id: str\n    environment: str\n    max_ms: int | None\n\n@dataclass(frozen=True)\nclass Risk:\n    requirement_id: str\n    harm: str\n\n@dataclass(frozen=True)\nclass Metric:\n    requirement_id: str\n    includes_unresolved: bool\n\n@dataclass(frozen=True)\nclass Review:\n    objection: str\n    evidence_based_response: bool\n    owner_decision_recorded: bool\n\n@dataclass(frozen=True)\nclass Brief:\n    stakeholder: str\n    outcome: str\n    primary: Evidence\n    counter: Evidence\n    contradiction_disclosed: bool\n    requirement: Requirement\n    quality: Quality\n    risk: Risk\n    metric: Metric\n    non_goal_owner: str\n    review: Review\n\ndef review_brief(b: Brief) -> str:\n    if not b.stakeholder or not b.outcome:\n        return \"OUTCOME_OR_STAKEHOLDER_MISSING\"\n    if not b.primary.verified:\n        return \"PRIMARY_EVIDENCE_UNVERIFIED\"\n    if not b.primary.permitted:\n        return \"PRIMARY_EVIDENCE_NOT_PERMITTED\"\n    if not b.counter.verified or not b.counter.permitted:\n        return \"COUNTEREVIDENCE_UNVERIFIED_OR_UNPERMITTED\"\n    if not b.contradiction_disclosed:\n        return \"CONTRADICTION_HIDDEN\"\n    if b.requirement.source_id != b.primary.source_id:\n        return \"REQUIREMENT_NOT_SOURCE_LINKED\"\n    if not b.requirement.denied_test:\n        return \"FORBIDDEN_ACTION_ORACLE_MISSING\"\n    if b.quality.requirement_id != b.requirement.requirement_id or not b.quality.environment or b.quality.max_ms is None:\n        return \"QUALITY_SCENARIO_NOT_MEASURABLE\"\n    if b.risk.requirement_id != b.requirement.requirement_id or not b.risk.harm:\n        return \"RISK_NOT_CONNECTED_TO_HARM\"\n    if b.metric.requirement_id != b.requirement.requirement_id or not b.metric.includes_unresolved:\n        return \"OUTCOME_DENOMINATOR_BIASED\"\n    if not b.non_goal_owner:\n        return \"EXCLUDED_HANDOFF_OWNER_MISSING\"\n    if not b.review.objection:\n        return \"ADVERSARIAL_OBJECTION_MISSING\"\n    if not b.review.evidence_based_response:\n        return \"OBJECTION_NOT_ANSWERED_WITH_EVIDENCE\"\n    if not b.review.owner_decision_recorded:\n        return \"REVIEW_DECISION_NOT_RECORDED\"\n    return \"STRUCTURALLY_REVIEWABLE_NOT_FIELD_APPROVED\"\n\nprimary = Evidence(\"E-DOC-1\", True, True)\ncounter = Evidence(\"E-OBS-2\", True, True)\ngood = Brief(\n    \"customer awaiting warranty decision\",\n    \"know verified outcome without disclosure\",\n    primary, counter, True,\n    Requirement(\"R-ACCESS\", \"E-DOC-1\", \"other-customer denied and unchanged\"),\n    Quality(\"R-ACCESS\", \"fictional load and network\", 300),\n    Risk(\"R-ACCESS\", \"exposing another customer's case\"),\n    Metric(\"R-ACCESS\", True),\n    \"named external refund team (fictional)\",\n    Review(\"what if supplier status is stale?\", True, True),\n)\ncases = {\n    \"reference\": (good, \"STRUCTURALLY_REVIEWABLE_NOT_FIELD_APPROVED\"),\n    \"missing_actor\": (replace(good, stakeholder=\"\"), \"OUTCOME_OR_STAKEHOLDER_MISSING\"),\n    \"source_unverified\": (replace(good, primary=replace(primary, verified=False)), \"PRIMARY_EVIDENCE_UNVERIFIED\"),\n    \"source_unpermitted\": (replace(good, primary=replace(primary, permitted=False)), \"PRIMARY_EVIDENCE_NOT_PERMITTED\"),\n    \"counter_unpermitted\": (replace(good, counter=replace(counter, permitted=False)), \"COUNTEREVIDENCE_UNVERIFIED_OR_UNPERMITTED\"),\n    \"hidden_contradiction\": (replace(good, contradiction_disclosed=False), \"CONTRADICTION_HIDDEN\"),\n    \"orphan_requirement\": (replace(good, requirement=replace(good.requirement, source_id=\"E-NOPE\")), \"REQUIREMENT_NOT_SOURCE_LINKED\"),\n    \"denied_test_missing\": (replace(good, requirement=replace(good.requirement, denied_test=\"\")), \"FORBIDDEN_ACTION_ORACLE_MISSING\"),\n    \"unmeasured_quality\": (replace(good, quality=replace(good.quality, max_ms=None)), \"QUALITY_SCENARIO_NOT_MEASURABLE\"),\n    \"risk_no_harm\": (replace(good, risk=replace(good.risk, harm=\"\")), \"RISK_NOT_CONNECTED_TO_HARM\"),\n    \"unknowns_excluded\": (replace(good, metric=replace(good.metric, includes_unresolved=False)), \"OUTCOME_DENOMINATOR_BIASED\"),\n    \"ownerless_exclusion\": (replace(good, non_goal_owner=\"\"), \"EXCLUDED_HANDOFF_OWNER_MISSING\"),\n    \"no_objection\": (replace(good, review=replace(good.review, objection=\"\")), \"ADVERSARIAL_OBJECTION_MISSING\"),\n    \"unsupported_answer\": (replace(good, review=replace(good.review, evidence_based_response=False)), \"OBJECTION_NOT_ANSWERED_WITH_EVIDENCE\"),\n    \"unsigned_decision\": (replace(good, review=replace(good.review, owner_decision_recorded=False)), \"REVIEW_DECISION_NOT_RECORDED\"),\n}\nfor name, (candidate, expected) in cases.items():\n    result = review_brief(candidate)\n    assert result == expected, f\"{name}: {result} != {expected}\"\n    print(f\"{name}: {result}\")\nprint(\"FICTIONAL_SOURCE_FLAGS_ARE_NOT_FIELD_PERMISSION\")\nprint(\"REVIEWABILITY_DOES_NOT_PROVE_PRODUCT_IMPACT\")\nprint(\"DISCOVERY_BRIEF_TRACE_AND_ADVERSARIAL_GATES_PASS\")\n"
+  },
+  {
+    "type": "paragraph",
+    "text": "Make fourteen disposable copies and replace ONE decision guard at a time with an always-false condition without changing the expected output assertions. Each wrong version must fail with Python AssertionError. Identify the false inference each mutation would have allowed. A synthetic record labelled verified=True is a premise of the classroom fixture; it is not a real signature or lawful permission. The test proves consistency of these stated checks, not that the learner has assembled correct field evidence or discovered the right problem."
+  },
+  {
+    "type": "heading",
+    "id": "brief-b-packet",
+    "level": 2,
+    "text": "Stage B requires an independently traceable artifact"
+  },
+  {
+    "type": "paragraph",
+    "text": "Produce Brief v0.2 with at least three important requirement chains in your OWN domain, named actual evidence and permission status, competing sources, allowed and denied-path tests with persisted-side-effect oracles, quality scenarios, causal risk statements, outcomes including unresolved eligible work, scope/non-goal ownership and explicit unknowns. A reviewer should be able to follow a randomly selected chain backward and forward without asking the author to invent links on the spot."
+  },
+  {
+    "type": "paragraph",
+    "text": "Attach the actual source program results and fourteen rejected mutants, but do not use the program result as a score for the authored brief. Add an explanation of one trace that is invalid or undecidable due to missing permission; state which owner or research action can resolve it. A stage complete marker is only a record of the learner submitting this work. Independent human or field validation remains a distinct, currently unproven claim."
+  },
+  {
+    "type": "resources",
+    "title": "Evidence and verification",
+    "resources": [
+      {
+        "title": "OWASP ASVS",
+        "url": "https://owasp.org/www-project-application-security-verification-standard/"
+      },
+      {
+        "title": "Google SRE Workbook — Implementing SLOs",
+        "url": "https://sre.google/workbook/implementing-slos/"
+      }
+    ]
+  }
+];
