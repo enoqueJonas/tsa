@@ -109,13 +109,18 @@ export function LearningExperience({
   }
 
   const done = completedActivityIds.includes(activity.id);
-  const finished = !hasNext && done;
+  // Free navigation means the last activity can be completed while earlier
+  // activities remain unfinished. Never display "Path complete" for that case.
+  const pathComplete = activePath.lessons.every((entry) =>
+    entry.activities.every((item) => completedActivityIds.includes(item.id))
+  );
+  const lastActivityDone = !hasNext && done;
   const last = lesson.activities[lesson.activities.length - 1]?.id === activity.id;
-  const disabled = finished || (!done && !canCompleteCurrentActivity);
+  const disabled = lastActivityDone || (!done && !canCompleteCurrentActivity);
 
   let label = "Next";
-  if (finished) label = "Path complete";
-  else if (!hasNext) label = "Complete path";
+  if (lastActivityDone) label = pathComplete ? "Path complete" : "Activity completed";
+  else if (!hasNext) label = "Mark activity complete";
   else if (last) label = "Next lesson";
 
   const readingContent = activity.content.type === "reading" ? activity.content : null;
